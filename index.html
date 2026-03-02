@@ -70,6 +70,7 @@
             padding: 5px 10px; font-size: 0.7rem; cursor: pointer;
         }
         .modal .slot .actions button.del { background: #555; }
+        .modal .slot .actions button.exp { background: #3366cc; }
         .modal .new-save {
             background: rgba(0, 180, 80, 0.2); border: 2px dashed rgba(0, 180, 80, 0.6);
             border-radius: 10px; padding: 14px; text-align: center; cursor: pointer;
@@ -281,11 +282,16 @@
                             '</div>' +
                             '<div class="actions">' +
                                 '<button class="overwrite">Ecraser</button>' +
+                                '<button class="exp">DL</button>' +
                                 '<button class="del">X</button>' +
                             '</div>';
                         div.querySelector('.overwrite').onclick = function(e) {
                             e.stopPropagation();
                             overwriteSave(slot.name);
+                        };
+                        div.querySelector('.exp').onclick = function(e) {
+                            e.stopPropagation();
+                            exportSave(slot.name);
                         };
                         div.querySelector('.del').onclick = function(e) {
                             e.stopPropagation();
@@ -323,20 +329,12 @@
                     return;
                 }
 
-                // Save to IndexedDB
+                // Save to IndexedDB (no file download - use Export button for that)
                 dbPut('state_' + name, state).then(function() {
                     console.log('[Save] "' + name + '" saved to IndexedDB (' + state.length + 'B)');
                 }).catch(function(e) {
                     console.warn('[Save] IndexedDB error:', e);
                 });
-
-                // Download as file
-                var blob = new Blob([state], { type: 'application/octet-stream' });
-                var a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = name + '.state';
-                a.click();
-                URL.revokeObjectURL(a.href);
 
                 // Update registry
                 var reg = getRegistry();
@@ -361,6 +359,22 @@
                 console.error('[Save] Save error:', e);
                 toast('Erreur: ' + e.message, true);
             }
+        }
+
+        function exportSave(name) {
+            dbGet('state_' + name).then(function(state) {
+                if (state) {
+                    var blob = new Blob([state], { type: 'application/octet-stream' });
+                    var a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = name + '.state';
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                    toast('"' + name + '" exportee !');
+                } else {
+                    toast('Save introuvable', true);
+                }
+            });
         }
 
         function deleteSave(name) {
