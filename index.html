@@ -8,129 +8,68 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Pokemon Emeraude Custom</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            touch-action: manipulation;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
         body {
             background: #1a1a2e;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            min-height: 100dvh;
-            font-family: 'Segoe UI', sans-serif;
-            color: white;
-            overflow: hidden;
-            -webkit-user-select: none;
-            user-select: none;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            min-height: 100vh; min-height: 100dvh;
+            font-family: 'Segoe UI', sans-serif; color: white;
+            overflow: hidden; -webkit-user-select: none; user-select: none;
         }
-        h1 {
-            font-size: 1.2rem;
-            margin: 8px 0;
-            text-align: center;
-            color: #e94560;
-        }
+        h1 { font-size: 1.2rem; margin: 8px 0; text-align: center; color: #e94560; }
         #game-container {
-            position: relative;
-            width: 100vw;
-            height: calc(100vh - 40px);
-            height: calc(100dvh - 40px);
-            max-width: 800px;
-            max-height: 600px;
+            position: relative; width: 100vw;
+            height: calc(100vh - 40px); height: calc(100dvh - 40px);
+            max-width: 800px; max-height: 600px;
         }
         @media (max-width: 768px) {
-            #game-container {
-                width: 100vw;
-                height: 100vh;
-                height: 100dvh;
-                max-width: none;
-                max-height: none;
-            }
-            h1 {
-                display: none;
-            }
+            #game-container { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; }
+            h1 { display: none; }
         }
-        /* Save toolbar */
-        #save-toolbar {
-            position: fixed;
-            top: 8px;
-            right: 8px;
-            z-index: 10000;
-            display: flex;
-            gap: 6px;
+        /* Save buttons */
+        #save-bar {
+            position: fixed; top: 6px; right: 6px; z-index: 10001;
+            display: flex; gap: 5px;
         }
-        #save-toolbar button {
-            background: rgba(233, 69, 96, 0.9);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            cursor: pointer;
-            touch-action: manipulation;
+        #save-bar button {
+            background: rgba(233, 69, 96, 0.85); color: white; border: none;
+            border-radius: 8px; padding: 8px 14px; font-size: 0.8rem; font-weight: bold;
+            cursor: pointer; touch-action: manipulation; backdrop-filter: blur(4px);
         }
-        #save-toolbar button:active {
-            background: rgba(233, 69, 96, 0.6);
+        #save-bar button:active { opacity: 0.6; }
+        #save-bar button.green { background: rgba(0, 180, 80, 0.85); }
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 200, 83, 0.9); color: white;
+            padding: 10px 24px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: bold;
+            z-index: 10001; pointer-events: none;
+            opacity: 0; transition: opacity 0.3s ease;
         }
-        #save-toolbar button.green {
-            background: rgba(0, 200, 83, 0.9);
-        }
-        #save-status {
-            position: fixed;
-            top: 44px;
-            right: 8px;
-            z-index: 10000;
-            font-size: 0.65rem;
-            color: #888;
-        }
-        /* Save notification toast */
-        #save-toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 200, 83, 0.9);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            z-index: 10000;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        #save-toast.show {
-            opacity: 1;
-        }
+        #toast.show { opacity: 1; }
     </style>
 </head>
 <body>
     <h1>Pokemon Emeraude Custom</h1>
     <div id="game-container"></div>
-    <div id="save-toolbar">
-        <button onclick="manualBackup()">Sauver</button>
-        <button onclick="exportSave()">Exporter</button>
-        <button onclick="document.getElementById('import-file').click()">Importer</button>
-        <input type="file" id="import-file" accept=".srm,.sav" style="display:none" onchange="importSave(this)">
+    <div id="save-bar">
+        <button class="green" onclick="doQuickSave()">Sauver</button>
+        <button onclick="doQuickLoad()">Charger</button>
     </div>
-    <div id="save-status">--</div>
-    <div id="save-toast">Sauvegarde OK</div>
+    <div id="toast"></div>
 
     <script>
-        // Request persistent storage
+        // Persistent storage
         if (navigator.storage && navigator.storage.persist) {
-            navigator.storage.persist().then(function(granted) {
-                console.log('[Save] Persistent storage:', granted ? 'granted' : 'denied');
+            navigator.storage.persist().then(function(g) {
+                console.log('[Save] Persistent storage:', g ? 'granted' : 'denied');
             });
         }
 
-        // EmulatorJS configuration
+        // ============================================================
+        // EmulatorJS config
+        // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
         EJS_gameUrl = 'rom/pokemon.gba';
@@ -138,270 +77,242 @@
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-        EJS_fixedSaveInterval = 5000;
 
         // ============================================================
-        // SAVE SYSTEM v7 - Full debug + manual buttons
+        // SAVE SYSTEM v8 - Using official EmulatorJS API
         // ============================================================
-        var LS_KEY = 'pokeemerald_save';
-        var SAVE_PATHS = [
-            '/data/saves/mGBA/pokemon.srm',
-            '/data/saves/pokeemerald_custom.srm',
-            '/data/saves/pokemon.srm',
-            '/pokeemerald_custom.srm',
-            '/pokemon.srm'
-        ];
-        var _activePath = null;
+        // Two layers:
+        // 1. SRAM (in-game save): getSaveFile() -> localStorage -> EJS_gameSaveUrl
+        // 2. Save states: EJS_onSaveState/EJS_onLoadState -> IndexedDB (no downloads!)
+        // ============================================================
 
-        // RESTORE: Create Blob URL from localStorage BEFORE loader.js
+        var SRAM_KEY = 'pokeemerald_sram';
+        var STATE_KEY = 'pokeemerald_state';
+
+        // --- SRAM RESTORE (before loader.js) ---
         (function() {
-            var b64 = localStorage.getItem(LS_KEY);
+            var b64 = localStorage.getItem(SRAM_KEY);
             if (b64) {
                 try {
-                    var binary = atob(b64);
-                    var bytes = new Uint8Array(binary.length);
-                    for (var i = 0; i < binary.length; i++) {
-                        bytes[i] = binary.charCodeAt(i);
-                    }
+                    var bin = atob(b64);
+                    var bytes = new Uint8Array(bin.length);
+                    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
                     var blob = new Blob([bytes], { type: 'application/octet-stream' });
                     EJS_gameSaveUrl = URL.createObjectURL(blob);
-                    console.log('[Save] RESTORE: Loaded ' + bytes.length + ' bytes from localStorage -> EJS_gameSaveUrl');
-                    setStatus('Save restauree (' + bytes.length + 'B)');
+                    console.log('[Save] SRAM restored from localStorage (' + bytes.length + 'B)');
                 } catch(e) {
-                    console.warn('[Save] RESTORE failed:', e);
+                    console.warn('[Save] SRAM restore failed:', e);
                 }
             } else {
-                console.log('[Save] No previous save in localStorage');
+                console.log('[Save] No previous SRAM save');
             }
         })();
 
-        EJS_defaultOptions = {
-            'save-state-slot': 1,
-            'save-state-location': 'browser',
+        // --- Intercept save state button -> IndexedDB (NO download!) ---
+        EJS_onSaveState = function(data) {
+            try {
+                // Store in IndexedDB via EmulatorJS built-in storage
+                window.EJS_emulator.storage.states.put(STATE_KEY, data.state).then(function() {
+                    console.log('[Save] State saved to IndexedDB (' + data.state.length + 'B)');
+                    toast('State sauvegardee !');
+                });
+                // Also backup SRAM while we're at it
+                backupSRAM('save-state-trigger');
+            } catch(e) {
+                console.error('[Save] State save error:', e);
+                // Fallback: store in localStorage as base64
+                try {
+                    var bin = '';
+                    for (var i = 0; i < data.state.length; i++) bin += String.fromCharCode(data.state[i]);
+                    localStorage.setItem(STATE_KEY, btoa(bin));
+                    console.log('[Save] State saved to localStorage fallback');
+                    toast('State sauvegardee !');
+                } catch(e2) {
+                    toast('Erreur sauvegarde !', true);
+                }
+            }
         };
 
-        var _fsRef = null;
-        var _saveActive = false;
-        var _backupCount = 0;
-
-        function setStatus(txt) {
-            var el = document.getElementById('save-status');
-            if (el) el.textContent = txt;
-        }
-
-        function findFS() {
-            if (_fsRef) return _fsRef;
+        // --- Intercept load state button -> load from IndexedDB (NO file picker!) ---
+        EJS_onLoadState = function() {
             try {
-                var fs = window.EJS_emulator.gameManager.Module.FS;
-                if (fs && typeof fs.readFile === 'function') {
-                    _fsRef = fs;
-                    return fs;
-                }
-            } catch(e) {}
-            return null;
-        }
-
-        function showToast(msg, color) {
-            var t = document.getElementById('save-toast');
-            t.textContent = msg;
-            t.style.background = color || 'rgba(0, 200, 83, 0.9)';
-            t.classList.add('show');
-            setTimeout(function() { t.classList.remove('show'); }, 2000);
-        }
-
-        // List directory contents recursively (for debug)
-        function listDir(fs, path, depth) {
-            if (depth > 3) return;
-            try {
-                var entries = fs.readdir(path);
-                for (var i = 0; i < entries.length; i++) {
-                    if (entries[i] === '.' || entries[i] === '..') continue;
-                    var full = path + '/' + entries[i];
-                    try {
-                        var stat = fs.stat(full);
-                        if (fs.isDir(stat.mode)) {
-                            console.log('[FS] DIR  ' + full + '/');
-                            listDir(fs, full, depth + 1);
+                window.EJS_emulator.storage.states.get(STATE_KEY).then(function(state) {
+                    if (state) {
+                        window.EJS_emulator.gameManager.loadState(new Uint8Array(state));
+                        console.log('[Save] State loaded from IndexedDB');
+                        toast('State chargee !');
+                    } else {
+                        // Try localStorage fallback
+                        var b64 = localStorage.getItem(STATE_KEY);
+                        if (b64) {
+                            var bin = atob(b64);
+                            var bytes = new Uint8Array(bin.length);
+                            for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                            window.EJS_emulator.gameManager.loadState(bytes);
+                            console.log('[Save] State loaded from localStorage fallback');
+                            toast('State chargee !');
                         } else {
-                            console.log('[FS] FILE ' + full + ' (' + stat.size + 'B)');
+                            toast('Pas de state sauvegardee', true);
                         }
-                    } catch(e2) {}
-                }
-            } catch(e) {}
-        }
-
-        // Find the actual save file path
-        function discoverSavePath(fs) {
-            // Try known paths
-            for (var i = 0; i < SAVE_PATHS.length; i++) {
-                try {
-                    var data = fs.readFile(SAVE_PATHS[i]);
-                    if (data && data.length > 0) {
-                        console.log('[Save] FOUND save at: ' + SAVE_PATHS[i] + ' (' + data.length + 'B)');
-                        return SAVE_PATHS[i];
                     }
-                } catch(e) {}
+                });
+            } catch(e) {
+                console.error('[Save] State load error:', e);
+                toast('Erreur chargement !', true);
             }
-            // List directories to find it
-            console.log('[Save] Save not found in known paths, listing FS:');
-            listDir(fs, '/data', 0);
-            listDir(fs, '/', 0);
-            return null;
-        }
+        };
 
-        function backupSave(reason) {
-            var fs = findFS();
-            if (!fs) {
-                if (reason === 'manual') console.log('[Save] BACKUP: FS not ready');
-                return false;
-            }
+        // --- SRAM backup using official API ---
+        var _sramActive = false;
 
-            // Discover path if not found yet
-            if (!_activePath) {
-                _activePath = discoverSavePath(fs);
-                if (!_activePath) {
-                    if (reason === 'manual') {
-                        showToast('Pas de fichier save trouve !', 'rgba(255,0,0,0.9)');
-                        console.log('[Save] BACKUP: No save file found anywhere');
-                    }
-                    return false;
-                }
-            }
-
+        function backupSRAM(reason) {
             try {
-                var data = fs.readFile(_activePath);
+                var gm = window.EJS_emulator.gameManager;
+                // Flush core SRAM to virtual FS first
+                gm.saveSaveFiles();
+                // Get save file bytes via official API
+                var data = gm.getSaveFile(false);
                 if (!data || data.length === 0) {
-                    if (reason === 'manual') console.log('[Save] BACKUP: File empty at ' + _activePath);
+                    if (reason === 'manual') console.log('[Save] SRAM: getSaveFile() returned empty');
                     return false;
                 }
-
-                // Store as base64 (NO empty check - store whatever mGBA wrote)
+                // Store as base64 in localStorage
                 var bin = '';
                 for (var i = 0; i < data.length; i++) bin += String.fromCharCode(data[i]);
-                localStorage.setItem(LS_KEY, btoa(bin));
-                _backupCount++;
-
-                if (!_saveActive) {
-                    _saveActive = true;
-                    showToast('Sauvegardes auto actives !', 'rgba(0, 150, 255, 0.9)');
-                    console.log('[Save] FIRST BACKUP OK: ' + _activePath + ' (' + data.length + 'B)');
-                }
-                setStatus('Backup #' + _backupCount + ' (' + data.length + 'B)');
-                if (reason === 'manual') {
-                    showToast('Sauvegarde OK !', 'rgba(0, 200, 83, 0.9)');
-                    console.log('[Save] MANUAL BACKUP OK (' + data.length + 'B)');
+                localStorage.setItem(SRAM_KEY, btoa(bin));
+                if (!_sramActive) {
+                    _sramActive = true;
+                    console.log('[Save] SRAM first backup OK (' + data.length + 'B) via getSaveFile()');
+                    toast('Sauvegardes SRAM actives');
                 }
                 return true;
             } catch(e) {
-                console.error('[Save] BACKUP ERROR at ' + _activePath + ':', e);
-                // Reset path to try rediscovery next time
-                _activePath = null;
-                if (reason === 'manual') {
-                    showToast('Erreur: ' + e.message, 'rgba(255,0,0,0.9)');
-                }
+                if (reason === 'manual') console.log('[Save] SRAM backup error:', e);
                 return false;
             }
         }
 
-        // Manual backup button
-        function manualBackup() {
-            backupSave('manual');
-        }
-
-        // Export save as .srm file download
-        function exportSave() {
-            var fs = findFS();
-            if (!fs) {
-                // Try from localStorage
-                var b64 = localStorage.getItem(LS_KEY);
-                if (b64) {
-                    var binary = atob(b64);
-                    var bytes = new Uint8Array(binary.length);
-                    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-                    downloadFile(bytes, 'pokemon_save.srm');
-                    showToast('Save exportee depuis cache', 'rgba(0, 150, 255, 0.9)');
-                    return;
-                }
-                showToast('Pas de save a exporter', 'rgba(255,0,0,0.9)');
-                return;
-            }
-            if (!_activePath) _activePath = discoverSavePath(fs);
-            if (!_activePath) {
-                showToast('Pas de fichier save', 'rgba(255,0,0,0.9)');
-                return;
-            }
+        // --- Quick Save/Load buttons ---
+        function doQuickSave() {
             try {
-                var data = fs.readFile(_activePath);
-                downloadFile(data, 'pokemon_save.srm');
-                showToast('Save exportee !', 'rgba(0, 200, 83, 0.9)');
-            } catch(e) {
-                showToast('Erreur export: ' + e.message, 'rgba(255,0,0,0.9)');
-            }
-        }
-
-        function downloadFile(data, filename) {
-            var blob = new Blob([data], { type: 'application/octet-stream' });
-            var a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(a.href);
-        }
-
-        // Import save from .srm file
-        function importSave(input) {
-            if (!input.files || !input.files[0]) return;
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var data = new Uint8Array(e.target.result);
-                // Store in localStorage
-                var bin = '';
-                for (var i = 0; i < data.length; i++) bin += String.fromCharCode(data[i]);
-                localStorage.setItem(LS_KEY, btoa(bin));
-                console.log('[Save] IMPORTED save (' + data.length + 'B) -> localStorage');
-                showToast('Save importee ! Rechargez la page.', 'rgba(0, 200, 83, 0.9)');
-                // Also write to FS if available
-                var fs = findFS();
-                if (fs && _activePath) {
-                    try {
-                        fs.writeFile(_activePath, data);
-                        console.log('[Save] Also wrote to FS: ' + _activePath);
-                    } catch(e2) {}
-                }
-            };
-            reader.readAsArrayBuffer(input.files[0]);
-            input.value = '';
-        }
-
-        // Poll for FS, discover save path, start backup
-        var _poll = setInterval(function() {
-            if (findFS()) {
-                clearInterval(_poll);
-                console.log('[Save] FS ready, discovering save path...');
-                _activePath = discoverSavePath(_fsRef);
-                if (_activePath) {
-                    console.log('[Save] Using save path: ' + _activePath);
+                var gm = window.EJS_emulator.gameManager;
+                // Save state to IndexedDB
+                var state = gm.getState();
+                if (state && state.length > 0) {
+                    window.EJS_emulator.storage.states.put(STATE_KEY, state).then(function() {
+                        console.log('[Save] Quick save OK (' + state.length + 'B)');
+                        toast('Sauvegarde rapide OK !');
+                    }).catch(function(e) {
+                        // IndexedDB fallback to localStorage
+                        var bin = '';
+                        for (var i = 0; i < state.length; i++) bin += String.fromCharCode(state[i]);
+                        localStorage.setItem(STATE_KEY, btoa(bin));
+                        console.log('[Save] Quick save to localStorage fallback');
+                        toast('Sauvegarde rapide OK !');
+                    });
+                    // Also backup SRAM
+                    backupSRAM('quick-save');
                 } else {
-                    console.log('[Save] Save path not found yet (game not saved yet?)');
+                    toast('Jeu pas encore pret', true);
                 }
-                setInterval(function() {
-                    backupSave('periodic');
-                    // Re-discover path if not found yet
-                    if (!_activePath && _fsRef) {
-                        _activePath = discoverSavePath(_fsRef);
-                    }
-                }, 4000);
-                console.log('[Save] Backup system active (every 4s)');
+            } catch(e) {
+                console.error('[Save] Quick save error:', e);
+                toast('Erreur: ' + e.message, true);
             }
-        }, 2000);
+        }
 
-        // Emergency save on page close
-        function emergencySave() { backupSave('emergency'); }
+        function doQuickLoad() {
+            try {
+                window.EJS_emulator.storage.states.get(STATE_KEY).then(function(state) {
+                    if (state) {
+                        window.EJS_emulator.gameManager.loadState(new Uint8Array(state));
+                        console.log('[Save] Quick load OK');
+                        toast('Chargement OK !');
+                    } else {
+                        // Try localStorage fallback
+                        var b64 = localStorage.getItem(STATE_KEY);
+                        if (b64) {
+                            var bin = atob(b64);
+                            var bytes = new Uint8Array(bin.length);
+                            for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                            window.EJS_emulator.gameManager.loadState(bytes);
+                            console.log('[Save] Quick load from localStorage fallback');
+                            toast('Chargement OK !');
+                        } else {
+                            toast('Pas de sauvegarde !', true);
+                        }
+                    }
+                }).catch(function(e) {
+                    console.error('[Save] Quick load error:', e);
+                    toast('Erreur chargement', true);
+                });
+            } catch(e) {
+                console.error('[Save] Quick load error:', e);
+                toast('Erreur: jeu pas pret', true);
+            }
+        }
+
+        // --- Auto-save state every 30 seconds ---
+        var _autoSaveStarted = false;
+        function startAutoSave() {
+            if (_autoSaveStarted) return;
+            _autoSaveStarted = true;
+            setInterval(function() {
+                try {
+                    var state = window.EJS_emulator.gameManager.getState();
+                    if (state && state.length > 0) {
+                        window.EJS_emulator.storage.states.put(STATE_KEY + '_auto', state).catch(function() {
+                            // Silent fallback - auto save is bonus
+                        });
+                        // Also SRAM backup
+                        backupSRAM('auto');
+                    }
+                } catch(e) {}
+            }, 30000);
+            console.log('[Save] Auto-save active (every 30s)');
+        }
+
+        // --- Wait for emulator to be ready ---
+        var _waitReady = setInterval(function() {
+            try {
+                if (window.EJS_emulator && window.EJS_emulator.gameManager) {
+                    clearInterval(_waitReady);
+                    console.log('[Save] Emulator ready');
+                    // Start auto-save after a delay (let game fully init)
+                    setTimeout(startAutoSave, 5000);
+                    // Try first SRAM backup
+                    setTimeout(function() { backupSRAM('init'); }, 8000);
+                }
+            } catch(e) {}
+        }, 1000);
+
+        // --- Emergency save on page close ---
+        function emergencySave() {
+            try {
+                var state = window.EJS_emulator.gameManager.getState();
+                if (state && state.length > 0) {
+                    // localStorage is synchronous = guaranteed on page close
+                    var bin = '';
+                    for (var i = 0; i < state.length; i++) bin += String.fromCharCode(state[i]);
+                    localStorage.setItem(STATE_KEY, btoa(bin));
+                }
+                backupSRAM('emergency');
+            } catch(e) {}
+        }
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') emergencySave();
         });
         window.addEventListener('pagehide', emergencySave);
         window.addEventListener('beforeunload', emergencySave);
+
+        // --- Toast notification ---
+        function toast(msg, isError) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.background = isError ? 'rgba(255, 50, 50, 0.9)' : 'rgba(0, 200, 83, 0.9)';
+            t.classList.add('show');
+            setTimeout(function() { t.classList.remove('show'); }, 2500);
+        }
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>
