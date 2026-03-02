@@ -197,6 +197,36 @@
         EJS_onSaveState = function(data) { openSaveModal(); };
         EJS_onLoadState = function() { openLoadModal(); };
 
+        // SRAM RESTORE: if we have a backup in localStorage, feed it to mGBA at init
+        (function() {
+            var b64 = localStorage.getItem('pokeemerald_sram');
+            if (b64) {
+                try {
+                    var bin = atob(b64);
+                    var bytes = new Uint8Array(bin.length);
+                    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                    var blob = new Blob([bytes], { type: 'application/octet-stream' });
+                    EJS_gameSaveUrl = URL.createObjectURL(blob);
+                    console.log('[SRAM] Restored from localStorage (' + bytes.length + 'B) -> EJS_gameSaveUrl');
+                } catch(e) {
+                    console.warn('[SRAM] Restore failed:', e);
+                }
+            }
+        })();
+
+        // Detect when the game writes SRAM (in-game save from Pokemon menu)
+        EJS_onSaveUpdate = function(data) {
+            if (data && data.save && data.save.length > 0) {
+                console.log('[SRAM] EJS_onSaveUpdate fired! Size: ' + data.save.length + 'B');
+                // Backup SRAM to localStorage
+                var bin = '';
+                for (var i = 0; i < data.save.length; i++) bin += String.fromCharCode(data.save[i]);
+                localStorage.setItem('pokeemerald_sram', btoa(bin));
+                console.log('[SRAM] Backed up to localStorage');
+                toast('Sauvegarde Pokemon OK !');
+            }
+        };
+
         // ============================================================
         // SAVE MANAGER - Named slots in IndexedDB + file download
         // ============================================================
@@ -510,13 +540,48 @@
             console.log('[Save] Auto-save active (every 60s)');
         }
 
-        // Wait for emulator ready
+        // Wait for emulator ready + SRAM diagnostic
         var _waitReady = setInterval(function() {
             try {
                 if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                     clearInterval(_waitReady);
                     console.log('[Save] Emulator ready');
                     setTimeout(startAutoSave, 5000);
+
+                    // SRAM diagnostic after 8 seconds (let game fully init)
+                    setTimeout(function() {
+                        try {
+                            var gm = window.EJS_emulator.gameManager;
+                            // Check getSaveFilePath
+                            if (typeof gm.getSaveFilePath === 'function') {
+                                var path = gm.getSaveFilePath();
+                                console.log('[SRAM] getSaveFilePath() = "' + path + '"');
+                            } else {
+                                console.log('[SRAM] getSaveFilePath not available');
+                            }
+                            // Try getSaveFile with flush
+                            if (typeof gm.saveSaveFiles === 'function') {
+                                gm.saveSaveFiles();
+                                console.log('[SRAM] saveSaveFiles() called');
+                            }
+                            if (typeof gm.getSaveFile === 'function') {
+                                var sav = gm.getSaveFile();
+                                if (sav && sav.length > 0) {
+                                    console.log('[SRAM] getSaveFile() = ' + sav.length + 'B (SUCCESS!)');
+                                    // Check if non-empty
+                                    var nonZero = 0;
+                                    for (var i = 0; i < Math.min(256, sav.length); i++) {
+                                        if (sav[i] !== 0 && sav[i] !== 0xFF) nonZero++;
+                                    }
+                                    console.log('[SRAM] Non-zero bytes in first 256: ' + nonZero);
+                                } else {
+                                    console.log('[SRAM] getSaveFile() = null or empty');
+                                }
+                            }
+                        } catch(e) {
+                            console.log('[SRAM] Diagnostic error:', e);
+                        }
+                    }, 8000);
                 }
             } catch(e) {}
         }, 1000);
