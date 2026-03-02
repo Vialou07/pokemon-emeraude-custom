@@ -26,7 +26,8 @@
             #game-container { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; }
             h1 { display: none; }
         }
-        /* Save buttons */
+
+        /* Top bar buttons */
         #save-bar {
             position: fixed; top: 6px; right: 6px; z-index: 10001;
             display: flex; gap: 5px;
@@ -38,13 +39,91 @@
         }
         #save-bar button:active { opacity: 0.6; }
         #save-bar button.green { background: rgba(0, 180, 80, 0.85); }
+
+        /* Modal overlay */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 20000;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: #16213e; border: 2px solid #e94560; border-radius: 16px;
+            padding: 20px; min-width: 300px; max-width: 90vw; max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal h2 {
+            color: #e94560; font-size: 1.1rem; margin-bottom: 14px; text-align: center;
+        }
+        .modal .slot {
+            background: #1a1a2e; border: 1px solid #333; border-radius: 10px;
+            padding: 12px 14px; margin-bottom: 8px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: border-color 0.2s;
+        }
+        .modal .slot:hover, .modal .slot:active { border-color: #e94560; }
+        .modal .slot .name { font-weight: bold; font-size: 0.95rem; }
+        .modal .slot .info { font-size: 0.7rem; color: #888; margin-top: 2px; }
+        .modal .slot .actions { display: flex; gap: 6px; }
+        .modal .slot .actions button {
+            background: #e94560; color: white; border: none; border-radius: 6px;
+            padding: 5px 10px; font-size: 0.7rem; cursor: pointer;
+        }
+        .modal .slot .actions button.del { background: #555; }
+        .modal .new-save {
+            background: rgba(0, 180, 80, 0.2); border: 2px dashed rgba(0, 180, 80, 0.6);
+            border-radius: 10px; padding: 14px; text-align: center; cursor: pointer;
+            color: #0f8; font-weight: bold; font-size: 0.9rem; margin-top: 4px;
+        }
+        .modal .new-save:hover { background: rgba(0, 180, 80, 0.3); }
+        .modal .import-btn {
+            background: rgba(100, 100, 255, 0.2); border: 2px dashed rgba(100, 100, 255, 0.6);
+            border-radius: 10px; padding: 14px; text-align: center; cursor: pointer;
+            color: #aaf; font-weight: bold; font-size: 0.9rem; margin-top: 4px;
+        }
+        .modal .import-btn:hover { background: rgba(100, 100, 255, 0.3); }
+        .modal .cancel {
+            display: block; margin: 14px auto 0; background: #333; color: #aaa;
+            border: none; border-radius: 8px; padding: 8px 20px; cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .modal .empty-msg {
+            color: #666; text-align: center; padding: 20px 0; font-size: 0.85rem;
+        }
+
+        /* Name input dialog */
+        .name-dialog {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 30000;
+            align-items: center; justify-content: center;
+        }
+        .name-dialog.open { display: flex; }
+        .name-dialog .box {
+            background: #16213e; border: 2px solid #0f8; border-radius: 16px;
+            padding: 20px; text-align: center; min-width: 280px;
+        }
+        .name-dialog .box p { margin-bottom: 12px; font-size: 0.9rem; }
+        .name-dialog .box input {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #555;
+            background: #1a1a2e; color: white; font-size: 1rem; text-align: center;
+            outline: none;
+        }
+        .name-dialog .box input:focus { border-color: #0f8; }
+        .name-dialog .box .btns { margin-top: 12px; display: flex; gap: 8px; justify-content: center; }
+        .name-dialog .box .btns button {
+            padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer;
+            font-weight: bold; font-size: 0.85rem;
+        }
+        .name-dialog .box .btns .ok { background: #0f8; color: #111; }
+        .name-dialog .box .btns .no { background: #555; color: #aaa; }
+
         /* Toast */
         #toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: rgba(0, 200, 83, 0.9); color: white;
             padding: 10px 24px; border-radius: 20px;
             font-size: 0.85rem; font-weight: bold;
-            z-index: 10001; pointer-events: none;
+            z-index: 40000; pointer-events: none;
             opacity: 0; transition: opacity 0.3s ease;
         }
         #toast.show { opacity: 1; }
@@ -53,10 +132,47 @@
 <body>
     <h1>Pokemon Emeraude Custom</h1>
     <div id="game-container"></div>
+
     <div id="save-bar">
-        <button class="green" onclick="doQuickSave()">Sauver</button>
-        <button onclick="doQuickLoad()">Charger</button>
+        <button class="green" onclick="openSaveModal()">Sauver</button>
+        <button onclick="openLoadModal()">Charger</button>
     </div>
+
+    <!-- Save modal -->
+    <div class="modal-overlay" id="save-modal">
+        <div class="modal">
+            <h2>Sauvegarder</h2>
+            <div id="save-slots"></div>
+            <div class="new-save" onclick="promptNewSave()">+ Nouvelle sauvegarde</div>
+            <button class="cancel" onclick="closeModals()">Annuler</button>
+        </div>
+    </div>
+
+    <!-- Load modal -->
+    <div class="modal-overlay" id="load-modal">
+        <div class="modal">
+            <h2>Charger une sauvegarde</h2>
+            <div id="load-slots"></div>
+            <div class="import-btn" onclick="document.getElementById('import-file').click()">
+                Importer un fichier .state
+            </div>
+            <input type="file" id="import-file" accept=".state,.sav,.srm" style="display:none" onchange="importFile(this)">
+            <button class="cancel" onclick="closeModals()">Annuler</button>
+        </div>
+    </div>
+
+    <!-- Name input dialog -->
+    <div class="name-dialog" id="name-dialog">
+        <div class="box">
+            <p id="name-dialog-text">Nom de la sauvegarde :</p>
+            <input type="text" id="name-input" placeholder="Ex: aventure1" maxlength="30">
+            <div class="btns">
+                <button class="ok" onclick="confirmName()">OK</button>
+                <button class="no" onclick="cancelName()">Annuler</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast"></div>
 
     <script>
@@ -67,9 +183,7 @@
             });
         }
 
-        // ============================================================
         // EmulatorJS config
-        // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
         EJS_gameUrl = 'rom/pokemon.gba';
@@ -78,225 +192,333 @@
         EJS_startOnLoaded = true;
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
 
+        // Intercept EmulatorJS save/load buttons -> our system
+        EJS_onSaveState = function(data) { openSaveModal(); };
+        EJS_onLoadState = function() { openLoadModal(); };
+
         // ============================================================
-        // SAVE SYSTEM v8 - Using official EmulatorJS API
+        // SAVE MANAGER - Named slots in IndexedDB + file download
         // ============================================================
-        // Two layers:
-        // 1. SRAM (in-game save): getSaveFile() -> localStorage -> EJS_gameSaveUrl
-        // 2. Save states: EJS_onSaveState/EJS_onLoadState -> IndexedDB (no downloads!)
-        // ============================================================
+        var DB_NAME = 'PokemonSaves';
+        var DB_STORE = 'states';
+        var REGISTRY_KEY = 'pokemon_save_registry';
 
-        var SRAM_KEY = 'pokeemerald_sram';
-        var STATE_KEY = 'pokeemerald_state';
-
-        // --- SRAM RESTORE (before loader.js) ---
-        (function() {
-            var b64 = localStorage.getItem(SRAM_KEY);
-            if (b64) {
-                try {
-                    var bin = atob(b64);
-                    var bytes = new Uint8Array(bin.length);
-                    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-                    var blob = new Blob([bytes], { type: 'application/octet-stream' });
-                    EJS_gameSaveUrl = URL.createObjectURL(blob);
-                    console.log('[Save] SRAM restored from localStorage (' + bytes.length + 'B)');
-                } catch(e) {
-                    console.warn('[Save] SRAM restore failed:', e);
-                }
-            } else {
-                console.log('[Save] No previous SRAM save');
-            }
-        })();
-
-        // --- Intercept save state button -> IndexedDB (NO download!) ---
-        EJS_onSaveState = function(data) {
+        // Registry: [{name, date, size}] stored in localStorage
+        function getRegistry() {
             try {
-                // Store in IndexedDB via EmulatorJS built-in storage
-                window.EJS_emulator.storage.states.put(STATE_KEY, data.state).then(function() {
-                    console.log('[Save] State saved to IndexedDB (' + data.state.length + 'B)');
-                    toast('State sauvegardee !');
-                });
-                // Also backup SRAM while we're at it
-                backupSRAM('save-state-trigger');
-            } catch(e) {
-                console.error('[Save] State save error:', e);
-                // Fallback: store in localStorage as base64
-                try {
-                    var bin = '';
-                    for (var i = 0; i < data.state.length; i++) bin += String.fromCharCode(data.state[i]);
-                    localStorage.setItem(STATE_KEY, btoa(bin));
-                    console.log('[Save] State saved to localStorage fallback');
-                    toast('State sauvegardee !');
-                } catch(e2) {
-                    toast('Erreur sauvegarde !', true);
-                }
-            }
-        };
-
-        // --- Intercept load state button -> load from IndexedDB (NO file picker!) ---
-        EJS_onLoadState = function() {
-            try {
-                window.EJS_emulator.storage.states.get(STATE_KEY).then(function(state) {
-                    if (state) {
-                        window.EJS_emulator.gameManager.loadState(new Uint8Array(state));
-                        console.log('[Save] State loaded from IndexedDB');
-                        toast('State chargee !');
-                    } else {
-                        // Try localStorage fallback
-                        var b64 = localStorage.getItem(STATE_KEY);
-                        if (b64) {
-                            var bin = atob(b64);
-                            var bytes = new Uint8Array(bin.length);
-                            for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-                            window.EJS_emulator.gameManager.loadState(bytes);
-                            console.log('[Save] State loaded from localStorage fallback');
-                            toast('State chargee !');
-                        } else {
-                            toast('Pas de state sauvegardee', true);
-                        }
-                    }
-                });
-            } catch(e) {
-                console.error('[Save] State load error:', e);
-                toast('Erreur chargement !', true);
-            }
-        };
-
-        // --- SRAM backup using official API ---
-        var _sramActive = false;
-
-        function backupSRAM(reason) {
-            try {
-                var gm = window.EJS_emulator.gameManager;
-                // Flush core SRAM to virtual FS first
-                gm.saveSaveFiles();
-                // Get save file bytes via official API
-                var data = gm.getSaveFile(false);
-                if (!data || data.length === 0) {
-                    if (reason === 'manual') console.log('[Save] SRAM: getSaveFile() returned empty');
-                    return false;
-                }
-                // Store as base64 in localStorage
-                var bin = '';
-                for (var i = 0; i < data.length; i++) bin += String.fromCharCode(data[i]);
-                localStorage.setItem(SRAM_KEY, btoa(bin));
-                if (!_sramActive) {
-                    _sramActive = true;
-                    console.log('[Save] SRAM first backup OK (' + data.length + 'B) via getSaveFile()');
-                    toast('Sauvegardes SRAM actives');
-                }
-                return true;
-            } catch(e) {
-                if (reason === 'manual') console.log('[Save] SRAM backup error:', e);
-                return false;
-            }
+                return JSON.parse(localStorage.getItem(REGISTRY_KEY)) || [];
+            } catch(e) { return []; }
+        }
+        function setRegistry(reg) {
+            localStorage.setItem(REGISTRY_KEY, JSON.stringify(reg));
         }
 
-        // --- Quick Save/Load buttons ---
-        function doQuickSave() {
+        // IndexedDB helpers
+        function openDB() {
+            return new Promise(function(resolve, reject) {
+                var req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = function(e) {
+                    e.target.result.createObjectStore(DB_STORE);
+                };
+                req.onsuccess = function(e) { resolve(e.target.result); };
+                req.onerror = function(e) { reject(e); };
+            });
+        }
+        function dbPut(key, data) {
+            return openDB().then(function(db) {
+                return new Promise(function(resolve, reject) {
+                    var tx = db.transaction(DB_STORE, 'readwrite');
+                    tx.objectStore(DB_STORE).put(data, key);
+                    tx.oncomplete = function() { resolve(); };
+                    tx.onerror = function(e) { reject(e); };
+                });
+            });
+        }
+        function dbGet(key) {
+            return openDB().then(function(db) {
+                return new Promise(function(resolve, reject) {
+                    var tx = db.transaction(DB_STORE, 'readonly');
+                    var req = tx.objectStore(DB_STORE).get(key);
+                    req.onsuccess = function() { resolve(req.result); };
+                    req.onerror = function(e) { reject(e); };
+                });
+            });
+        }
+        function dbDelete(key) {
+            return openDB().then(function(db) {
+                return new Promise(function(resolve, reject) {
+                    var tx = db.transaction(DB_STORE, 'readwrite');
+                    tx.objectStore(DB_STORE).delete(key);
+                    tx.oncomplete = function() { resolve(); };
+                    tx.onerror = function(e) { reject(e); };
+                });
+            });
+        }
+
+        // ============================================================
+        // SAVE MODAL
+        // ============================================================
+        function openSaveModal() {
+            var reg = getRegistry();
+            var container = document.getElementById('save-slots');
+            container.innerHTML = '';
+            if (reg.length === 0) {
+                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde existante</div>';
+            } else {
+                for (var i = 0; i < reg.length; i++) {
+                    (function(slot) {
+                        var div = document.createElement('div');
+                        div.className = 'slot';
+                        var displayName = slot.name === '__autosave' ? 'Auto-save' : slot.name;
+                        div.innerHTML =
+                            '<div>' +
+                                '<div class="name">' + escHtml(displayName) + '</div>' +
+                                '<div class="info">' + slot.date + ' - ' + formatSize(slot.size) + '</div>' +
+                            '</div>' +
+                            '<div class="actions">' +
+                                '<button class="overwrite">Ecraser</button>' +
+                                '<button class="del">X</button>' +
+                            '</div>';
+                        div.querySelector('.overwrite').onclick = function(e) {
+                            e.stopPropagation();
+                            overwriteSave(slot.name);
+                        };
+                        div.querySelector('.del').onclick = function(e) {
+                            e.stopPropagation();
+                            deleteSave(slot.name);
+                        };
+                        container.appendChild(div);
+                    })(reg[i]);
+                }
+            }
+            document.getElementById('save-modal').classList.add('open');
+        }
+
+        function overwriteSave(name) {
+            closeModals();
+            doSave(name);
+        }
+
+        function promptNewSave() {
+            closeModals();
+            _nameCallback = function(name) {
+                if (name) doSave(name);
+            };
+            document.getElementById('name-dialog-text').textContent = 'Nom de la sauvegarde :';
+            document.getElementById('name-input').value = '';
+            document.getElementById('name-dialog').classList.add('open');
+            setTimeout(function() { document.getElementById('name-input').focus(); }, 100);
+        }
+
+        function doSave(name) {
             try {
                 var gm = window.EJS_emulator.gameManager;
-                // Save state to IndexedDB
                 var state = gm.getState();
-                if (state && state.length > 0) {
-                    window.EJS_emulator.storage.states.put(STATE_KEY, state).then(function() {
-                        console.log('[Save] Quick save OK (' + state.length + 'B)');
-                        toast('Sauvegarde rapide OK !');
-                    }).catch(function(e) {
-                        // IndexedDB fallback to localStorage
-                        var bin = '';
-                        for (var i = 0; i < state.length; i++) bin += String.fromCharCode(state[i]);
-                        localStorage.setItem(STATE_KEY, btoa(bin));
-                        console.log('[Save] Quick save to localStorage fallback');
-                        toast('Sauvegarde rapide OK !');
-                    });
-                    // Also backup SRAM
-                    backupSRAM('quick-save');
-                } else {
+                if (!state || state.length === 0) {
                     toast('Jeu pas encore pret', true);
+                    return;
                 }
+
+                // Save to IndexedDB
+                dbPut('state_' + name, state).then(function() {
+                    console.log('[Save] "' + name + '" saved to IndexedDB (' + state.length + 'B)');
+                }).catch(function(e) {
+                    console.warn('[Save] IndexedDB error:', e);
+                });
+
+                // Download as file
+                var blob = new Blob([state], { type: 'application/octet-stream' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = name + '.state';
+                a.click();
+                URL.revokeObjectURL(a.href);
+
+                // Update registry
+                var reg = getRegistry();
+                var found = false;
+                var now = new Date();
+                var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+                for (var i = 0; i < reg.length; i++) {
+                    if (reg[i].name === name) {
+                        reg[i].date = dateStr;
+                        reg[i].size = state.length;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    reg.push({ name: name, date: dateStr, size: state.length });
+                }
+                setRegistry(reg);
+                toast('"' + name + '" sauvegardee !');
             } catch(e) {
-                console.error('[Save] Quick save error:', e);
+                console.error('[Save] Save error:', e);
                 toast('Erreur: ' + e.message, true);
             }
         }
 
-        function doQuickLoad() {
-            try {
-                window.EJS_emulator.storage.states.get(STATE_KEY).then(function(state) {
-                    if (state) {
-                        window.EJS_emulator.gameManager.loadState(new Uint8Array(state));
-                        console.log('[Save] Quick load OK');
-                        toast('Chargement OK !');
-                    } else {
-                        // Try localStorage fallback
-                        var b64 = localStorage.getItem(STATE_KEY);
-                        if (b64) {
-                            var bin = atob(b64);
-                            var bytes = new Uint8Array(bin.length);
-                            for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-                            window.EJS_emulator.gameManager.loadState(bytes);
-                            console.log('[Save] Quick load from localStorage fallback');
-                            toast('Chargement OK !');
-                        } else {
-                            toast('Pas de sauvegarde !', true);
-                        }
-                    }
-                }).catch(function(e) {
-                    console.error('[Save] Quick load error:', e);
-                    toast('Erreur chargement', true);
-                });
-            } catch(e) {
-                console.error('[Save] Quick load error:', e);
-                toast('Erreur: jeu pas pret', true);
-            }
+        function deleteSave(name) {
+            dbDelete('state_' + name).catch(function() {});
+            var reg = getRegistry().filter(function(s) { return s.name !== name; });
+            setRegistry(reg);
+            toast('"' + name + '" supprimee');
+            openSaveModal(); // Refresh list
         }
 
-        // --- Auto-save state every 30 seconds ---
-        var _autoSaveStarted = false;
+        // ============================================================
+        // LOAD MODAL
+        // ============================================================
+        function openLoadModal() {
+            var reg = getRegistry();
+            var container = document.getElementById('load-slots');
+            container.innerHTML = '';
+            if (reg.length === 0) {
+                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde.<br>Utilisez "Importer" pour charger un fichier .state</div>';
+            } else {
+                for (var i = 0; i < reg.length; i++) {
+                    (function(slot) {
+                        var div = document.createElement('div');
+                        div.className = 'slot';
+                        var displayName = slot.name === '__autosave' ? 'Auto-save' : slot.name;
+                        div.innerHTML =
+                            '<div>' +
+                                '<div class="name">' + escHtml(displayName) + '</div>' +
+                                '<div class="info">' + slot.date + ' - ' + formatSize(slot.size) + '</div>' +
+                            '</div>';
+                        div.onclick = function() {
+                            closeModals();
+                            loadSave(slot.name);
+                        };
+                        container.appendChild(div);
+                    })(reg[i]);
+                }
+            }
+            document.getElementById('load-modal').classList.add('open');
+        }
+
+        function loadSave(name) {
+            dbGet('state_' + name).then(function(state) {
+                if (state) {
+                    window.EJS_emulator.gameManager.loadState(new Uint8Array(state));
+                    console.log('[Save] "' + name + '" loaded from IndexedDB');
+                    toast('"' + name + '" chargee !');
+                } else {
+                    toast('"' + name + '" introuvable dans le navigateur. Utilisez Importer.', true);
+                }
+            }).catch(function(e) {
+                console.error('[Save] Load error:', e);
+                toast('Erreur chargement', true);
+            });
+        }
+
+        function importFile(input) {
+            if (!input.files || !input.files[0]) return;
+            var file = input.files[0];
+            var name = file.name.replace(/\.(state|sav|srm)$/i, '');
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = new Uint8Array(e.target.result);
+                // Load immediately
+                try {
+                    window.EJS_emulator.gameManager.loadState(data);
+                    console.log('[Save] Imported "' + name + '" (' + data.length + 'B)');
+                } catch(err) {
+                    console.error('[Save] Import load error:', err);
+                }
+                // Store in IndexedDB
+                dbPut('state_' + name, data).catch(function() {});
+                // Update registry
+                var reg = getRegistry();
+                var found = false;
+                var now = new Date();
+                var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+                for (var i = 0; i < reg.length; i++) {
+                    if (reg[i].name === name) {
+                        reg[i].date = dateStr;
+                        reg[i].size = data.length;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    reg.push({ name: name, date: dateStr, size: data.length });
+                }
+                setRegistry(reg);
+                closeModals();
+                toast('"' + name + '" importee et chargee !');
+            };
+            reader.readAsArrayBuffer(file);
+            input.value = '';
+        }
+
+        // ============================================================
+        // AUTO-SAVE (toutes les 60s, silencieux)
+        // ============================================================
+        var _autoStarted = false;
         function startAutoSave() {
-            if (_autoSaveStarted) return;
-            _autoSaveStarted = true;
+            if (_autoStarted) return;
+            _autoStarted = true;
             setInterval(function() {
                 try {
-                    var state = window.EJS_emulator.gameManager.getState();
+                    var gm = window.EJS_emulator.gameManager;
+                    var state = gm.getState();
                     if (state && state.length > 0) {
-                        window.EJS_emulator.storage.states.put(STATE_KEY + '_auto', state).catch(function() {
-                            // Silent fallback - auto save is bonus
-                        });
-                        // Also SRAM backup
-                        backupSRAM('auto');
+                        dbPut('state___autosave', state).catch(function() {});
+                        // Update registry
+                        var reg = getRegistry();
+                        var now = new Date();
+                        var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+                        var found = false;
+                        for (var i = 0; i < reg.length; i++) {
+                            if (reg[i].name === '__autosave') {
+                                reg[i].date = dateStr;
+                                reg[i].size = state.length;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            reg.push({ name: '__autosave', date: dateStr, size: state.length });
+                        }
+                        setRegistry(reg);
                     }
                 } catch(e) {}
-            }, 30000);
-            console.log('[Save] Auto-save active (every 30s)');
+            }, 60000);
+            console.log('[Save] Auto-save active (every 60s)');
         }
 
-        // --- Wait for emulator to be ready ---
+        // Wait for emulator ready
         var _waitReady = setInterval(function() {
             try {
                 if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                     clearInterval(_waitReady);
                     console.log('[Save] Emulator ready');
-                    // Start auto-save after a delay (let game fully init)
                     setTimeout(startAutoSave, 5000);
-                    // Try first SRAM backup
-                    setTimeout(function() { backupSRAM('init'); }, 8000);
                 }
             } catch(e) {}
         }, 1000);
 
-        // --- Emergency save on page close ---
+        // Emergency save on page close
         function emergencySave() {
             try {
                 var state = window.EJS_emulator.gameManager.getState();
                 if (state && state.length > 0) {
-                    // localStorage is synchronous = guaranteed on page close
-                    var bin = '';
-                    for (var i = 0; i < state.length; i++) bin += String.fromCharCode(state[i]);
-                    localStorage.setItem(STATE_KEY, btoa(bin));
+                    // Sync to IndexedDB (best effort, might not complete)
+                    dbPut('state___autosave', state).catch(function() {});
+                    var reg = getRegistry();
+                    var now = new Date();
+                    var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+                    var found = false;
+                    for (var i = 0; i < reg.length; i++) {
+                        if (reg[i].name === '__autosave') {
+                            reg[i].date = dateStr; reg[i].size = state.length;
+                            found = true; break;
+                        }
+                    }
+                    if (!found) reg.push({ name: '__autosave', date: dateStr, size: state.length });
+                    setRegistry(reg);
                 }
-                backupSRAM('emergency');
             } catch(e) {}
         }
         document.addEventListener('visibilitychange', function() {
@@ -305,13 +527,56 @@
         window.addEventListener('pagehide', emergencySave);
         window.addEventListener('beforeunload', emergencySave);
 
-        // --- Toast notification ---
+        // ============================================================
+        // NAME DIALOG
+        // ============================================================
+        var _nameCallback = null;
+        function confirmName() {
+            var val = document.getElementById('name-input').value.trim();
+            document.getElementById('name-dialog').classList.remove('open');
+            if (_nameCallback) _nameCallback(val || null);
+            _nameCallback = null;
+        }
+        function cancelName() {
+            document.getElementById('name-dialog').classList.remove('open');
+            _nameCallback = null;
+        }
+        document.getElementById('name-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') confirmName();
+            if (e.key === 'Escape') cancelName();
+        });
+
+        // ============================================================
+        // UTILS
+        // ============================================================
+        function closeModals() {
+            document.getElementById('save-modal').classList.remove('open');
+            document.getElementById('load-modal').classList.remove('open');
+            document.getElementById('name-dialog').classList.remove('open');
+        }
+        function escHtml(s) {
+            var d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+        function formatSize(bytes) {
+            if (bytes > 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+            if (bytes > 1024) return (bytes / 1024).toFixed(0) + ' KB';
+            return bytes + ' B';
+        }
         function toast(msg, isError) {
             var t = document.getElementById('toast');
             t.textContent = msg;
             t.style.background = isError ? 'rgba(255, 50, 50, 0.9)' : 'rgba(0, 200, 83, 0.9)';
             t.classList.add('show');
             setTimeout(function() { t.classList.remove('show'); }, 2500);
+        }
+
+        // Rename __autosave display in lists
+        var _origEscHtml = escHtml;
+        function formatSlotName(name) {
+            if (name === '__autosave') return 'Auto-save';
+            return name;
         }
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
