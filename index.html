@@ -127,97 +127,96 @@
         };
 
         // ============================================================
-        // FIX: Force FS.syncfs() to persist MEMFS -> IndexedDB
+        // SAVE PERSISTENCE FIX
         // ============================================================
-        // EmulatorJS's EJS_fixedSaveInterval only flushes the RetroArch
-        // core's SRAM to Emscripten's in-memory filesystem (MEMFS).
-        // The actual persist to IndexedDB (via IDBFS) only happens on
-        // beforeunload, which is UNRELIABLE (async IndexedDB writes get
-        // aborted, mobile browsers skip it entirely).
+        // EmulatorJS stores saves in Emscripten's MEMFS but only
+        // flushes to IndexedDB on beforeunload (unreliable).
+        // We force FS.syncfs() periodically + on page hide.
         //
-        // Solution: Periodically call FS.syncfs() ourselves, and also
-        // on visibilitychange (more reliable than beforeunload on mobile).
+        // Access path: EJS_emulator -> gameManager -> Module -> FS
         // ============================================================
 
-        var _savesSyncing = false;
+        var _syncing = false;
+        var _fsRef = null;    // Cached FS reference
+        var _syncCount = 0;
+        var _syncOK = false;
 
-        function syncSavesToIndexedDB(reason) {
-            if (_savesSyncing) return;
-            if (typeof Module === 'undefined' || typeof Module.FS === 'undefined') {
-                // Emulator not loaded yet or FS not available
-                // Try the global FS object (EmulatorJS exposes it)
-                if (typeof FS !== 'undefined' && typeof FS.syncfs === 'function') {
-                    _savesSyncing = true;
-                    try {
-                        FS.syncfs(false, function(err) {
-                            _savesSyncing = false;
-                            if (err) {
-                                console.warn('[Save] FS.syncfs error (' + reason + '):', err);
-                            } else {
-                                console.log('[Save] FS.syncfs OK (' + reason + ')');
-                            }
-                        });
-                    } catch(e) {
-                        _savesSyncing = false;
-                        console.warn('[Save] FS.syncfs exception (' + reason + '):', e);
+        function findFS() {
+            if (_fsRef) return _fsRef;
+            // Try all known paths to find the Emscripten FS object
+            var paths = [
+                function() { return window.EJS_emulator.gameManager.Module.FS; },
+                function() { return window.EJS_emulator.gameManager.FS; },
+                function() { return window.EJS_emulator.Module.FS; },
+                function() { return window.Module.FS; },
+                function() { return window.FS; },
+            ];
+            for (var i = 0; i < paths.length; i++) {
+                try {
+                    var fs = paths[i]();
+                    if (fs && typeof fs.syncfs === 'function') {
+                        console.log('[Save] Found FS via path ' + i);
+                        _fsRef = fs;
+                        return fs;
                     }
+                } catch(e) { /* try next */ }
+            }
+            return null;
+        }
+
+        function doSync(reason) {
+            if (_syncing) return;
+            var fs = findFS();
+            if (!fs) {
+                // Not ready yet - show in toast for debugging
+                if (_syncCount === 0) {
+                    console.log('[Save] FS not found yet (' + reason + ')');
                 }
                 return;
             }
-            _savesSyncing = true;
+            _syncing = true;
+            _syncCount++;
             try {
-                Module.FS.syncfs(false, function(err) {
-                    _savesSyncing = false;
+                fs.syncfs(false, function(err) {
+                    _syncing = false;
                     if (err) {
-                        console.warn('[Save] Module.FS.syncfs error (' + reason + '):', err);
+                        console.warn('[Save] syncfs error:', err);
                     } else {
-                        console.log('[Save] Module.FS.syncfs OK (' + reason + ')');
+                        if (!_syncOK) {
+                            _syncOK = true;
+                            console.log('[Save] First successful sync! Saves will persist.');
+                            var t = document.getElementById('save-toast');
+                            t.textContent = 'Sauvegardes actives';
+                            t.style.background = 'rgba(0, 150, 255, 0.9)';
+                            t.classList.add('show');
+                            setTimeout(function() { t.classList.remove('show'); }, 3000);
+                        }
                     }
                 });
             } catch(e) {
-                _savesSyncing = false;
-                console.warn('[Save] Module.FS.syncfs exception (' + reason + '):', e);
+                _syncing = false;
+                console.warn('[Save] syncfs exception:', e);
             }
         }
 
-        // After emulator loads, start periodic IndexedDB sync
-        EJS_onGameStart = function() {
-            console.log('[Save] Game started - setting up IndexedDB sync');
-
-            // Wait a moment for the FS to be fully initialized
-            setTimeout(function() {
-                // Sync every 10 seconds (MEMFS -> IndexedDB)
-                // This is the CRITICAL missing piece: EJS_fixedSaveInterval
-                // flushes core -> MEMFS, but this flushes MEMFS -> IndexedDB
-                setInterval(function() {
-                    syncSavesToIndexedDB('periodic-10s');
-                }, 10000);
-
-                // Also sync immediately after EJS_fixedSaveInterval flushes
-                // (give it 1 second for the core flush to complete)
-                console.log('[Save] IndexedDB periodic sync active (every 10s)');
-            }, 3000);
-        };
-
-        // visibilitychange is MORE RELIABLE than beforeunload on mobile
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'hidden') {
-                console.log('[Save] Page hidden - forcing IndexedDB sync');
-                syncSavesToIndexedDB('visibilitychange-hidden');
+        // Poll until FS is found, then sync every 8 seconds
+        var _pollInterval = setInterval(function() {
+            var fs = findFS();
+            if (fs) {
+                clearInterval(_pollInterval);
+                console.log('[Save] FS found! Starting periodic sync (every 8s)');
+                doSync('initial');
+                setInterval(function() { doSync('periodic'); }, 8000);
             }
-        });
+        }, 2000);
 
-        // Also try on pagehide (even more reliable on some mobile browsers)
-        window.addEventListener('pagehide', function() {
-            console.log('[Save] pagehide - forcing IndexedDB sync');
-            syncSavesToIndexedDB('pagehide');
+        // Sync on tab switch (reliable on mobile)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') doSync('hidden');
         });
-
-        // Keep beforeunload as fallback for desktop
-        window.addEventListener('beforeunload', function() {
-            console.log('[Save] beforeunload - forcing IndexedDB sync');
-            syncSavesToIndexedDB('beforeunload');
-        });
+        // Sync on page close
+        window.addEventListener('pagehide', function() { doSync('pagehide'); });
+        window.addEventListener('beforeunload', function() { doSync('beforeunload'); });
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>
