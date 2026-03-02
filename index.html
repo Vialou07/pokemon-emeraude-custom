@@ -101,7 +101,7 @@
         EJS_startOnLoaded = true;
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
 
-        // SRAM save flush every 5 seconds (prevents save loss on crash/close)
+        // Flush core SRAM to Emscripten MEMFS every 5 seconds
         EJS_fixedSaveInterval = 5000;
 
         EJS_Buttons = {
@@ -111,6 +111,7 @@
 
         EJS_defaultOptions = {
             'save-state-slot': 1,
+            'save-state-location': 'browser',
             'rewind_enable': 'false',
             'rewind_buffer_size': '0',
         };
@@ -118,10 +119,105 @@
         // Show notification when save is detected
         EJS_onSaveUpdate = function(e) {
             const toast = document.getElementById('save-toast');
+            toast.textContent = 'Sauvegarde OK';
+            toast.style.background = 'rgba(0, 200, 83, 0.9)';
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
-            console.log('[Save] Game saved (hash: ' + e.hash + ')');
+            console.log('[Save] Save update detected (hash: ' + e.hash + ')');
         };
+
+        // ============================================================
+        // FIX: Force FS.syncfs() to persist MEMFS -> IndexedDB
+        // ============================================================
+        // EmulatorJS's EJS_fixedSaveInterval only flushes the RetroArch
+        // core's SRAM to Emscripten's in-memory filesystem (MEMFS).
+        // The actual persist to IndexedDB (via IDBFS) only happens on
+        // beforeunload, which is UNRELIABLE (async IndexedDB writes get
+        // aborted, mobile browsers skip it entirely).
+        //
+        // Solution: Periodically call FS.syncfs() ourselves, and also
+        // on visibilitychange (more reliable than beforeunload on mobile).
+        // ============================================================
+
+        var _savesSyncing = false;
+
+        function syncSavesToIndexedDB(reason) {
+            if (_savesSyncing) return;
+            if (typeof Module === 'undefined' || typeof Module.FS === 'undefined') {
+                // Emulator not loaded yet or FS not available
+                // Try the global FS object (EmulatorJS exposes it)
+                if (typeof FS !== 'undefined' && typeof FS.syncfs === 'function') {
+                    _savesSyncing = true;
+                    try {
+                        FS.syncfs(false, function(err) {
+                            _savesSyncing = false;
+                            if (err) {
+                                console.warn('[Save] FS.syncfs error (' + reason + '):', err);
+                            } else {
+                                console.log('[Save] FS.syncfs OK (' + reason + ')');
+                            }
+                        });
+                    } catch(e) {
+                        _savesSyncing = false;
+                        console.warn('[Save] FS.syncfs exception (' + reason + '):', e);
+                    }
+                }
+                return;
+            }
+            _savesSyncing = true;
+            try {
+                Module.FS.syncfs(false, function(err) {
+                    _savesSyncing = false;
+                    if (err) {
+                        console.warn('[Save] Module.FS.syncfs error (' + reason + '):', err);
+                    } else {
+                        console.log('[Save] Module.FS.syncfs OK (' + reason + ')');
+                    }
+                });
+            } catch(e) {
+                _savesSyncing = false;
+                console.warn('[Save] Module.FS.syncfs exception (' + reason + '):', e);
+            }
+        }
+
+        // After emulator loads, start periodic IndexedDB sync
+        EJS_onGameStart = function() {
+            console.log('[Save] Game started - setting up IndexedDB sync');
+
+            // Wait a moment for the FS to be fully initialized
+            setTimeout(function() {
+                // Sync every 10 seconds (MEMFS -> IndexedDB)
+                // This is the CRITICAL missing piece: EJS_fixedSaveInterval
+                // flushes core -> MEMFS, but this flushes MEMFS -> IndexedDB
+                setInterval(function() {
+                    syncSavesToIndexedDB('periodic-10s');
+                }, 10000);
+
+                // Also sync immediately after EJS_fixedSaveInterval flushes
+                // (give it 1 second for the core flush to complete)
+                console.log('[Save] IndexedDB periodic sync active (every 10s)');
+            }, 3000);
+        };
+
+        // visibilitychange is MORE RELIABLE than beforeunload on mobile
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                console.log('[Save] Page hidden - forcing IndexedDB sync');
+                syncSavesToIndexedDB('visibilitychange-hidden');
+            }
+        });
+
+        // Also try on pagehide (even more reliable on some mobile browsers)
+        window.addEventListener('pagehide', function() {
+            console.log('[Save] pagehide - forcing IndexedDB sync');
+            syncSavesToIndexedDB('pagehide');
+        });
+
+        // Keep beforeunload as fallback for desktop
+        window.addEventListener('beforeunload', function() {
+            console.log('[Save] beforeunload - forcing IndexedDB sync');
+            syncSavesToIndexedDB('beforeunload');
+        });
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>
