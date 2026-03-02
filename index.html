@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Pokemon Emeraude Custom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+        body {
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        h1 {
+            font-size: 1.2rem;
+            margin: 8px 0;
+            text-align: center;
+            color: #e94560;
+        }
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: calc(100vh - 40px);
+            height: calc(100dvh - 40px);
+            max-width: 800px;
+            max-height: 600px;
+        }
+        @media (max-width: 768px) {
+            #game-container {
+                width: 100vw;
+                height: 100vh;
+                height: 100dvh;
+                max-width: none;
+                max-height: none;
+            }
+            h1 {
+                display: none;
+            }
+        }
+        /* Save notification toast */
+        #save-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 200, 83, 0.9);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #save-toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pokemon Emeraude Custom</h1>
+    <div id="game-container"></div>
+    <div id="save-toast">Sauvegarde OK</div>
+
+    <script>
+        // Request persistent storage (prevents browser from clearing IndexedDB)
+        if (navigator.storage && navigator.storage.persist) {
+            navigator.storage.persist().then(granted => {
+                console.log('[Save] Persistent storage:', granted ? 'granted' : 'denied');
+            });
+        }
+
+        // EmulatorJS configuration
+        EJS_player = '#game-container';
+        EJS_core = 'gba';
+        EJS_gameUrl = 'rom/pokemon.gba';
+
+        // CRITICAL: Fixed game name ensures saves persist across ROM updates
+        EJS_gameName = 'pokeemerald_custom';
+
+        EJS_color = '#e94560';
+        EJS_startOnLoaded = true;
+        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+
+        // SRAM save flush every 5 seconds (prevents save loss on crash/close)
+        EJS_fixedSaveInterval = 5000;
+
+        EJS_Buttons = {
+            playBtnColor: '#e94560',
+            playBtnHoverColor: '#ff6b81',
+        };
+
+        EJS_defaultOptions = {
+            'save-state-slot': 1,
+            'rewind_enable': 'false',
+            'rewind_buffer_size': '0',
+        };
+
+        // Show notification when save is detected
+        EJS_onSaveUpdate = function(e) {
+            const toast = document.getElementById('save-toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+            console.log('[Save] Game saved (hash: ' + e.hash + ')');
+        };
+    </script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+</body>
+</html>
