@@ -128,15 +128,79 @@
             opacity: 0; transition: opacity 0.3s ease;
         }
         #toast.show { opacity: 1; }
+
+        /* Auth overlay */
+        #auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a1a2e; z-index: 50000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #auth-overlay.hidden { display: none; }
+        .auth-card {
+            background: #16213e; border: 2px solid #e94560; border-radius: 16px;
+            padding: 30px; width: 90%; max-width: 360px; text-align: center;
+        }
+        .auth-card h2 { color: #e94560; margin-bottom: 6px; font-size: 1.3rem; }
+        .auth-card .subtitle { color: #888; font-size: 0.8rem; margin-bottom: 20px; }
+        .auth-card input {
+            width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px;
+            border: 1px solid #555; background: #1a1a2e; color: white;
+            font-size: 1rem; outline: none;
+        }
+        .auth-card input:focus { border-color: #e94560; }
+        .auth-card .auth-btn {
+            width: 100%; padding: 12px; background: #e94560; color: white;
+            border: none; border-radius: 8px; font-size: 1rem; font-weight: bold;
+            cursor: pointer; margin-bottom: 10px;
+        }
+        .auth-card .auth-btn:disabled { opacity: 0.5; }
+        .auth-card .auth-switch {
+            color: #888; font-size: 0.85rem; cursor: pointer;
+        }
+        .auth-card .auth-switch span { color: #e94560; text-decoration: underline; }
+        .auth-card .auth-error {
+            color: #ff5555; font-size: 0.8rem; margin-bottom: 10px; min-height: 1.2em;
+        }
+        #save-bar .user-info {
+            color: #0f8; font-size: 0.75rem; padding: 8px 10px;
+            background: rgba(0,180,80,0.15); border-radius: 8px;
+        }
+        #save-bar button.logout {
+            background: rgba(100,100,100,0.6); font-size: 0.7rem; padding: 8px 10px;
+        }
     </style>
 </head>
 <body>
+    <!-- Auth overlay - shown until login -->
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <h2>Pokemon Emeraude</h2>
+            <div class="subtitle">Connecte-toi pour jouer</div>
+            <div id="auth-error" class="auth-error"></div>
+            <div id="auth-login">
+                <input type="text" id="login-pseudo" placeholder="Pseudo" maxlength="20" autocomplete="username">
+                <input type="password" id="login-password" placeholder="Mot de passe" maxlength="50" autocomplete="current-password">
+                <button class="auth-btn" id="login-btn" onclick="doLogin()">Connexion</button>
+                <div class="auth-switch">Pas de compte ? <span onclick="showRegister()">Creer un compte</span></div>
+            </div>
+            <div id="auth-register" style="display:none">
+                <input type="text" id="reg-pseudo" placeholder="Pseudo" maxlength="20" autocomplete="username">
+                <input type="password" id="reg-password" placeholder="Mot de passe (6 car. min)" maxlength="50" autocomplete="new-password">
+                <input type="password" id="reg-password2" placeholder="Confirmer le mot de passe" maxlength="50" autocomplete="new-password">
+                <button class="auth-btn" id="reg-btn" onclick="doRegister()">Creer mon compte</button>
+                <div class="auth-switch">Deja un compte ? <span onclick="showLogin()">Se connecter</span></div>
+            </div>
+        </div>
+    </div>
+
     <h1>Pokemon Emeraude Custom</h1>
     <div id="game-container"></div>
 
-    <div id="save-bar">
+    <div id="save-bar" style="display:none">
+        <span class="user-info" id="user-display"></span>
         <button class="green" onclick="openSaveModal()">Sauver</button>
         <button onclick="openLoadModal()">Charger</button>
+        <button class="logout" onclick="doLogout()">Deco</button>
     </div>
 
     <!-- Save modal -->
@@ -176,8 +240,150 @@
 
     <div id="toast"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 10 - SRAM polling + save states');
+        console.log('[Pokemon] Version 11 - Cloud saves + auth');
+
+        // ============================================================
+        // SUPABASE INIT
+        // ============================================================
+        var SUPABASE_URL = 'https://oflklqvpqjrggacqypoa.supabase.co';
+        var SUPABASE_KEY = 'sb_publishable_cTi55x7b89FizkL-cHwcAw_YCOEC4Xm';
+        var _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        var _currentUser = null;
+
+        // ============================================================
+        // AUTH FUNCTIONS
+        // ============================================================
+        function showLogin() {
+            document.getElementById('auth-login').style.display = '';
+            document.getElementById('auth-register').style.display = 'none';
+            document.getElementById('auth-error').textContent = '';
+        }
+        function showRegister() {
+            document.getElementById('auth-login').style.display = 'none';
+            document.getElementById('auth-register').style.display = '';
+            document.getElementById('auth-error').textContent = '';
+        }
+
+        async function doLogin() {
+            var pseudo = document.getElementById('login-pseudo').value.trim();
+            var password = document.getElementById('login-password').value;
+            if (!pseudo || !password) {
+                document.getElementById('auth-error').textContent = 'Remplis tous les champs';
+                return;
+            }
+            document.getElementById('login-btn').disabled = true;
+            document.getElementById('auth-error').textContent = 'Connexion...';
+            try {
+                var res = await _sb.auth.signInWithPassword({
+                    email: pseudo.toLowerCase() + '@pokemon.local',
+                    password: password
+                });
+                if (res.error) {
+                    document.getElementById('auth-error').textContent = 'Pseudo ou mot de passe incorrect';
+                    document.getElementById('login-btn').disabled = false;
+                    return;
+                }
+                _currentUser = res.data.user;
+                onAuthSuccess(pseudo);
+            } catch(e) {
+                document.getElementById('auth-error').textContent = 'Erreur connexion';
+                document.getElementById('login-btn').disabled = false;
+            }
+        }
+
+        async function doRegister() {
+            var pseudo = document.getElementById('reg-pseudo').value.trim();
+            var password = document.getElementById('reg-password').value;
+            var password2 = document.getElementById('reg-password2').value;
+            if (!pseudo || !password) {
+                document.getElementById('auth-error').textContent = 'Remplis tous les champs';
+                return;
+            }
+            if (!/^[a-zA-Z0-9_]+$/.test(pseudo)) {
+                document.getElementById('auth-error').textContent = 'Pseudo: lettres, chiffres et _ uniquement';
+                return;
+            }
+            if (password.length < 6) {
+                document.getElementById('auth-error').textContent = 'Mot de passe trop court (6 car. min)';
+                return;
+            }
+            if (password !== password2) {
+                document.getElementById('auth-error').textContent = 'Les mots de passe ne correspondent pas';
+                return;
+            }
+            document.getElementById('reg-btn').disabled = true;
+            document.getElementById('auth-error').textContent = 'Creation du compte...';
+            try {
+                var res = await _sb.auth.signUp({
+                    email: pseudo.toLowerCase() + '@pokemon.local',
+                    password: password,
+                    options: { data: { pseudo: pseudo } }
+                });
+                if (res.error) {
+                    var msg = 'Erreur: ' + res.error.message;
+                    if (res.error.message.includes('already registered')) msg = 'Ce pseudo est deja pris';
+                    document.getElementById('auth-error').textContent = msg;
+                    document.getElementById('reg-btn').disabled = false;
+                    return;
+                }
+                if (!res.data.session) {
+                    document.getElementById('auth-error').textContent = 'Compte cree ! Connecte-toi maintenant.';
+                    document.getElementById('reg-btn').disabled = false;
+                    showLogin();
+                    document.getElementById('login-pseudo').value = pseudo;
+                    return;
+                }
+                _currentUser = res.data.user;
+                onAuthSuccess(pseudo);
+            } catch(e) {
+                document.getElementById('auth-error').textContent = 'Erreur creation';
+                document.getElementById('reg-btn').disabled = false;
+            }
+        }
+
+        function onAuthSuccess(pseudo) {
+            document.getElementById('auth-overlay').classList.add('hidden');
+            document.getElementById('save-bar').style.display = '';
+            document.getElementById('user-display').textContent = pseudo;
+            console.log('[Auth] Logged in as: ' + pseudo);
+        }
+
+        async function doLogout() {
+            await _sb.auth.signOut();
+            _currentUser = null;
+            document.getElementById('auth-overlay').classList.remove('hidden');
+            document.getElementById('save-bar').style.display = 'none';
+            document.getElementById('auth-error').textContent = '';
+            document.getElementById('login-pseudo').value = '';
+            document.getElementById('login-password').value = '';
+            showLogin();
+        }
+
+        // Check existing session on page load
+        (async function checkSession() {
+            try {
+                var res = await _sb.auth.getSession();
+                if (res.data.session && res.data.session.user) {
+                    _currentUser = res.data.session.user;
+                    var pseudo = _currentUser.user_metadata && _currentUser.user_metadata.pseudo
+                        ? _currentUser.user_metadata.pseudo
+                        : _currentUser.email.split('@')[0];
+                    onAuthSuccess(pseudo);
+                }
+            } catch(e) {
+                console.warn('[Auth] Session check failed:', e);
+            }
+        })();
+
+        // Enter key support for auth forms
+        document.getElementById('login-password').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') doLogin();
+        });
+        document.getElementById('reg-password2').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') doRegister();
+        });
 
         // Persistent storage
         if (navigator.storage && navigator.storage.persist) {
@@ -295,50 +501,62 @@
         // ============================================================
         // SAVE MODAL
         // ============================================================
-        function openSaveModal() {
-            var reg = getRegistry();
+        async function openSaveModal() {
             var container = document.getElementById('save-slots');
+            container.innerHTML = '<div class="empty-msg">Chargement...</div>';
+            document.getElementById('save-modal').classList.add('open');
+
+            // Fetch cloud saves
+            var saves = [];
+            try {
+                var res = await _sb.from('saves')
+                    .select('slot_name, updated_at')
+                    .eq('user_id', _currentUser.id)
+                    .order('updated_at', { ascending: false });
+                if (res.data) saves = res.data;
+            } catch(e) {}
+
             container.innerHTML = '';
-            if (reg.length === 0) {
-                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde existante</div>';
+            if (saves.length === 0) {
+                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde</div>';
             } else {
-                for (var i = 0; i < reg.length; i++) {
-                    (function(slot) {
+                for (var i = 0; i < saves.length; i++) {
+                    (function(save) {
                         var div = document.createElement('div');
                         div.className = 'slot';
-                        var displayName = slot.name === '__autosave' ? 'Auto-save' : slot.name;
+                        var date = new Date(save.updated_at);
+                        var dateStr = date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
                         div.innerHTML =
                             '<div>' +
-                                '<div class="name">' + escHtml(displayName) + '</div>' +
-                                '<div class="info">' + slot.date + ' - ' + formatSize(slot.size) + '</div>' +
+                                '<div class="name">' + escHtml(save.slot_name) + '</div>' +
+                                '<div class="info">' + dateStr + '</div>' +
                             '</div>' +
                             '<div class="actions">' +
                                 '<button class="overwrite">Ecraser</button>' +
-                                '<button class="exp">DL</button>' +
                                 '<button class="del">X</button>' +
                             '</div>';
                         div.querySelector('.overwrite').onclick = function(e) {
                             e.stopPropagation();
-                            overwriteSave(slot.name);
-                        };
-                        div.querySelector('.exp').onclick = function(e) {
-                            e.stopPropagation();
-                            exportSave(slot.name);
+                            closeModals();
+                            doSave(save.slot_name);
                         };
                         div.querySelector('.del').onclick = function(e) {
                             e.stopPropagation();
-                            deleteSave(slot.name);
+                            deleteCloudSave(save.slot_name);
                         };
                         container.appendChild(div);
-                    })(reg[i]);
+                    })(saves[i]);
                 }
             }
-            document.getElementById('save-modal').classList.add('open');
         }
 
-        function overwriteSave(name) {
-            closeModals();
-            doSave(name);
+        async function deleteCloudSave(name) {
+            await _sb.from('saves').delete()
+                .eq('user_id', _currentUser.id)
+                .eq('slot_name', name);
+            dbDelete('state_' + name).catch(function() {});
+            toast('"' + name + '" supprimee');
+            openSaveModal();
         }
 
         function promptNewSave() {
@@ -352,7 +570,7 @@
             setTimeout(function() { document.getElementById('name-input').focus(); }, 100);
         }
 
-        function doSave(name) {
+        async function doSave(name) {
             try {
                 var gm = window.EJS_emulator.gameManager;
                 var state = gm.getState();
@@ -361,107 +579,151 @@
                     return;
                 }
 
-                // Save to IndexedDB (no file download - use Export button for that)
-                dbPut('state_' + name, state).then(function() {
-                    console.log('[Save] "' + name + '" saved to IndexedDB (' + state.length + 'B)');
-                }).catch(function(e) {
-                    console.warn('[Save] IndexedDB error:', e);
-                });
+                // Local cache in IndexedDB
+                dbPut('state_' + name, state).catch(function() {});
 
-                // Update registry
-                var reg = getRegistry();
-                var found = false;
-                var now = new Date();
-                var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-                for (var i = 0; i < reg.length; i++) {
-                    if (reg[i].name === name) {
-                        reg[i].date = dateStr;
-                        reg[i].size = state.length;
-                        found = true;
-                        break;
-                    }
+                // Upload to Supabase cloud
+                toast('Sauvegarde en cours...', false);
+                var b64 = uint8ToBase64(state);
+                var res = await _sb.from('saves').upsert({
+                    user_id: _currentUser.id,
+                    slot_name: name,
+                    save_data: b64,
+                    save_type: 'state',
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id,slot_name' });
+
+                if (res.error) {
+                    console.error('[Cloud] Upload error:', res.error);
+                    toast('"' + name + '" sauvee en local (erreur cloud)', true);
+                } else {
+                    console.log('[Cloud] "' + name + '" uploaded (' + b64.length + ' chars)');
+                    toast('"' + name + '" sauvegardee !');
                 }
-                if (!found) {
-                    reg.push({ name: name, date: dateStr, size: state.length });
-                }
-                setRegistry(reg);
                 _sessionActive = true;
-                toast('"' + name + '" sauvegardee !');
             } catch(e) {
-                console.error('[Save] Save error:', e);
+                console.error('[Save] Error:', e);
                 toast('Erreur: ' + e.message, true);
             }
         }
 
-        function exportSave(name) {
-            dbGet('state_' + name).then(function(state) {
-                if (state) {
-                    var blob = new Blob([state], { type: 'application/octet-stream' });
-                    var a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = name + '.state';
-                    a.click();
-                    URL.revokeObjectURL(a.href);
-                    toast('"' + name + '" exportee !');
-                } else {
-                    toast('Save introuvable', true);
-                }
-            });
-        }
-
-        function deleteSave(name) {
-            dbDelete('state_' + name).catch(function() {});
-            var reg = getRegistry().filter(function(s) { return s.name !== name; });
-            setRegistry(reg);
-            toast('"' + name + '" supprimee');
-            openSaveModal(); // Refresh list
+        async function exportSave(name) {
+            // Try local cache first
+            var state = await dbGet('state_' + name);
+            if (!state) {
+                // Download from cloud
+                toast('Telechargement...', false);
+                var res = await _sb.from('saves')
+                    .select('save_data')
+                    .eq('user_id', _currentUser.id)
+                    .eq('slot_name', name)
+                    .single();
+                if (res.data) state = base64ToUint8(res.data.save_data);
+            }
+            if (state) {
+                var blob = new Blob([state], { type: 'application/octet-stream' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = name + '.state';
+                a.click();
+                URL.revokeObjectURL(a.href);
+                toast('"' + name + '" exportee !');
+            } else {
+                toast('Save introuvable', true);
+            }
         }
 
         // ============================================================
         // LOAD MODAL
         // ============================================================
-        function openLoadModal() {
-            var reg = getRegistry();
+        async function openLoadModal() {
             var container = document.getElementById('load-slots');
+            container.innerHTML = '<div class="empty-msg">Chargement...</div>';
+            document.getElementById('load-modal').classList.add('open');
+
+            // Fetch cloud saves
+            var saves = [];
+            try {
+                var res = await _sb.from('saves')
+                    .select('slot_name, updated_at')
+                    .eq('user_id', _currentUser.id)
+                    .order('updated_at', { ascending: false });
+                if (res.data) saves = res.data;
+            } catch(e) {}
+
             container.innerHTML = '';
-            if (reg.length === 0) {
-                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde.<br>Utilisez "Importer" pour charger un fichier .state</div>';
+            if (saves.length === 0) {
+                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde cloud.<br>Utilise "Importer" pour un fichier .state</div>';
             } else {
-                for (var i = 0; i < reg.length; i++) {
-                    (function(slot) {
+                for (var i = 0; i < saves.length; i++) {
+                    (function(save) {
                         var div = document.createElement('div');
                         div.className = 'slot';
-                        var displayName = slot.name === '__autosave' ? 'Auto-save' : slot.name;
+                        var date = new Date(save.updated_at);
+                        var dateStr = date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
                         div.innerHTML =
                             '<div>' +
-                                '<div class="name">' + escHtml(displayName) + '</div>' +
-                                '<div class="info">' + slot.date + ' - ' + formatSize(slot.size) + '</div>' +
+                                '<div class="name">' + escHtml(save.slot_name) + '</div>' +
+                                '<div class="info">' + dateStr + '</div>' +
                             '</div>';
                         div.onclick = function() {
                             closeModals();
-                            loadSave(slot.name);
+                            loadCloudSave(save.slot_name);
                         };
                         container.appendChild(div);
-                    })(reg[i]);
+                    })(saves[i]);
                 }
             }
-            document.getElementById('load-modal').classList.add('open');
         }
 
-        function loadSave(name) {
-            dbGet('state_' + name).then(function(state) {
-                if (state) {
-                    window.EJS_emulator.gameManager.loadState(new Uint8Array(state));
+        async function loadCloudSave(name) {
+            toast('Chargement...', false);
+            try {
+                // Try local cache first (faster)
+                var localState = await dbGet('state_' + name);
+                if (localState) {
+                    window.EJS_emulator.gameManager.loadState(new Uint8Array(localState));
                     _sessionActive = true;
-                    console.log('[Save] "' + name + '" loaded from IndexedDB');
+                    console.log('[Save] "' + name + '" loaded from local cache');
                     toast('"' + name + '" chargee !');
-                } else {
-                    toast('"' + name + '" introuvable dans le navigateur. Utilisez Importer.', true);
+                    // Refresh from cloud in background
+                    refreshLocalCache(name);
+                    return;
                 }
-            }).catch(function(e) {
+                // Download from cloud
+                var res = await _sb.from('saves')
+                    .select('save_data')
+                    .eq('user_id', _currentUser.id)
+                    .eq('slot_name', name)
+                    .single();
+                if (res.error || !res.data) {
+                    toast('Sauvegarde introuvable', true);
+                    return;
+                }
+                var state = base64ToUint8(res.data.save_data);
+                window.EJS_emulator.gameManager.loadState(state);
+                dbPut('state_' + name, state).catch(function() {});
+                _sessionActive = true;
+                console.log('[Cloud] "' + name + '" downloaded and loaded');
+                toast('"' + name + '" chargee !');
+            } catch(e) {
                 console.error('[Save] Load error:', e);
                 toast('Erreur chargement', true);
-            });
+            }
+        }
+
+        async function refreshLocalCache(name) {
+            try {
+                var res = await _sb.from('saves')
+                    .select('save_data')
+                    .eq('user_id', _currentUser.id)
+                    .eq('slot_name', name)
+                    .single();
+                if (res.data) {
+                    var state = base64ToUint8(res.data.save_data);
+                    dbPut('state_' + name, state).catch(function() {});
+                }
+            } catch(e) {}
         }
 
         function importFile(input) {
@@ -469,7 +731,7 @@
             var file = input.files[0];
             var name = file.name.replace(/\.(state|sav|srm)$/i, '');
             var reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 var data = new Uint8Array(e.target.result);
                 // Load immediately
                 try {
@@ -478,25 +740,21 @@
                 } catch(err) {
                     console.error('[Save] Import load error:', err);
                 }
-                // Store in IndexedDB
+                // Store locally
                 dbPut('state_' + name, data).catch(function() {});
-                // Update registry
-                var reg = getRegistry();
-                var found = false;
-                var now = new Date();
-                var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-                for (var i = 0; i < reg.length; i++) {
-                    if (reg[i].name === name) {
-                        reg[i].date = dateStr;
-                        reg[i].size = data.length;
-                        found = true;
-                        break;
-                    }
+                // Upload to cloud
+                if (_currentUser) {
+                    var b64 = uint8ToBase64(data);
+                    _sb.from('saves').upsert({
+                        user_id: _currentUser.id,
+                        slot_name: name,
+                        save_data: b64,
+                        save_type: 'state',
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'user_id,slot_name' }).then(function(res) {
+                        if (!res.error) console.log('[Cloud] "' + name + '" imported to cloud');
+                    });
                 }
-                if (!found) {
-                    reg.push({ name: name, date: dateStr, size: data.length });
-                }
-                setRegistry(reg);
                 _sessionActive = true;
                 closeModals();
                 toast('"' + name + '" importee et chargee !');
@@ -553,29 +811,17 @@
             // SRAM backup every 10 seconds (lightweight - only writes if data changed)
             setInterval(backupSRAM, 10000);
             console.log('[SRAM] Backup polling active (every 10s)');
-            // State auto-save every 60 seconds (heavier - full emulator state)
+            // State auto-save every 60 seconds (local only, not cloud)
             setInterval(function() {
                 if (!_sessionActive) return;
                 try {
                     var state = window.EJS_emulator.gameManager.getState();
                     if (state && state.length > 0) {
                         dbPut('state___autosave', state).catch(function() {});
-                        var reg = getRegistry();
-                        var now = new Date();
-                        var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-                        var found = false;
-                        for (var i = 0; i < reg.length; i++) {
-                            if (reg[i].name === '__autosave') {
-                                reg[i].date = dateStr; reg[i].size = state.length;
-                                found = true; break;
-                            }
-                        }
-                        if (!found) reg.push({ name: '__autosave', date: dateStr, size: state.length });
-                        setRegistry(reg);
                     }
                 } catch(e) {}
             }, 60000);
-            console.log('[Save] State auto-save active (every 60s)');
+            console.log('[Save] Local auto-save active (every 60s)');
         }
 
         // Wait for emulator ready
@@ -591,25 +837,12 @@
 
         // Emergency save on page close
         function emergencySave() {
-            // Always backup SRAM (even if session not active)
             backupSRAM();
             if (!_sessionActive) return;
             try {
                 var state = window.EJS_emulator.gameManager.getState();
                 if (state && state.length > 0) {
                     dbPut('state___autosave', state).catch(function() {});
-                    var reg = getRegistry();
-                    var now = new Date();
-                    var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-                    var found = false;
-                    for (var i = 0; i < reg.length; i++) {
-                        if (reg[i].name === '__autosave') {
-                            reg[i].date = dateStr; reg[i].size = state.length;
-                            found = true; break;
-                        }
-                    }
-                    if (!found) reg.push({ name: '__autosave', date: dateStr, size: state.length });
-                    setRegistry(reg);
                 }
             } catch(e) {}
         }
@@ -641,6 +874,19 @@
         // ============================================================
         // UTILS
         // ============================================================
+        // Base64 helpers for cloud save/load
+        function uint8ToBase64(u8) {
+            var bin = '';
+            for (var i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
+            return btoa(bin);
+        }
+        function base64ToUint8(b64) {
+            var bin = atob(b64);
+            var u8 = new Uint8Array(bin.length);
+            for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+            return u8;
+        }
+
         function closeModals() {
             document.getElementById('save-modal').classList.remove('open');
             document.getElementById('load-modal').classList.remove('open');
