@@ -242,7 +242,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 11 - Cloud saves + auth');
+        console.log('[Pokemon] Version 13 - SRAM inject + core restart');
 
         // ============================================================
         // SUPABASE INIT
@@ -348,6 +348,8 @@
             document.getElementById('save-bar').style.display = '';
             document.getElementById('user-display').textContent = pseudo;
             console.log('[Auth] Logged in as: ' + pseudo);
+            // Try to restore SRAM from cloud if localStorage is empty
+            if (typeof sramCloudRestore === 'function') sramCloudRestore();
         }
 
         async function doLogout() {
@@ -405,22 +407,33 @@
         EJS_onSaveState = function(data) { openSaveModal(); };
         EJS_onLoadState = function() { openLoadModal(); };
 
-        // SRAM RESTORE: if we have a backup in localStorage, feed it to mGBA at init
-        (function() {
-            var b64 = localStorage.getItem('pokeemerald_sram');
-            if (b64) {
-                try {
-                    var bin = atob(b64);
-                    var bytes = new Uint8Array(bin.length);
-                    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-                    var blob = new Blob([bytes], { type: 'application/octet-stream' });
-                    EJS_gameSaveUrl = URL.createObjectURL(blob);
-                    console.log('[SRAM] Restored from localStorage (' + bytes.length + 'B) -> EJS_gameSaveUrl');
-                } catch(e) {
-                    console.warn('[SRAM] Restore failed:', e);
-                }
-            }
-        })();
+        // SRAM RESTORE: inject save data into emulator after it starts
+        var _sramToInject = localStorage.getItem('pokeemerald_sram');
+        if (_sramToInject) {
+            console.log('[SRAM] Save data found in localStorage, will inject after emulator starts');
+        }
+        // Also try cloud restore after auth (in case localStorage was cleared)
+        function sramCloudRestore() {
+            if (localStorage.getItem('pokeemerald_sram')) return; // Already have local
+            if (!_currentUser) return;
+            _sb.from('saves')
+                .select('save_data')
+                .eq('user_id', _currentUser.id)
+                .eq('slot_name', '__sram__')
+                .single().then(function(res) {
+                    if (res.data && res.data.save_data) {
+                        try {
+                            localStorage.setItem('pokeemerald_sram', res.data.save_data);
+                            console.log('[SRAM] Downloaded from cloud and cached locally');
+                            toast('Sauvegarde trouvee ! Rechargement...');
+                            // Reload so emulator picks up the SRAM via EJS_gameSaveUrl
+                            setTimeout(function() { location.reload(); }, 1500);
+                        } catch(e) {
+                            console.warn('[SRAM] Cloud restore failed:', e);
+                        }
+                    }
+                });
+        }
 
         // Detect when the game writes SRAM (in-game save from Pokemon menu)
         EJS_onSaveUpdate = function(data) {
@@ -429,8 +442,22 @@
                 // Backup SRAM to localStorage
                 var bin = '';
                 for (var i = 0; i < data.save.length; i++) bin += String.fromCharCode(data.save[i]);
-                localStorage.setItem('pokeemerald_sram', btoa(bin));
+                var b64 = btoa(bin);
+                localStorage.setItem('pokeemerald_sram', b64);
                 console.log('[SRAM] Backed up to localStorage');
+                // Upload SRAM to cloud
+                if (_currentUser) {
+                    _sb.from('saves').upsert({
+                        user_id: _currentUser.id,
+                        slot_name: '__sram__',
+                        save_data: b64,
+                        save_type: 'sram',
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'user_id,slot_name' }).then(function(res) {
+                        if (res.error) console.warn('[SRAM] Cloud upload failed:', res.error.message);
+                        else console.log('[SRAM] Cloud backup OK');
+                    });
+                }
                 toast('Sauvegarde Pokemon OK !');
             }
         };
@@ -506,12 +533,13 @@
             container.innerHTML = '<div class="empty-msg">Chargement...</div>';
             document.getElementById('save-modal').classList.add('open');
 
-            // Fetch cloud saves
+            // Fetch cloud saves (exclude __sram__ internal entry)
             var saves = [];
             try {
                 var res = await _sb.from('saves')
                     .select('slot_name, updated_at')
                     .eq('user_id', _currentUser.id)
+                    .neq('slot_name', '__sram__')
                     .order('updated_at', { ascending: false });
                 if (res.data) saves = res.data;
             } catch(e) {}
@@ -641,12 +669,13 @@
             container.innerHTML = '<div class="empty-msg">Chargement...</div>';
             document.getElementById('load-modal').classList.add('open');
 
-            // Fetch cloud saves
+            // Fetch cloud saves (exclude __sram__ internal entry)
             var saves = [];
             try {
                 var res = await _sb.from('saves')
                     .select('slot_name, updated_at')
                     .eq('user_id', _currentUser.id)
+                    .neq('slot_name', '__sram__')
                     .order('updated_at', { ascending: false });
                 if (res.data) saves = res.data;
             } catch(e) {}
@@ -785,6 +814,7 @@
             return count;
         }
 
+        var _lastSramCloudHash = null;
         function backupSRAM() {
             try {
                 var gm = window.EJS_emulator.gameManager;
@@ -799,8 +829,23 @@
                 // Real save data detected - backup to localStorage
                 var bin = '';
                 for (var i = 0; i < sav.length; i++) bin += String.fromCharCode(sav[i]);
-                localStorage.setItem('pokeemerald_sram', btoa(bin));
+                var b64 = btoa(bin);
+                localStorage.setItem('pokeemerald_sram', b64);
                 console.log('[SRAM] Backup OK (' + sav.length + 'B, ' + nonEmpty + ' non-empty sectors)');
+                // Upload SRAM to cloud (only if changed since last cloud upload)
+                if (_currentUser && hash !== _lastSramCloudHash) {
+                    _lastSramCloudHash = hash;
+                    _sb.from('saves').upsert({
+                        user_id: _currentUser.id,
+                        slot_name: '__sram__',
+                        save_data: b64,
+                        save_type: 'sram',
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'user_id,slot_name' }).then(function(res) {
+                        if (res.error) console.warn('[SRAM] Cloud upload failed:', res.error.message);
+                        else console.log('[SRAM] Cloud backup OK (' + b64.length + ' chars)');
+                    });
+                }
             } catch(e) {}
         }
 
@@ -824,12 +869,108 @@
             console.log('[Save] Local auto-save active (every 60s)');
         }
 
+        // Inject SRAM into the emulator's virtual filesystem
+        function injectSRAM(b64) {
+            try {
+                var bin = atob(b64);
+                var bytes = new Uint8Array(bin.length);
+                for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+                var gm = window.EJS_emulator.gameManager;
+
+                // Try to find the FS module and save file path
+                var Module = gm.Module || (window.EJS_emulator.Module);
+                if (Module && Module.FS) {
+                    // Search for .srm file in common paths
+                    var dirs = ['/data/saves', '/home/web_user/retroarch/userdata/saves'];
+                    for (var d = 0; d < dirs.length; d++) {
+                        try {
+                            var files = Module.FS.readdir(dirs[d]);
+                            for (var f = 0; f < files.length; f++) {
+                                if (files[f].endsWith('.srm')) {
+                                    var path = dirs[d] + '/' + files[f];
+                                    Module.FS.writeFile(path, bytes);
+                                    console.log('[SRAM] Injected into FS: ' + path + ' (' + bytes.length + 'B)');
+                                    // Tell the core to reload the save
+                                    if (typeof gm.loadSaveFiles === 'function') gm.loadSaveFiles();
+                                    return true;
+                                }
+                            }
+                        } catch(e) {}
+                    }
+
+                    // No .srm found, try to create one based on ROM name
+                    var romPaths = [
+                        '/data/saves/pokemon.srm',
+                        '/data/saves/pokemon.gba.srm'
+                    ];
+                    for (var r = 0; r < romPaths.length; r++) {
+                        try {
+                            Module.FS.writeFile(romPaths[r], bytes);
+                            console.log('[SRAM] Created in FS: ' + romPaths[r] + ' (' + bytes.length + 'B)');
+                            if (typeof gm.loadSaveFiles === 'function') gm.loadSaveFiles();
+                            return true;
+                        } catch(e) {}
+                    }
+                }
+
+                // Fallback: try gameManager's storage directly
+                if (window.EJS_emulator.storage && window.EJS_emulator.storage.saves) {
+                    window.EJS_emulator.storage.saves.put('pokemon.srm', bytes);
+                    console.log('[SRAM] Stored via EJS storage API');
+                    return true;
+                }
+
+                console.warn('[SRAM] Could not find injection method');
+                return false;
+            } catch(e) {
+                console.warn('[SRAM] Injection failed:', e);
+                return false;
+            }
+        }
+
         // Wait for emulator ready
         var _waitReady = setInterval(function() {
             try {
                 if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                     clearInterval(_waitReady);
                     console.log('[Save] Emulator ready');
+
+                    // Try to inject SRAM if we have data
+                    if (_sramToInject) {
+                        // Wait for the core to fully initialize, then inject + restart
+                        setTimeout(function() {
+                            var ok = injectSRAM(_sramToInject);
+                            if (ok) {
+                                console.log('[SRAM] Injection OK, restarting core so game re-reads SRAM...');
+                                // Restart the core so the game re-reads SRAM from FS
+                                setTimeout(function() {
+                                    var gm = window.EJS_emulator.gameManager;
+                                    var restarted = false;
+                                    // Try multiple restart methods
+                                    if (typeof gm.restart === 'function') {
+                                        gm.restart(); restarted = true;
+                                        console.log('[SRAM] Core restarted via gm.restart()');
+                                    } else if (typeof gm.reset === 'function') {
+                                        gm.reset(); restarted = true;
+                                        console.log('[SRAM] Core reset via gm.reset()');
+                                    } else if (gm.functions && typeof gm.functions.reset === 'function') {
+                                        gm.functions.reset(); restarted = true;
+                                        console.log('[SRAM] Core reset via gm.functions.reset()');
+                                    }
+                                    if (restarted) {
+                                        toast('Sauvegarde restauree !');
+                                    } else {
+                                        console.warn('[SRAM] No restart method found. Available methods:', Object.keys(gm).filter(function(k) { return typeof gm[k] === 'function'; }));
+                                        toast('Sauvegarde injectee. Fais A+B+Start+Select pour redemarrer le jeu.');
+                                    }
+                                }, 500);
+                            } else {
+                                console.warn('[SRAM] Injection failed, SRAM will be available next in-game save');
+                            }
+                        }, 3000);
+                    }
+
                     setTimeout(startAutoSystems, 5000);
                 }
             } catch(e) {}
