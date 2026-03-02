@@ -177,6 +177,8 @@
     <div id="toast"></div>
 
     <script>
+        console.log('[Pokemon] Version 10 - SRAM polling + save states');
+
         // Persistent storage
         if (navigator.storage && navigator.storage.persist) {
             navigator.storage.persist().then(function(g) {
@@ -504,95 +506,97 @@
         }
 
         // ============================================================
-        // AUTO-SAVE (toutes les 60s, silencieux)
+        // SRAM BACKUP (every 10s) + STATE AUTO-SAVE (every 60s)
         // ============================================================
+        var _lastSramHash = '';
+
+        function hashBytes(data) {
+            // Simple fast hash to detect changes
+            var h = 0;
+            for (var i = 0; i < data.length; i += 64) {
+                h = ((h << 5) - h + data[i]) | 0;
+            }
+            return h.toString();
+        }
+
+        function countNonEmpty(data) {
+            var count = 0;
+            for (var i = 0; i < data.length; i += 16) {
+                if (data[i] !== 0 && data[i] !== 0xFF) count++;
+            }
+            return count;
+        }
+
+        function backupSRAM() {
+            try {
+                var gm = window.EJS_emulator.gameManager;
+                gm.saveSaveFiles();
+                var sav = gm.getSaveFile();
+                if (!sav || sav.length === 0) return;
+                var hash = hashBytes(sav);
+                if (hash === _lastSramHash) return; // No change
+                _lastSramHash = hash;
+                var nonEmpty = countNonEmpty(sav);
+                if (nonEmpty < 5) return; // Still blank save
+                // Real save data detected - backup to localStorage
+                var bin = '';
+                for (var i = 0; i < sav.length; i++) bin += String.fromCharCode(sav[i]);
+                localStorage.setItem('pokeemerald_sram', btoa(bin));
+                console.log('[SRAM] Backup OK (' + sav.length + 'B, ' + nonEmpty + ' non-empty sectors)');
+            } catch(e) {}
+        }
+
         var _autoStarted = false;
-        function startAutoSave() {
+        function startAutoSystems() {
             if (_autoStarted) return;
             _autoStarted = true;
+            // SRAM backup every 10 seconds (lightweight - only writes if data changed)
+            setInterval(backupSRAM, 10000);
+            console.log('[SRAM] Backup polling active (every 10s)');
+            // State auto-save every 60 seconds (heavier - full emulator state)
             setInterval(function() {
                 if (!_sessionActive) return;
                 try {
-                    var gm = window.EJS_emulator.gameManager;
-                    var state = gm.getState();
+                    var state = window.EJS_emulator.gameManager.getState();
                     if (state && state.length > 0) {
                         dbPut('state___autosave', state).catch(function() {});
-                        // Update registry
                         var reg = getRegistry();
                         var now = new Date();
                         var dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
                         var found = false;
                         for (var i = 0; i < reg.length; i++) {
                             if (reg[i].name === '__autosave') {
-                                reg[i].date = dateStr;
-                                reg[i].size = state.length;
-                                found = true;
-                                break;
+                                reg[i].date = dateStr; reg[i].size = state.length;
+                                found = true; break;
                             }
                         }
-                        if (!found) {
-                            reg.push({ name: '__autosave', date: dateStr, size: state.length });
-                        }
+                        if (!found) reg.push({ name: '__autosave', date: dateStr, size: state.length });
                         setRegistry(reg);
                     }
                 } catch(e) {}
             }, 60000);
-            console.log('[Save] Auto-save active (every 60s)');
+            console.log('[Save] State auto-save active (every 60s)');
         }
 
-        // Wait for emulator ready + SRAM diagnostic
+        // Wait for emulator ready
         var _waitReady = setInterval(function() {
             try {
                 if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                     clearInterval(_waitReady);
                     console.log('[Save] Emulator ready');
-                    setTimeout(startAutoSave, 5000);
-
-                    // SRAM diagnostic after 8 seconds (let game fully init)
-                    setTimeout(function() {
-                        try {
-                            var gm = window.EJS_emulator.gameManager;
-                            // Check getSaveFilePath
-                            if (typeof gm.getSaveFilePath === 'function') {
-                                var path = gm.getSaveFilePath();
-                                console.log('[SRAM] getSaveFilePath() = "' + path + '"');
-                            } else {
-                                console.log('[SRAM] getSaveFilePath not available');
-                            }
-                            // Try getSaveFile with flush
-                            if (typeof gm.saveSaveFiles === 'function') {
-                                gm.saveSaveFiles();
-                                console.log('[SRAM] saveSaveFiles() called');
-                            }
-                            if (typeof gm.getSaveFile === 'function') {
-                                var sav = gm.getSaveFile();
-                                if (sav && sav.length > 0) {
-                                    console.log('[SRAM] getSaveFile() = ' + sav.length + 'B (SUCCESS!)');
-                                    // Check if non-empty
-                                    var nonZero = 0;
-                                    for (var i = 0; i < Math.min(256, sav.length); i++) {
-                                        if (sav[i] !== 0 && sav[i] !== 0xFF) nonZero++;
-                                    }
-                                    console.log('[SRAM] Non-zero bytes in first 256: ' + nonZero);
-                                } else {
-                                    console.log('[SRAM] getSaveFile() = null or empty');
-                                }
-                            }
-                        } catch(e) {
-                            console.log('[SRAM] Diagnostic error:', e);
-                        }
-                    }, 8000);
+                    setTimeout(startAutoSystems, 5000);
                 }
             } catch(e) {}
         }, 1000);
 
         // Emergency save on page close
         function emergencySave() {
+            // Always backup SRAM (even if session not active)
+            backupSRAM();
             if (!_sessionActive) return;
             try {
                 var state = window.EJS_emulator.gameManager.getState();
                 if (state && state.length > 0) {
-                    // Sync to IndexedDB (best effort, might not complete)
                     dbPut('state___autosave', state).catch(function() {});
                     var reg = getRegistry();
                     var now = new Date();
