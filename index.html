@@ -94,39 +94,51 @@
         EJS_core = 'gba';
         EJS_gameUrl = 'rom/pokemon.gba';
 
-        // CRITICAL: Fixed game name ensures saves persist across ROM updates
         EJS_gameName = 'pokeemerald_custom';
-
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-
-        // Flush core SRAM to Emscripten MEMFS every 5 seconds
         EJS_fixedSaveInterval = 5000;
 
-        EJS_Buttons = {
-            playBtnColor: '#e94560',
-            playBtnHoverColor: '#ff6b81',
-        };
+        // ============================================================
+        // SAVE SYSTEM
+        // ============================================================
+        // Restore save from localStorage BEFORE EmulatorJS loads.
+        // EJS_gameSaveUrl with a Blob URL feeds the save to mGBA at
+        // init time, so "Continue" appears immediately.
+        // Periodic backup reads /data/saves/mGBA/pokemon.srm -> localStorage.
+        // ============================================================
+
+        var LS_KEY = 'pokeemerald_save';
+        var SAVE_PATH = '/data/saves/mGBA/pokemon.srm';
+
+        // RESTORE: Create Blob URL from localStorage BEFORE loader.js runs
+        (function() {
+            var b64 = localStorage.getItem(LS_KEY);
+            if (b64) {
+                try {
+                    var binary = atob(b64);
+                    var bytes = new Uint8Array(binary.length);
+                    for (var i = 0; i < binary.length; i++) {
+                        bytes[i] = binary.charCodeAt(i);
+                    }
+                    var blob = new Blob([bytes], { type: 'application/octet-stream' });
+                    EJS_gameSaveUrl = URL.createObjectURL(blob);
+                    console.log('[Save] Restored save from localStorage (' + bytes.length + ' bytes) -> EJS_gameSaveUrl');
+                } catch(e) {
+                    console.warn('[Save] Restore failed:', e);
+                }
+            } else {
+                console.log('[Save] No previous save found');
+            }
+        })();
 
         EJS_defaultOptions = {
             'save-state-slot': 1,
             'save-state-location': 'browser',
-            'rewind_enable': 'false',
-            'rewind_buffer_size': '0',
         };
 
-        // ============================================================
-        // SAVE SYSTEM - localStorage backup (synchrone = fiable)
-        // ============================================================
-        // mGBA writes saves to /data/saves/mGBA/pokemon.srm (128KB)
-        // IndexedDB sync is async and unreliable on page close.
-        // Fix: also backup to localStorage (sync = guaranteed).
-        // On load: restore from localStorage -> FS before game starts.
-        // ============================================================
-
-        var SAVE_PATH = '/data/saves/mGBA/pokemon.srm';
-        var LS_KEY = 'pokeemerald_save';
+        // BACKUP: Read .srm from FS and save to localStorage periodically
         var _fsRef = null;
         var _saveActive = false;
 
@@ -147,91 +159,42 @@
             setTimeout(function() { t.classList.remove('show'); }, 2000);
         }
 
-        // Read save from FS and backup to localStorage (SYNCHRONOUS)
-        function backupSaveToLS(reason) {
-            var fs = findFS();
-            if (!fs) return;
-            try {
-                var data = fs.readFile(SAVE_PATH);
-                if (data && data.length > 0) {
-                    // Check if non-empty (not all 0x00 or 0xFF)
-                    var hasData = false;
-                    for (var i = 0; i < Math.min(512, data.length); i++) {
-                        if (data[i] !== 0 && data[i] !== 0xFF) { hasData = true; break; }
-                    }
-                    if (hasData) {
-                        // Convert to base64 for localStorage
-                        var binary = '';
-                        for (var i = 0; i < data.length; i++) {
-                            binary += String.fromCharCode(data[i]);
-                        }
-                        localStorage.setItem(LS_KEY, btoa(binary));
-                        console.log('[Save] Backup to localStorage OK (' + reason + ', ' + data.length + 'B)');
-                        if (reason === 'periodic') {
-                            if (!_saveActive) {
-                                _saveActive = true;
-                                showToast('Sauvegardes actives', 'rgba(0, 150, 255, 0.9)');
-                            }
-                        }
-                        return true;
-                    }
-                }
-            } catch(e) {
-                // File doesn't exist yet - normal before first save
-            }
-            return false;
-        }
-
-        // Restore save from localStorage to FS
-        function restoreSaveFromLS() {
+        function backupSave(reason) {
             var fs = findFS();
             if (!fs) return false;
-            var b64 = localStorage.getItem(LS_KEY);
-            if (!b64) {
-                console.log('[Save] No localStorage backup found');
-                return false;
-            }
             try {
-                var binary = atob(b64);
-                var data = new Uint8Array(binary.length);
-                for (var i = 0; i < binary.length; i++) {
-                    data[i] = binary.charCodeAt(i);
+                var data = fs.readFile(SAVE_PATH);
+                if (!data || data.length === 0) return false;
+                // Check non-empty
+                var hasData = false;
+                for (var i = 0; i < Math.min(512, data.length); i++) {
+                    if (data[i] !== 0 && data[i] !== 0xFF) { hasData = true; break; }
                 }
-                // Ensure directory exists
-                try { fs.mkdir('/data/saves/mGBA'); } catch(e) {}
-                fs.writeFile(SAVE_PATH, data);
-                console.log('[Save] Restored from localStorage (' + data.length + ' bytes)');
-                showToast('Sauvegarde restauree !', 'rgba(0, 150, 255, 0.9)');
+                if (!hasData) return false;
+                // Store as base64
+                var bin = '';
+                for (var i = 0; i < data.length; i++) bin += String.fromCharCode(data[i]);
+                localStorage.setItem(LS_KEY, btoa(bin));
+                if (!_saveActive) {
+                    _saveActive = true;
+                    showToast('Sauvegardes actives', 'rgba(0, 150, 255, 0.9)');
+                    console.log('[Save] First backup OK (' + data.length + 'B)');
+                }
                 return true;
-            } catch(e) {
-                console.warn('[Save] Restore failed:', e);
-                return false;
-            }
+            } catch(e) { return false; }
         }
 
-        // Wait for FS to be ready, restore save, start periodic backup
+        // Poll for FS, then backup every 4s
         var _poll = setInterval(function() {
-            var fs = findFS();
-            if (fs) {
+            if (findFS()) {
                 clearInterval(_poll);
-                console.log('[Save] FS ready');
-
-                // Restore save from localStorage (before game loads it)
-                restoreSaveFromLS();
-
-                // Also try FS.syncfs to load from IndexedDB
-                try { fs.syncfs(true, function() {}); } catch(e) {}
-
-                // Start periodic backup every 4 seconds
-                setInterval(function() { backupSaveToLS('periodic'); }, 4000);
-                console.log('[Save] Periodic backup active (every 4s)');
+                setInterval(function() { backupSave('periodic'); }, 4000);
+                console.log('[Save] Backup system active (every 4s)');
             }
-        }, 1000);
+        }, 2000);
 
-        // On page hide/close: force one last backup (localStorage = sync = reliable)
-        function emergencySave() {
-            backupSaveToLS('emergency');
-        }
+        // Emergency save on page hide/close (localStorage = synchronous = reliable)
+        function emergencySave() { backupSave('emergency'); }
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') emergencySave();
         });
