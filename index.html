@@ -54,6 +54,40 @@
                 display: none;
             }
         }
+        /* Save toolbar */
+        #save-toolbar {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            z-index: 10000;
+            display: flex;
+            gap: 6px;
+        }
+        #save-toolbar button {
+            background: rgba(233, 69, 96, 0.9);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        #save-toolbar button:active {
+            background: rgba(233, 69, 96, 0.6);
+        }
+        #save-toolbar button.green {
+            background: rgba(0, 200, 83, 0.9);
+        }
+        #save-status {
+            position: fixed;
+            top: 44px;
+            right: 8px;
+            z-index: 10000;
+            font-size: 0.65rem;
+            color: #888;
+        }
         /* Save notification toast */
         #save-toast {
             position: fixed;
@@ -79,12 +113,19 @@
 <body>
     <h1>Pokemon Emeraude Custom</h1>
     <div id="game-container"></div>
+    <div id="save-toolbar">
+        <button onclick="manualBackup()">Sauver</button>
+        <button onclick="exportSave()">Exporter</button>
+        <button onclick="document.getElementById('import-file').click()">Importer</button>
+        <input type="file" id="import-file" accept=".srm,.sav" style="display:none" onchange="importSave(this)">
+    </div>
+    <div id="save-status">--</div>
     <div id="save-toast">Sauvegarde OK</div>
 
     <script>
-        // Request persistent storage (prevents browser from clearing IndexedDB)
+        // Request persistent storage
         if (navigator.storage && navigator.storage.persist) {
-            navigator.storage.persist().then(granted => {
+            navigator.storage.persist().then(function(granted) {
                 console.log('[Save] Persistent storage:', granted ? 'granted' : 'denied');
             });
         }
@@ -93,7 +134,6 @@
         EJS_player = '#game-container';
         EJS_core = 'gba';
         EJS_gameUrl = 'rom/pokemon.gba';
-
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
@@ -101,18 +141,19 @@
         EJS_fixedSaveInterval = 5000;
 
         // ============================================================
-        // SAVE SYSTEM
+        // SAVE SYSTEM v7 - Full debug + manual buttons
         // ============================================================
-        // Restore save from localStorage BEFORE EmulatorJS loads.
-        // EJS_gameSaveUrl with a Blob URL feeds the save to mGBA at
-        // init time, so "Continue" appears immediately.
-        // Periodic backup reads /data/saves/mGBA/pokemon.srm -> localStorage.
-        // ============================================================
-
         var LS_KEY = 'pokeemerald_save';
-        var SAVE_PATH = '/data/saves/mGBA/pokemon.srm';
+        var SAVE_PATHS = [
+            '/data/saves/mGBA/pokemon.srm',
+            '/data/saves/pokeemerald_custom.srm',
+            '/data/saves/pokemon.srm',
+            '/pokeemerald_custom.srm',
+            '/pokemon.srm'
+        ];
+        var _activePath = null;
 
-        // RESTORE: Create Blob URL from localStorage BEFORE loader.js runs
+        // RESTORE: Create Blob URL from localStorage BEFORE loader.js
         (function() {
             var b64 = localStorage.getItem(LS_KEY);
             if (b64) {
@@ -124,12 +165,13 @@
                     }
                     var blob = new Blob([bytes], { type: 'application/octet-stream' });
                     EJS_gameSaveUrl = URL.createObjectURL(blob);
-                    console.log('[Save] Restored save from localStorage (' + bytes.length + ' bytes) -> EJS_gameSaveUrl');
+                    console.log('[Save] RESTORE: Loaded ' + bytes.length + ' bytes from localStorage -> EJS_gameSaveUrl');
+                    setStatus('Save restauree (' + bytes.length + 'B)');
                 } catch(e) {
-                    console.warn('[Save] Restore failed:', e);
+                    console.warn('[Save] RESTORE failed:', e);
                 }
             } else {
-                console.log('[Save] No previous save found');
+                console.log('[Save] No previous save in localStorage');
             }
         })();
 
@@ -138,15 +180,23 @@
             'save-state-location': 'browser',
         };
 
-        // BACKUP: Read .srm from FS and save to localStorage periodically
         var _fsRef = null;
         var _saveActive = false;
+        var _backupCount = 0;
+
+        function setStatus(txt) {
+            var el = document.getElementById('save-status');
+            if (el) el.textContent = txt;
+        }
 
         function findFS() {
             if (_fsRef) return _fsRef;
             try {
                 var fs = window.EJS_emulator.gameManager.Module.FS;
-                if (fs && typeof fs.readFile === 'function') { _fsRef = fs; return fs; }
+                if (fs && typeof fs.readFile === 'function') {
+                    _fsRef = fs;
+                    return fs;
+                }
             } catch(e) {}
             return null;
         }
@@ -159,41 +209,193 @@
             setTimeout(function() { t.classList.remove('show'); }, 2000);
         }
 
+        // List directory contents recursively (for debug)
+        function listDir(fs, path, depth) {
+            if (depth > 3) return;
+            try {
+                var entries = fs.readdir(path);
+                for (var i = 0; i < entries.length; i++) {
+                    if (entries[i] === '.' || entries[i] === '..') continue;
+                    var full = path + '/' + entries[i];
+                    try {
+                        var stat = fs.stat(full);
+                        if (fs.isDir(stat.mode)) {
+                            console.log('[FS] DIR  ' + full + '/');
+                            listDir(fs, full, depth + 1);
+                        } else {
+                            console.log('[FS] FILE ' + full + ' (' + stat.size + 'B)');
+                        }
+                    } catch(e2) {}
+                }
+            } catch(e) {}
+        }
+
+        // Find the actual save file path
+        function discoverSavePath(fs) {
+            // Try known paths
+            for (var i = 0; i < SAVE_PATHS.length; i++) {
+                try {
+                    var data = fs.readFile(SAVE_PATHS[i]);
+                    if (data && data.length > 0) {
+                        console.log('[Save] FOUND save at: ' + SAVE_PATHS[i] + ' (' + data.length + 'B)');
+                        return SAVE_PATHS[i];
+                    }
+                } catch(e) {}
+            }
+            // List directories to find it
+            console.log('[Save] Save not found in known paths, listing FS:');
+            listDir(fs, '/data', 0);
+            listDir(fs, '/', 0);
+            return null;
+        }
+
         function backupSave(reason) {
             var fs = findFS();
-            if (!fs) return false;
-            try {
-                var data = fs.readFile(SAVE_PATH);
-                if (!data || data.length === 0) return false;
-                // Check non-empty
-                var hasData = false;
-                for (var i = 0; i < Math.min(512, data.length); i++) {
-                    if (data[i] !== 0 && data[i] !== 0xFF) { hasData = true; break; }
+            if (!fs) {
+                if (reason === 'manual') console.log('[Save] BACKUP: FS not ready');
+                return false;
+            }
+
+            // Discover path if not found yet
+            if (!_activePath) {
+                _activePath = discoverSavePath(fs);
+                if (!_activePath) {
+                    if (reason === 'manual') {
+                        showToast('Pas de fichier save trouve !', 'rgba(255,0,0,0.9)');
+                        console.log('[Save] BACKUP: No save file found anywhere');
+                    }
+                    return false;
                 }
-                if (!hasData) return false;
-                // Store as base64
+            }
+
+            try {
+                var data = fs.readFile(_activePath);
+                if (!data || data.length === 0) {
+                    if (reason === 'manual') console.log('[Save] BACKUP: File empty at ' + _activePath);
+                    return false;
+                }
+
+                // Store as base64 (NO empty check - store whatever mGBA wrote)
                 var bin = '';
                 for (var i = 0; i < data.length; i++) bin += String.fromCharCode(data[i]);
                 localStorage.setItem(LS_KEY, btoa(bin));
+                _backupCount++;
+
                 if (!_saveActive) {
                     _saveActive = true;
-                    showToast('Sauvegardes actives', 'rgba(0, 150, 255, 0.9)');
-                    console.log('[Save] First backup OK (' + data.length + 'B)');
+                    showToast('Sauvegardes auto actives !', 'rgba(0, 150, 255, 0.9)');
+                    console.log('[Save] FIRST BACKUP OK: ' + _activePath + ' (' + data.length + 'B)');
+                }
+                setStatus('Backup #' + _backupCount + ' (' + data.length + 'B)');
+                if (reason === 'manual') {
+                    showToast('Sauvegarde OK !', 'rgba(0, 200, 83, 0.9)');
+                    console.log('[Save] MANUAL BACKUP OK (' + data.length + 'B)');
                 }
                 return true;
-            } catch(e) { return false; }
+            } catch(e) {
+                console.error('[Save] BACKUP ERROR at ' + _activePath + ':', e);
+                // Reset path to try rediscovery next time
+                _activePath = null;
+                if (reason === 'manual') {
+                    showToast('Erreur: ' + e.message, 'rgba(255,0,0,0.9)');
+                }
+                return false;
+            }
         }
 
-        // Poll for FS, then backup every 4s
+        // Manual backup button
+        function manualBackup() {
+            backupSave('manual');
+        }
+
+        // Export save as .srm file download
+        function exportSave() {
+            var fs = findFS();
+            if (!fs) {
+                // Try from localStorage
+                var b64 = localStorage.getItem(LS_KEY);
+                if (b64) {
+                    var binary = atob(b64);
+                    var bytes = new Uint8Array(binary.length);
+                    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                    downloadFile(bytes, 'pokemon_save.srm');
+                    showToast('Save exportee depuis cache', 'rgba(0, 150, 255, 0.9)');
+                    return;
+                }
+                showToast('Pas de save a exporter', 'rgba(255,0,0,0.9)');
+                return;
+            }
+            if (!_activePath) _activePath = discoverSavePath(fs);
+            if (!_activePath) {
+                showToast('Pas de fichier save', 'rgba(255,0,0,0.9)');
+                return;
+            }
+            try {
+                var data = fs.readFile(_activePath);
+                downloadFile(data, 'pokemon_save.srm');
+                showToast('Save exportee !', 'rgba(0, 200, 83, 0.9)');
+            } catch(e) {
+                showToast('Erreur export: ' + e.message, 'rgba(255,0,0,0.9)');
+            }
+        }
+
+        function downloadFile(data, filename) {
+            var blob = new Blob([data], { type: 'application/octet-stream' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        // Import save from .srm file
+        function importSave(input) {
+            if (!input.files || !input.files[0]) return;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = new Uint8Array(e.target.result);
+                // Store in localStorage
+                var bin = '';
+                for (var i = 0; i < data.length; i++) bin += String.fromCharCode(data[i]);
+                localStorage.setItem(LS_KEY, btoa(bin));
+                console.log('[Save] IMPORTED save (' + data.length + 'B) -> localStorage');
+                showToast('Save importee ! Rechargez la page.', 'rgba(0, 200, 83, 0.9)');
+                // Also write to FS if available
+                var fs = findFS();
+                if (fs && _activePath) {
+                    try {
+                        fs.writeFile(_activePath, data);
+                        console.log('[Save] Also wrote to FS: ' + _activePath);
+                    } catch(e2) {}
+                }
+            };
+            reader.readAsArrayBuffer(input.files[0]);
+            input.value = '';
+        }
+
+        // Poll for FS, discover save path, start backup
         var _poll = setInterval(function() {
             if (findFS()) {
                 clearInterval(_poll);
-                setInterval(function() { backupSave('periodic'); }, 4000);
+                console.log('[Save] FS ready, discovering save path...');
+                _activePath = discoverSavePath(_fsRef);
+                if (_activePath) {
+                    console.log('[Save] Using save path: ' + _activePath);
+                } else {
+                    console.log('[Save] Save path not found yet (game not saved yet?)');
+                }
+                setInterval(function() {
+                    backupSave('periodic');
+                    // Re-discover path if not found yet
+                    if (!_activePath && _fsRef) {
+                        _activePath = discoverSavePath(_fsRef);
+                    }
+                }, 4000);
                 console.log('[Save] Backup system active (every 4s)');
             }
         }, 2000);
 
-        // Emergency save on page hide/close (localStorage = synchronous = reliable)
+        // Emergency save on page close
         function emergencySave() { backupSave('emergency'); }
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') emergencySave();
