@@ -27,96 +27,21 @@
             h1 { display: none; }
         }
 
-        /* Top bar buttons */
-        #save-bar {
+        /* Top bar */
+        #top-bar {
             position: fixed; top: 6px; right: 6px; z-index: 10001;
-            display: flex; gap: 5px;
+            display: flex; gap: 5px; align-items: center;
         }
-        #save-bar button {
-            background: rgba(233, 69, 96, 0.85); color: white; border: none;
-            border-radius: 8px; padding: 8px 14px; font-size: 0.8rem; font-weight: bold;
-            cursor: pointer; touch-action: manipulation; backdrop-filter: blur(4px);
+        #top-bar .user-info {
+            color: #0f8; font-size: 0.75rem; padding: 8px 10px;
+            background: rgba(0,180,80,0.15); border-radius: 8px;
         }
-        #save-bar button:active { opacity: 0.6; }
-        #save-bar button.green { background: rgba(0, 180, 80, 0.85); }
-
-        /* Modal overlay */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 20000;
-            align-items: center; justify-content: center;
+        #top-bar button {
+            background: rgba(100,100,100,0.6); color: white; border: none;
+            border-radius: 8px; padding: 8px 10px; font-size: 0.7rem; font-weight: bold;
+            cursor: pointer; touch-action: manipulation;
         }
-        .modal-overlay.open { display: flex; }
-        .modal {
-            background: #16213e; border: 2px solid #e94560; border-radius: 16px;
-            padding: 20px; min-width: 300px; max-width: 90vw; max-height: 80vh;
-            overflow-y: auto;
-        }
-        .modal h2 {
-            color: #e94560; font-size: 1.1rem; margin-bottom: 14px; text-align: center;
-        }
-        .modal .slot {
-            background: #1a1a2e; border: 1px solid #333; border-radius: 10px;
-            padding: 12px 14px; margin-bottom: 8px; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center;
-            transition: border-color 0.2s;
-        }
-        .modal .slot:hover, .modal .slot:active { border-color: #e94560; }
-        .modal .slot .name { font-weight: bold; font-size: 0.95rem; }
-        .modal .slot .info { font-size: 0.7rem; color: #888; margin-top: 2px; }
-        .modal .slot .actions { display: flex; gap: 6px; }
-        .modal .slot .actions button {
-            background: #e94560; color: white; border: none; border-radius: 6px;
-            padding: 5px 10px; font-size: 0.7rem; cursor: pointer;
-        }
-        .modal .slot .actions button.del { background: #555; }
-        .modal .slot .actions button.exp { background: #3366cc; }
-        .modal .new-save {
-            background: rgba(0, 180, 80, 0.2); border: 2px dashed rgba(0, 180, 80, 0.6);
-            border-radius: 10px; padding: 14px; text-align: center; cursor: pointer;
-            color: #0f8; font-weight: bold; font-size: 0.9rem; margin-top: 4px;
-        }
-        .modal .new-save:hover { background: rgba(0, 180, 80, 0.3); }
-        .modal .import-btn {
-            background: rgba(100, 100, 255, 0.2); border: 2px dashed rgba(100, 100, 255, 0.6);
-            border-radius: 10px; padding: 14px; text-align: center; cursor: pointer;
-            color: #aaf; font-weight: bold; font-size: 0.9rem; margin-top: 4px;
-        }
-        .modal .import-btn:hover { background: rgba(100, 100, 255, 0.3); }
-        .modal .cancel {
-            display: block; margin: 14px auto 0; background: #333; color: #aaa;
-            border: none; border-radius: 8px; padding: 8px 20px; cursor: pointer;
-            font-size: 0.85rem;
-        }
-        .modal .empty-msg {
-            color: #666; text-align: center; padding: 20px 0; font-size: 0.85rem;
-        }
-
-        /* Name input dialog */
-        .name-dialog {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 30000;
-            align-items: center; justify-content: center;
-        }
-        .name-dialog.open { display: flex; }
-        .name-dialog .box {
-            background: #16213e; border: 2px solid #0f8; border-radius: 16px;
-            padding: 20px; text-align: center; min-width: 280px;
-        }
-        .name-dialog .box p { margin-bottom: 12px; font-size: 0.9rem; }
-        .name-dialog .box input {
-            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #555;
-            background: #1a1a2e; color: white; font-size: 1rem; text-align: center;
-            outline: none;
-        }
-        .name-dialog .box input:focus { border-color: #0f8; }
-        .name-dialog .box .btns { margin-top: 12px; display: flex; gap: 8px; justify-content: center; }
-        .name-dialog .box .btns button {
-            padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer;
-            font-weight: bold; font-size: 0.85rem;
-        }
-        .name-dialog .box .btns .ok { background: #0f8; color: #111; }
-        .name-dialog .box .btns .no { background: #555; color: #aaa; }
+        #top-bar button:active { opacity: 0.6; }
 
         /* Toast */
         #toast {
@@ -154,24 +79,15 @@
             cursor: pointer; margin-bottom: 10px;
         }
         .auth-card .auth-btn:disabled { opacity: 0.5; }
-        .auth-card .auth-switch {
-            color: #888; font-size: 0.85rem; cursor: pointer;
-        }
+        .auth-card .auth-switch { color: #888; font-size: 0.85rem; cursor: pointer; }
         .auth-card .auth-switch span { color: #e94560; text-decoration: underline; }
         .auth-card .auth-error {
             color: #ff5555; font-size: 0.8rem; margin-bottom: 10px; min-height: 1.2em;
         }
-        #save-bar .user-info {
-            color: #0f8; font-size: 0.75rem; padding: 8px 10px;
-            background: rgba(0,180,80,0.15); border-radius: 8px;
-        }
-        #save-bar button.logout {
-            background: rgba(100,100,100,0.6); font-size: 0.7rem; padding: 8px 10px;
-        }
     </style>
 </head>
 <body>
-    <!-- Auth overlay - shown until login -->
+    <!-- Auth overlay -->
     <div id="auth-overlay">
         <div class="auth-card">
             <h2>Pokemon Emeraude</h2>
@@ -196,56 +112,19 @@
     <h1>Pokemon Emeraude Custom</h1>
     <div id="game-container"></div>
 
-    <div id="save-bar" style="display:none">
+    <div id="top-bar" style="display:none">
         <span class="user-info" id="user-display"></span>
-        <button class="green" onclick="openSaveModal()">Sauver</button>
-        <button onclick="openLoadModal()">Charger</button>
-        <button class="logout" onclick="doLogout()">Deco</button>
-    </div>
-
-    <!-- Save modal -->
-    <div class="modal-overlay" id="save-modal">
-        <div class="modal">
-            <h2>Sauvegarder</h2>
-            <div id="save-slots"></div>
-            <div class="new-save" onclick="promptNewSave()">+ Nouvelle sauvegarde</div>
-            <button class="cancel" onclick="closeModals()">Annuler</button>
-        </div>
-    </div>
-
-    <!-- Load modal -->
-    <div class="modal-overlay" id="load-modal">
-        <div class="modal">
-            <h2>Charger une sauvegarde</h2>
-            <div id="load-slots"></div>
-            <div class="import-btn" onclick="document.getElementById('import-file').click()">
-                Importer un fichier .state
-            </div>
-            <input type="file" id="import-file" accept=".state,.sav,.srm" style="display:none" onchange="importFile(this)">
-            <button class="cancel" onclick="closeModals()">Annuler</button>
-        </div>
-    </div>
-
-    <!-- Name input dialog -->
-    <div class="name-dialog" id="name-dialog">
-        <div class="box">
-            <p id="name-dialog-text">Nom de la sauvegarde :</p>
-            <input type="text" id="name-input" placeholder="Ex: aventure1" maxlength="30">
-            <div class="btns">
-                <button class="ok" onclick="confirmName()">OK</button>
-                <button class="no" onclick="cancelName()">Annuler</button>
-            </div>
-        </div>
+        <button onclick="doLogout()">Deco</button>
     </div>
 
     <div id="toast"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 13 - SRAM inject + core restart');
+        console.log('[Pokemon] Version 16 - SRAM only, no states');
 
         // ============================================================
-        // SUPABASE INIT
+        // SUPABASE
         // ============================================================
         var SUPABASE_URL = 'https://oflklqvpqjrggacqypoa.supabase.co';
         var SUPABASE_KEY = 'sb_publishable_cTi55x7b89FizkL-cHwcAw_YCOEC4Xm';
@@ -253,7 +132,7 @@
         var _currentUser = null;
 
         // ============================================================
-        // AUTH FUNCTIONS
+        // AUTH
         // ============================================================
         function showLogin() {
             document.getElementById('auth-login').style.display = '';
@@ -343,27 +222,27 @@
             }
         }
 
+        // Per-user SRAM localStorage key
+        function sramKey() {
+            return _currentUser ? 'pokeemerald_sram_' + _currentUser.id : null;
+        }
+
         function onAuthSuccess(pseudo) {
             document.getElementById('auth-overlay').classList.add('hidden');
-            document.getElementById('save-bar').style.display = '';
+            document.getElementById('top-bar').style.display = '';
             document.getElementById('user-display').textContent = pseudo;
             console.log('[Auth] Logged in as: ' + pseudo);
-            // Try to restore SRAM from cloud if localStorage is empty
-            if (typeof sramCloudRestore === 'function') sramCloudRestore();
+            restoreUserSRAM();
         }
 
         async function doLogout() {
             await _sb.auth.signOut();
             _currentUser = null;
-            document.getElementById('auth-overlay').classList.remove('hidden');
-            document.getElementById('save-bar').style.display = 'none';
-            document.getElementById('auth-error').textContent = '';
-            document.getElementById('login-pseudo').value = '';
-            document.getElementById('login-password').value = '';
-            showLogin();
+            _sramInjected = false;
+            location.reload();
         }
 
-        // Check existing session on page load
+        // Auto-login from existing session
         (async function checkSession() {
             try {
                 var res = await _sb.auth.getSession();
@@ -379,7 +258,7 @@
             }
         })();
 
-        // Enter key support for auth forms
+        // Enter key support
         document.getElementById('login-password').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') doLogin();
         });
@@ -394,7 +273,9 @@
             });
         }
 
-        // EmulatorJS config
+        // ============================================================
+        // EMULATORJS CONFIG
+        // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
         EJS_gameUrl = 'rom/pokemon.gba';
@@ -403,402 +284,96 @@
         EJS_startOnLoaded = true;
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
 
-        // Intercept EmulatorJS save/load buttons -> our system
-        EJS_onSaveState = function(data) { openSaveModal(); };
-        EJS_onLoadState = function() { openLoadModal(); };
-
-        // SRAM RESTORE: inject save data into emulator after it starts
-        var _sramToInject = localStorage.getItem('pokeemerald_sram');
-        if (_sramToInject) {
-            console.log('[SRAM] Save data found in localStorage, will inject after emulator starts');
-        }
-        // Also try cloud restore after auth (in case localStorage was cleared)
-        function sramCloudRestore() {
-            if (localStorage.getItem('pokeemerald_sram')) return; // Already have local
-            if (!_currentUser) return;
-            _sb.from('saves')
-                .select('save_data')
-                .eq('user_id', _currentUser.id)
-                .eq('slot_name', '__sram__')
-                .single().then(function(res) {
-                    if (res.data && res.data.save_data) {
-                        try {
-                            localStorage.setItem('pokeemerald_sram', res.data.save_data);
-                            console.log('[SRAM] Downloaded from cloud and cached locally');
-                            toast('Sauvegarde trouvee ! Rechargement...');
-                            // Reload so emulator picks up the SRAM via EJS_gameSaveUrl
-                            setTimeout(function() { location.reload(); }, 1500);
-                        } catch(e) {
-                            console.warn('[SRAM] Cloud restore failed:', e);
-                        }
-                    }
-                });
-        }
-
-        // Detect when the game writes SRAM (in-game save from Pokemon menu)
-        EJS_onSaveUpdate = function(data) {
-            if (data && data.save && data.save.length > 0) {
-                console.log('[SRAM] EJS_onSaveUpdate fired! Size: ' + data.save.length + 'B');
-                // Backup SRAM to localStorage
-                var bin = '';
-                for (var i = 0; i < data.save.length; i++) bin += String.fromCharCode(data.save[i]);
-                var b64 = btoa(bin);
-                localStorage.setItem('pokeemerald_sram', b64);
-                console.log('[SRAM] Backed up to localStorage');
-                // Upload SRAM to cloud
-                if (_currentUser) {
-                    _sb.from('saves').upsert({
-                        user_id: _currentUser.id,
-                        slot_name: '__sram__',
-                        save_data: b64,
-                        save_type: 'sram',
-                        updated_at: new Date().toISOString()
-                    }, { onConflict: 'user_id,slot_name' }).then(function(res) {
-                        if (res.error) console.warn('[SRAM] Cloud upload failed:', res.error.message);
-                        else console.log('[SRAM] Cloud backup OK');
-                    });
-                }
-                toast('Sauvegarde Pokemon OK !');
-            }
-        };
-
         // ============================================================
-        // SAVE MANAGER - Named slots in IndexedDB + file download
+        // SRAM SYSTEM - Only save method, per-user, cloud-backed
         // ============================================================
-        var DB_NAME = 'PokemonSaves';
-        var DB_STORE = 'states';
-        var REGISTRY_KEY = 'pokemon_save_registry';
-
-        // Auto-save only runs AFTER the player has saved or loaded manually
-        // Prevents overwriting real saves with intro/title screen states
-        var _sessionActive = false;
-
-        // Registry: [{name, date, size}] stored in localStorage
-        function getRegistry() {
-            try {
-                return JSON.parse(localStorage.getItem(REGISTRY_KEY)) || [];
-            } catch(e) { return []; }
-        }
-        function setRegistry(reg) {
-            localStorage.setItem(REGISTRY_KEY, JSON.stringify(reg));
-        }
-
-        // IndexedDB helpers
-        function openDB() {
-            return new Promise(function(resolve, reject) {
-                var req = indexedDB.open(DB_NAME, 1);
-                req.onupgradeneeded = function(e) {
-                    e.target.result.createObjectStore(DB_STORE);
-                };
-                req.onsuccess = function(e) { resolve(e.target.result); };
-                req.onerror = function(e) { reject(e); };
-            });
-        }
-        function dbPut(key, data) {
-            return openDB().then(function(db) {
-                return new Promise(function(resolve, reject) {
-                    var tx = db.transaction(DB_STORE, 'readwrite');
-                    tx.objectStore(DB_STORE).put(data, key);
-                    tx.oncomplete = function() { resolve(); };
-                    tx.onerror = function(e) { reject(e); };
-                });
-            });
-        }
-        function dbGet(key) {
-            return openDB().then(function(db) {
-                return new Promise(function(resolve, reject) {
-                    var tx = db.transaction(DB_STORE, 'readonly');
-                    var req = tx.objectStore(DB_STORE).get(key);
-                    req.onsuccess = function() { resolve(req.result); };
-                    req.onerror = function(e) { reject(e); };
-                });
-            });
-        }
-        function dbDelete(key) {
-            return openDB().then(function(db) {
-                return new Promise(function(resolve, reject) {
-                    var tx = db.transaction(DB_STORE, 'readwrite');
-                    tx.objectStore(DB_STORE).delete(key);
-                    tx.oncomplete = function() { resolve(); };
-                    tx.onerror = function(e) { reject(e); };
-                });
-            });
-        }
-
-        // ============================================================
-        // SAVE MODAL
-        // ============================================================
-        async function openSaveModal() {
-            var container = document.getElementById('save-slots');
-            container.innerHTML = '<div class="empty-msg">Chargement...</div>';
-            document.getElementById('save-modal').classList.add('open');
-
-            // Fetch cloud saves (exclude __sram__ internal entry)
-            var saves = [];
-            try {
-                var res = await _sb.from('saves')
-                    .select('slot_name, updated_at')
-                    .eq('user_id', _currentUser.id)
-                    .neq('slot_name', '__sram__')
-                    .order('updated_at', { ascending: false });
-                if (res.data) saves = res.data;
-            } catch(e) {}
-
-            container.innerHTML = '';
-            if (saves.length === 0) {
-                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde</div>';
-            } else {
-                for (var i = 0; i < saves.length; i++) {
-                    (function(save) {
-                        var div = document.createElement('div');
-                        div.className = 'slot';
-                        var date = new Date(save.updated_at);
-                        var dateStr = date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-                        div.innerHTML =
-                            '<div>' +
-                                '<div class="name">' + escHtml(save.slot_name) + '</div>' +
-                                '<div class="info">' + dateStr + '</div>' +
-                            '</div>' +
-                            '<div class="actions">' +
-                                '<button class="overwrite">Ecraser</button>' +
-                                '<button class="del">X</button>' +
-                            '</div>';
-                        div.querySelector('.overwrite').onclick = function(e) {
-                            e.stopPropagation();
-                            closeModals();
-                            doSave(save.slot_name);
-                        };
-                        div.querySelector('.del').onclick = function(e) {
-                            e.stopPropagation();
-                            deleteCloudSave(save.slot_name);
-                        };
-                        container.appendChild(div);
-                    })(saves[i]);
-                }
-            }
-        }
-
-        async function deleteCloudSave(name) {
-            await _sb.from('saves').delete()
-                .eq('user_id', _currentUser.id)
-                .eq('slot_name', name);
-            dbDelete('state_' + name).catch(function() {});
-            toast('"' + name + '" supprimee');
-            openSaveModal();
-        }
-
-        function promptNewSave() {
-            closeModals();
-            _nameCallback = function(name) {
-                if (name) doSave(name);
-            };
-            document.getElementById('name-dialog-text').textContent = 'Nom de la sauvegarde :';
-            document.getElementById('name-input').value = '';
-            document.getElementById('name-dialog').classList.add('open');
-            setTimeout(function() { document.getElementById('name-input').focus(); }, 100);
-        }
-
-        async function doSave(name) {
-            try {
-                var gm = window.EJS_emulator.gameManager;
-                var state = gm.getState();
-                if (!state || state.length === 0) {
-                    toast('Jeu pas encore pret', true);
-                    return;
-                }
-
-                // Local cache in IndexedDB
-                dbPut('state_' + name, state).catch(function() {});
-
-                // Upload to Supabase cloud
-                toast('Sauvegarde en cours...', false);
-                var b64 = uint8ToBase64(state);
-                var res = await _sb.from('saves').upsert({
-                    user_id: _currentUser.id,
-                    slot_name: name,
-                    save_data: b64,
-                    save_type: 'state',
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'user_id,slot_name' });
-
-                if (res.error) {
-                    console.error('[Cloud] Upload error:', res.error);
-                    toast('"' + name + '" sauvee en local (erreur cloud)', true);
-                } else {
-                    console.log('[Cloud] "' + name + '" uploaded (' + b64.length + ' chars)');
-                    toast('"' + name + '" sauvegardee !');
-                }
-                _sessionActive = true;
-            } catch(e) {
-                console.error('[Save] Error:', e);
-                toast('Erreur: ' + e.message, true);
-            }
-        }
-
-        async function exportSave(name) {
-            // Try local cache first
-            var state = await dbGet('state_' + name);
-            if (!state) {
-                // Download from cloud
-                toast('Telechargement...', false);
-                var res = await _sb.from('saves')
-                    .select('save_data')
-                    .eq('user_id', _currentUser.id)
-                    .eq('slot_name', name)
-                    .single();
-                if (res.data) state = base64ToUint8(res.data.save_data);
-            }
-            if (state) {
-                var blob = new Blob([state], { type: 'application/octet-stream' });
-                var a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = name + '.state';
-                a.click();
-                URL.revokeObjectURL(a.href);
-                toast('"' + name + '" exportee !');
-            } else {
-                toast('Save introuvable', true);
-            }
-        }
-
-        // ============================================================
-        // LOAD MODAL
-        // ============================================================
-        async function openLoadModal() {
-            var container = document.getElementById('load-slots');
-            container.innerHTML = '<div class="empty-msg">Chargement...</div>';
-            document.getElementById('load-modal').classList.add('open');
-
-            // Fetch cloud saves (exclude __sram__ internal entry)
-            var saves = [];
-            try {
-                var res = await _sb.from('saves')
-                    .select('slot_name, updated_at')
-                    .eq('user_id', _currentUser.id)
-                    .neq('slot_name', '__sram__')
-                    .order('updated_at', { ascending: false });
-                if (res.data) saves = res.data;
-            } catch(e) {}
-
-            container.innerHTML = '';
-            if (saves.length === 0) {
-                container.innerHTML = '<div class="empty-msg">Aucune sauvegarde cloud.<br>Utilise "Importer" pour un fichier .state</div>';
-            } else {
-                for (var i = 0; i < saves.length; i++) {
-                    (function(save) {
-                        var div = document.createElement('div');
-                        div.className = 'slot';
-                        var date = new Date(save.updated_at);
-                        var dateStr = date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-                        div.innerHTML =
-                            '<div>' +
-                                '<div class="name">' + escHtml(save.slot_name) + '</div>' +
-                                '<div class="info">' + dateStr + '</div>' +
-                            '</div>';
-                        div.onclick = function() {
-                            closeModals();
-                            loadCloudSave(save.slot_name);
-                        };
-                        container.appendChild(div);
-                    })(saves[i]);
-                }
-            }
-        }
-
-        async function loadCloudSave(name) {
-            toast('Chargement...', false);
-            try {
-                // Try local cache first (faster)
-                var localState = await dbGet('state_' + name);
-                if (localState) {
-                    window.EJS_emulator.gameManager.loadState(new Uint8Array(localState));
-                    _sessionActive = true;
-                    console.log('[Save] "' + name + '" loaded from local cache');
-                    toast('"' + name + '" chargee !');
-                    // Refresh from cloud in background
-                    refreshLocalCache(name);
-                    return;
-                }
-                // Download from cloud
-                var res = await _sb.from('saves')
-                    .select('save_data')
-                    .eq('user_id', _currentUser.id)
-                    .eq('slot_name', name)
-                    .single();
-                if (res.error || !res.data) {
-                    toast('Sauvegarde introuvable', true);
-                    return;
-                }
-                var state = base64ToUint8(res.data.save_data);
-                window.EJS_emulator.gameManager.loadState(state);
-                dbPut('state_' + name, state).catch(function() {});
-                _sessionActive = true;
-                console.log('[Cloud] "' + name + '" downloaded and loaded');
-                toast('"' + name + '" chargee !');
-            } catch(e) {
-                console.error('[Save] Load error:', e);
-                toast('Erreur chargement', true);
-            }
-        }
-
-        async function refreshLocalCache(name) {
-            try {
-                var res = await _sb.from('saves')
-                    .select('save_data')
-                    .eq('user_id', _currentUser.id)
-                    .eq('slot_name', name)
-                    .single();
-                if (res.data) {
-                    var state = base64ToUint8(res.data.save_data);
-                    dbPut('state_' + name, state).catch(function() {});
-                }
-            } catch(e) {}
-        }
-
-        function importFile(input) {
-            if (!input.files || !input.files[0]) return;
-            var file = input.files[0];
-            var name = file.name.replace(/\.(state|sav|srm)$/i, '');
-            var reader = new FileReader();
-            reader.onload = async function(e) {
-                var data = new Uint8Array(e.target.result);
-                // Load immediately
-                try {
-                    window.EJS_emulator.gameManager.loadState(data);
-                    console.log('[Save] Imported "' + name + '" (' + data.length + 'B)');
-                } catch(err) {
-                    console.error('[Save] Import load error:', err);
-                }
-                // Store locally
-                dbPut('state_' + name, data).catch(function() {});
-                // Upload to cloud
-                if (_currentUser) {
-                    var b64 = uint8ToBase64(data);
-                    _sb.from('saves').upsert({
-                        user_id: _currentUser.id,
-                        slot_name: name,
-                        save_data: b64,
-                        save_type: 'state',
-                        updated_at: new Date().toISOString()
-                    }, { onConflict: 'user_id,slot_name' }).then(function(res) {
-                        if (!res.error) console.log('[Cloud] "' + name + '" imported to cloud');
-                    });
-                }
-                _sessionActive = true;
-                closeModals();
-                toast('"' + name + '" importee et chargee !');
-            };
-            reader.readAsArrayBuffer(file);
-            input.value = '';
-        }
-
-        // ============================================================
-        // SRAM BACKUP (every 10s) + STATE AUTO-SAVE (every 60s)
-        // ============================================================
+        var _sramInjected = false;
         var _lastSramHash = '';
+        var _lastSramCloudHash = null;
 
+        // Restore SRAM for the logged-in user
+        function restoreUserSRAM() {
+            if (!_currentUser) return;
+            var key = sramKey();
+            var localSram = localStorage.getItem(key);
+            if (localSram) {
+                console.log('[SRAM] Found local SRAM for user');
+                tryInjectSRAM(localSram);
+            } else {
+                console.log('[SRAM] No local SRAM, trying cloud...');
+                _sb.from('saves')
+                    .select('save_data')
+                    .eq('user_id', _currentUser.id)
+                    .eq('slot_name', '__sram__')
+                    .single().then(function(res) {
+                        if (res.data && res.data.save_data) {
+                            localStorage.setItem(key, res.data.save_data);
+                            console.log('[SRAM] Downloaded from cloud');
+                            tryInjectSRAM(res.data.save_data);
+                        } else {
+                            console.log('[SRAM] No cloud SRAM - new player');
+                        }
+                    });
+            }
+        }
+
+        // Wait for emulator then inject
+        function tryInjectSRAM(b64) {
+            if (_sramInjected) return;
+            if (!window.EJS_emulator || !window.EJS_emulator.gameManager) {
+                setTimeout(function() { tryInjectSRAM(b64); }, 1000);
+                return;
+            }
+            setTimeout(function() {
+                var ok = injectSRAM(b64);
+                if (ok) {
+                    _sramInjected = true;
+                    toast('Sauvegarde restauree !');
+                }
+            }, 2000);
+        }
+
+        // Write SRAM into emulator FS, reload into core, restart game
+        function injectSRAM(b64) {
+            try {
+                var bin = atob(b64);
+                var bytes = new Uint8Array(bin.length);
+                for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+                var gm = window.EJS_emulator.gameManager;
+
+                // Get the exact path the core expects
+                var savePath = null;
+                if (typeof gm.getSaveFilePath === 'function') {
+                    savePath = gm.getSaveFilePath();
+                }
+                if (!savePath) {
+                    savePath = '/data/saves/' + (EJS_gameName || 'pokemon') + '.srm';
+                }
+                console.log('[SRAM] Save path: ' + savePath);
+
+                // Write to FS
+                var FS = gm.FS || (gm.Module && gm.Module.FS);
+                if (!FS) { console.warn('[SRAM] No FS'); return false; }
+                FS.writeFile(savePath, bytes);
+                console.log('[SRAM] Written ' + bytes.length + 'B');
+
+                // Tell core to re-read SRAM from FS
+                if (typeof gm.loadSaveFiles === 'function') gm.loadSaveFiles();
+
+                // Restart game so it sees the SRAM
+                if (typeof gm.restart === 'function') gm.restart();
+
+                console.log('[SRAM] Injected + restarted');
+                return true;
+            } catch(e) {
+                console.warn('[SRAM] Injection failed:', e);
+                return false;
+            }
+        }
+
+        // Hash to detect SRAM changes
         function hashBytes(data) {
-            // Simple fast hash to detect changes
             var h = 0;
             for (var i = 0; i < data.length; i += 64) {
                 h = ((h << 5) - h + data[i]) | 0;
@@ -814,26 +389,31 @@
             return count;
         }
 
-        var _lastSramCloudHash = null;
+        // Backup SRAM to localStorage + cloud (called every 10s)
         function backupSRAM() {
             try {
+                if (!_currentUser) return;
                 var gm = window.EJS_emulator.gameManager;
                 gm.saveSaveFiles();
                 var sav = gm.getSaveFile();
                 if (!sav || sav.length === 0) return;
+
                 var hash = hashBytes(sav);
-                if (hash === _lastSramHash) return; // No change
+                if (hash === _lastSramHash) return;
                 _lastSramHash = hash;
+
                 var nonEmpty = countNonEmpty(sav);
-                if (nonEmpty < 5) return; // Still blank save
-                // Real save data detected - backup to localStorage
+                if (nonEmpty < 5) return; // Blank save
+
                 var bin = '';
                 for (var i = 0; i < sav.length; i++) bin += String.fromCharCode(sav[i]);
                 var b64 = btoa(bin);
-                localStorage.setItem('pokeemerald_sram', b64);
-                console.log('[SRAM] Backup OK (' + sav.length + 'B, ' + nonEmpty + ' non-empty sectors)');
-                // Upload SRAM to cloud (only if changed since last cloud upload)
-                if (_currentUser && hash !== _lastSramCloudHash) {
+
+                localStorage.setItem(sramKey(), b64);
+                console.log('[SRAM] Backup OK (' + sav.length + 'B, ' + nonEmpty + ' sectors)');
+
+                // Upload to cloud
+                if (hash !== _lastSramCloudHash) {
                     _lastSramCloudHash = hash;
                     _sb.from('saves').upsert({
                         user_id: _currentUser.id,
@@ -842,91 +422,11 @@
                         save_type: 'sram',
                         updated_at: new Date().toISOString()
                     }, { onConflict: 'user_id,slot_name' }).then(function(res) {
-                        if (res.error) console.warn('[SRAM] Cloud upload failed:', res.error.message);
-                        else console.log('[SRAM] Cloud backup OK (' + b64.length + ' chars)');
+                        if (res.error) console.warn('[SRAM] Cloud failed:', res.error.message);
+                        else console.log('[SRAM] Cloud OK');
                     });
                 }
             } catch(e) {}
-        }
-
-        var _autoStarted = false;
-        function startAutoSystems() {
-            if (_autoStarted) return;
-            _autoStarted = true;
-            // SRAM backup every 10 seconds (lightweight - only writes if data changed)
-            setInterval(backupSRAM, 10000);
-            console.log('[SRAM] Backup polling active (every 10s)');
-            // State auto-save every 60 seconds (local only, not cloud)
-            setInterval(function() {
-                if (!_sessionActive) return;
-                try {
-                    var state = window.EJS_emulator.gameManager.getState();
-                    if (state && state.length > 0) {
-                        dbPut('state___autosave', state).catch(function() {});
-                    }
-                } catch(e) {}
-            }, 60000);
-            console.log('[Save] Local auto-save active (every 60s)');
-        }
-
-        // Inject SRAM into the emulator's virtual filesystem
-        function injectSRAM(b64) {
-            try {
-                var bin = atob(b64);
-                var bytes = new Uint8Array(bin.length);
-                for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-
-                var gm = window.EJS_emulator.gameManager;
-
-                // Try to find the FS module and save file path
-                var Module = gm.Module || (window.EJS_emulator.Module);
-                if (Module && Module.FS) {
-                    // Search for .srm file in common paths
-                    var dirs = ['/data/saves', '/home/web_user/retroarch/userdata/saves'];
-                    for (var d = 0; d < dirs.length; d++) {
-                        try {
-                            var files = Module.FS.readdir(dirs[d]);
-                            for (var f = 0; f < files.length; f++) {
-                                if (files[f].endsWith('.srm')) {
-                                    var path = dirs[d] + '/' + files[f];
-                                    Module.FS.writeFile(path, bytes);
-                                    console.log('[SRAM] Injected into FS: ' + path + ' (' + bytes.length + 'B)');
-                                    // Tell the core to reload the save
-                                    if (typeof gm.loadSaveFiles === 'function') gm.loadSaveFiles();
-                                    return true;
-                                }
-                            }
-                        } catch(e) {}
-                    }
-
-                    // No .srm found, try to create one based on ROM name
-                    var romPaths = [
-                        '/data/saves/pokemon.srm',
-                        '/data/saves/pokemon.gba.srm'
-                    ];
-                    for (var r = 0; r < romPaths.length; r++) {
-                        try {
-                            Module.FS.writeFile(romPaths[r], bytes);
-                            console.log('[SRAM] Created in FS: ' + romPaths[r] + ' (' + bytes.length + 'B)');
-                            if (typeof gm.loadSaveFiles === 'function') gm.loadSaveFiles();
-                            return true;
-                        } catch(e) {}
-                    }
-                }
-
-                // Fallback: try gameManager's storage directly
-                if (window.EJS_emulator.storage && window.EJS_emulator.storage.saves) {
-                    window.EJS_emulator.storage.saves.put('pokemon.srm', bytes);
-                    console.log('[SRAM] Stored via EJS storage API');
-                    return true;
-                }
-
-                console.warn('[SRAM] Could not find injection method');
-                return false;
-            } catch(e) {
-                console.warn('[SRAM] Injection failed:', e);
-                return false;
-            }
         }
 
         // Wait for emulator ready
@@ -936,113 +436,33 @@
                     clearInterval(_waitReady);
                     console.log('[Save] Emulator ready');
 
-                    // Try to inject SRAM if we have data
-                    if (_sramToInject) {
-                        // Wait for the core to fully initialize, then inject + restart
-                        setTimeout(function() {
-                            var ok = injectSRAM(_sramToInject);
-                            if (ok) {
-                                console.log('[SRAM] Injection OK, restarting core so game re-reads SRAM...');
-                                // Restart the core so the game re-reads SRAM from FS
-                                setTimeout(function() {
-                                    var gm = window.EJS_emulator.gameManager;
-                                    var restarted = false;
-                                    // Try multiple restart methods
-                                    if (typeof gm.restart === 'function') {
-                                        gm.restart(); restarted = true;
-                                        console.log('[SRAM] Core restarted via gm.restart()');
-                                    } else if (typeof gm.reset === 'function') {
-                                        gm.reset(); restarted = true;
-                                        console.log('[SRAM] Core reset via gm.reset()');
-                                    } else if (gm.functions && typeof gm.functions.reset === 'function') {
-                                        gm.functions.reset(); restarted = true;
-                                        console.log('[SRAM] Core reset via gm.functions.reset()');
-                                    }
-                                    if (restarted) {
-                                        toast('Sauvegarde restauree !');
-                                    } else {
-                                        console.warn('[SRAM] No restart method found. Available methods:', Object.keys(gm).filter(function(k) { return typeof gm[k] === 'function'; }));
-                                        toast('Sauvegarde injectee. Fais A+B+Start+Select pour redemarrer le jeu.');
-                                    }
-                                }, 500);
-                            } else {
-                                console.warn('[SRAM] Injection failed, SRAM will be available next in-game save');
-                            }
-                        }, 3000);
+                    // If already logged in, restore SRAM
+                    if (_currentUser && !_sramInjected) {
+                        restoreUserSRAM();
                     }
 
-                    setTimeout(startAutoSystems, 5000);
+                    // Start SRAM backup polling after 5s
+                    setTimeout(function() {
+                        setInterval(backupSRAM, 10000);
+                        console.log('[SRAM] Backup active (every 10s)');
+                    }, 5000);
                 }
             } catch(e) {}
         }, 1000);
 
-        // Emergency save on page close
-        function emergencySave() {
+        // Emergency SRAM backup on page close
+        function emergencyBackup() {
             backupSRAM();
-            if (!_sessionActive) return;
-            try {
-                var state = window.EJS_emulator.gameManager.getState();
-                if (state && state.length > 0) {
-                    dbPut('state___autosave', state).catch(function() {});
-                }
-            } catch(e) {}
         }
         document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'hidden') emergencySave();
+            if (document.visibilityState === 'hidden') emergencyBackup();
         });
-        window.addEventListener('pagehide', emergencySave);
-        window.addEventListener('beforeunload', emergencySave);
-
-        // ============================================================
-        // NAME DIALOG
-        // ============================================================
-        var _nameCallback = null;
-        function confirmName() {
-            var val = document.getElementById('name-input').value.trim();
-            document.getElementById('name-dialog').classList.remove('open');
-            if (_nameCallback) _nameCallback(val || null);
-            _nameCallback = null;
-        }
-        function cancelName() {
-            document.getElementById('name-dialog').classList.remove('open');
-            _nameCallback = null;
-        }
-        document.getElementById('name-input').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') confirmName();
-            if (e.key === 'Escape') cancelName();
-        });
+        window.addEventListener('pagehide', emergencyBackup);
+        window.addEventListener('beforeunload', emergencyBackup);
 
         // ============================================================
         // UTILS
         // ============================================================
-        // Base64 helpers for cloud save/load
-        function uint8ToBase64(u8) {
-            var bin = '';
-            for (var i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
-            return btoa(bin);
-        }
-        function base64ToUint8(b64) {
-            var bin = atob(b64);
-            var u8 = new Uint8Array(bin.length);
-            for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
-            return u8;
-        }
-
-        function closeModals() {
-            document.getElementById('save-modal').classList.remove('open');
-            document.getElementById('load-modal').classList.remove('open');
-            document.getElementById('name-dialog').classList.remove('open');
-        }
-        function escHtml(s) {
-            var d = document.createElement('div');
-            d.textContent = s;
-            return d.innerHTML;
-        }
-        function formatSize(bytes) {
-            if (bytes > 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
-            if (bytes > 1024) return (bytes / 1024).toFixed(0) + ' KB';
-            return bytes + ' B';
-        }
         function toast(msg, isError) {
             var t = document.getElementById('toast');
             t.textContent = msg;
