@@ -116,199 +116,127 @@
             'rewind_buffer_size': '0',
         };
 
-        // Show notification when save is detected
-        EJS_onSaveUpdate = function(e) {
-            const toast = document.getElementById('save-toast');
-            toast.textContent = 'Sauvegarde OK';
-            toast.style.background = 'rgba(0, 200, 83, 0.9)';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-            console.log('[Save] Save update detected (hash: ' + e.hash + ')');
-        };
-
         // ============================================================
-        // SAVE PERSISTENCE FIX
+        // SAVE SYSTEM - localStorage backup (synchrone = fiable)
         // ============================================================
-        // EmulatorJS stores saves in Emscripten's MEMFS but only
-        // flushes to IndexedDB on beforeunload (unreliable).
-        // We force FS.syncfs() periodically + on page hide.
-        //
-        // Access path: EJS_emulator -> gameManager -> Module -> FS
+        // mGBA writes saves to /data/saves/mGBA/pokemon.srm (128KB)
+        // IndexedDB sync is async and unreliable on page close.
+        // Fix: also backup to localStorage (sync = guaranteed).
+        // On load: restore from localStorage -> FS before game starts.
         // ============================================================
 
-        var _syncing = false;
-        var _fsRef = null;    // Cached FS reference
-        var _syncCount = 0;
-        var _syncOK = false;
+        var SAVE_PATH = '/data/saves/mGBA/pokemon.srm';
+        var LS_KEY = 'pokeemerald_save';
+        var _fsRef = null;
+        var _saveActive = false;
 
         function findFS() {
             if (_fsRef) return _fsRef;
-            // Try all known paths to find the Emscripten FS object
-            var paths = [
-                function() { return window.EJS_emulator.gameManager.Module.FS; },
-                function() { return window.EJS_emulator.gameManager.FS; },
-                function() { return window.EJS_emulator.Module.FS; },
-                function() { return window.Module.FS; },
-                function() { return window.FS; },
-            ];
-            for (var i = 0; i < paths.length; i++) {
-                try {
-                    var fs = paths[i]();
-                    if (fs && typeof fs.syncfs === 'function') {
-                        console.log('[Save] Found FS via path ' + i);
-                        _fsRef = fs;
-                        return fs;
-                    }
-                } catch(e) { /* try next */ }
-            }
+            try {
+                var fs = window.EJS_emulator.gameManager.Module.FS;
+                if (fs && typeof fs.readFile === 'function') { _fsRef = fs; return fs; }
+            } catch(e) {}
             return null;
         }
 
-        function doSync(reason) {
-            if (_syncing) return;
-            var fs = findFS();
-            if (!fs) {
-                // Not ready yet - show in toast for debugging
-                if (_syncCount === 0) {
-                    console.log('[Save] FS not found yet (' + reason + ')');
-                }
-                return;
-            }
-            _syncing = true;
-            _syncCount++;
-            try {
-                fs.syncfs(false, function(err) {
-                    _syncing = false;
-                    if (err) {
-                        console.warn('[Save] syncfs error:', err);
-                    } else {
-                        if (!_syncOK) {
-                            _syncOK = true;
-                            console.log('[Save] First successful sync! Saves will persist.');
-                            var t = document.getElementById('save-toast');
-                            t.textContent = 'Sauvegardes actives';
-                            t.style.background = 'rgba(0, 150, 255, 0.9)';
-                            t.classList.add('show');
-                            setTimeout(function() { t.classList.remove('show'); }, 3000);
-                        }
-                    }
-                });
-            } catch(e) {
-                _syncing = false;
-                console.warn('[Save] syncfs exception:', e);
-            }
+        function showToast(msg, color) {
+            var t = document.getElementById('save-toast');
+            t.textContent = msg;
+            t.style.background = color || 'rgba(0, 200, 83, 0.9)';
+            t.classList.add('show');
+            setTimeout(function() { t.classList.remove('show'); }, 2000);
         }
 
-        // Recursively list files in a directory
-        function listDir(fs, path, label) {
-            try {
-                var files = fs.readdir(path);
-                files.filter(function(f) { return f !== '.' && f !== '..'; }).forEach(function(f) {
-                    var full = path + '/' + f;
-                    try {
-                        var stat = fs.stat(full);
-                        var isDir = fs.isDir(stat.mode);
-                        console.log('[Save] ' + label + ' ' + full + (isDir ? '/ (dir)' : ' (' + stat.size + ' bytes)'));
-                        if (isDir) listDir(fs, full, label);
-                    } catch(e) {
-                        console.log('[Save] ' + label + ' ' + full + ' (stat error)');
-                    }
-                });
-            } catch(e) { /* ignore */ }
-        }
-
-        // Get save data directly from RetroArch core and write to FS + IndexedDB
-        function forceSaveFlush() {
+        // Read save from FS and backup to localStorage (SYNCHRONOUS)
+        function backupSaveToLS(reason) {
             var fs = findFS();
-            if (!fs) return false;
+            if (!fs) return;
             try {
-                var gm = window.EJS_emulator.gameManager;
-                var M = gm.Module;
-
-                // Try RetroArch API: retro_get_memory_data(0) / retro_get_memory_size(0)
-                // 0 = RETRO_MEMORY_SAVE_RAM
-                var getSize = null, getData = null;
-                if (typeof M._retro_get_memory_size === 'function') {
-                    getSize = function(t) { return M._retro_get_memory_size(t); };
-                    getData = function(t) { return M._retro_get_memory_data(t); };
-                } else if (typeof M.cwrap === 'function') {
-                    try {
-                        getSize = M.cwrap('retro_get_memory_size', 'number', ['number']);
-                        getData = M.cwrap('retro_get_memory_data', 'number', ['number']);
-                    } catch(e) { /* not available */ }
-                }
-
-                if (getSize && getData) {
-                    var size = getSize(0); // RETRO_MEMORY_SAVE_RAM
-                    console.log('[Save] Core SRAM size: ' + size + ' bytes');
-
-                    if (size > 0) {
-                        var ptr = getData(0);
-                        var saveData = new Uint8Array(M.HEAPU8.buffer, ptr, size);
-                        // Check if save is non-empty (not all zeros/0xFF)
-                        var nonZero = 0;
-                        for (var i = 0; i < Math.min(256, size); i++) {
-                            if (saveData[i] !== 0 && saveData[i] !== 0xFF) nonZero++;
-                        }
-                        console.log('[Save] SRAM first 256 bytes: ' + nonZero + ' non-zero/FF values');
-
-                        if (nonZero > 0) {
-                            // Write save data directly to filesystem
-                            var savePath = '/data/saves/pokeemerald_custom.srm';
-                            var copy = new Uint8Array(size);
-                            copy.set(saveData);
-                            fs.writeFile(savePath, copy);
-                            console.log('[Save] Wrote ' + size + ' bytes to ' + savePath);
-
-                            // Now sync to IndexedDB
-                            doSync('forced-flush');
-
-                            var t = document.getElementById('save-toast');
-                            t.textContent = 'Sauvegarde OK (' + (size/1024) + ' KB)';
-                            t.style.background = 'rgba(0, 200, 83, 0.9)';
-                            t.classList.add('show');
-                            setTimeout(function() { t.classList.remove('show'); }, 2000);
-                            return true;
-                        } else {
-                            console.log('[Save] SRAM appears empty (no game save yet)');
-                        }
-                    } else {
-                        console.log('[Save] Core reports 0 SRAM size');
+                var data = fs.readFile(SAVE_PATH);
+                if (data && data.length > 0) {
+                    // Check if non-empty (not all 0x00 or 0xFF)
+                    var hasData = false;
+                    for (var i = 0; i < Math.min(512, data.length); i++) {
+                        if (data[i] !== 0 && data[i] !== 0xFF) { hasData = true; break; }
                     }
-                } else {
-                    console.log('[Save] retro_get_memory_data not available');
+                    if (hasData) {
+                        // Convert to base64 for localStorage
+                        var binary = '';
+                        for (var i = 0; i < data.length; i++) {
+                            binary += String.fromCharCode(data[i]);
+                        }
+                        localStorage.setItem(LS_KEY, btoa(binary));
+                        console.log('[Save] Backup to localStorage OK (' + reason + ', ' + data.length + 'B)');
+                        if (reason === 'periodic') {
+                            if (!_saveActive) {
+                                _saveActive = true;
+                                showToast('Sauvegardes actives', 'rgba(0, 150, 255, 0.9)');
+                            }
+                        }
+                        return true;
+                    }
                 }
             } catch(e) {
-                console.warn('[Save] forceSaveFlush error:', e);
+                // File doesn't exist yet - normal before first save
             }
             return false;
         }
 
-        // Poll until FS is found, then start periodic save + sync
-        var _pollInterval = setInterval(function() {
+        // Restore save from localStorage to FS
+        function restoreSaveFromLS() {
+            var fs = findFS();
+            if (!fs) return false;
+            var b64 = localStorage.getItem(LS_KEY);
+            if (!b64) {
+                console.log('[Save] No localStorage backup found');
+                return false;
+            }
+            try {
+                var binary = atob(b64);
+                var data = new Uint8Array(binary.length);
+                for (var i = 0; i < binary.length; i++) {
+                    data[i] = binary.charCodeAt(i);
+                }
+                // Ensure directory exists
+                try { fs.mkdir('/data/saves/mGBA'); } catch(e) {}
+                fs.writeFile(SAVE_PATH, data);
+                console.log('[Save] Restored from localStorage (' + data.length + ' bytes)');
+                showToast('Sauvegarde restauree !', 'rgba(0, 150, 255, 0.9)');
+                return true;
+            } catch(e) {
+                console.warn('[Save] Restore failed:', e);
+                return false;
+            }
+        }
+
+        // Wait for FS to be ready, restore save, start periodic backup
+        var _poll = setInterval(function() {
             var fs = findFS();
             if (fs) {
-                clearInterval(_pollInterval);
-                console.log('[Save] FS found! Starting save system');
-                listDir(fs, '/data/saves', 'INIT');
-                doSync('initial');
+                clearInterval(_poll);
+                console.log('[Save] FS ready');
 
-                // Every 8 seconds: flush core SRAM to FS, then sync FS to IndexedDB
-                setInterval(function() {
-                    forceSaveFlush();
-                }, 8000);
+                // Restore save from localStorage (before game loads it)
+                restoreSaveFromLS();
 
-                console.log('[Save] Periodic save+sync active (every 8s)');
+                // Also try FS.syncfs to load from IndexedDB
+                try { fs.syncfs(true, function() {}); } catch(e) {}
+
+                // Start periodic backup every 4 seconds
+                setInterval(function() { backupSaveToLS('periodic'); }, 4000);
+                console.log('[Save] Periodic backup active (every 4s)');
             }
-        }, 2000);
+        }, 1000);
 
-        // Sync on tab switch (reliable on mobile)
+        // On page hide/close: force one last backup (localStorage = sync = reliable)
+        function emergencySave() {
+            backupSaveToLS('emergency');
+        }
         document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'hidden') doSync('hidden');
+            if (document.visibilityState === 'hidden') emergencySave();
         });
-        // Sync on page close
-        window.addEventListener('pagehide', function() { doSync('pagehide'); });
-        window.addEventListener('beforeunload', function() { doSync('beforeunload'); });
+        window.addEventListener('pagehide', emergencySave);
+        window.addEventListener('beforeunload', emergencySave);
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>
