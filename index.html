@@ -203,6 +203,10 @@
         var DB_STORE = 'states';
         var REGISTRY_KEY = 'pokemon_save_registry';
 
+        // Auto-save only runs AFTER the player has saved or loaded manually
+        // Prevents overwriting real saves with intro/title screen states
+        var _sessionActive = false;
+
         // Registry: [{name, date, size}] stored in localStorage
         function getRegistry() {
             try {
@@ -351,6 +355,7 @@
                     reg.push({ name: name, date: dateStr, size: state.length });
                 }
                 setRegistry(reg);
+                _sessionActive = true;
                 toast('"' + name + '" sauvegardee !');
             } catch(e) {
                 console.error('[Save] Save error:', e);
@@ -401,6 +406,7 @@
             dbGet('state_' + name).then(function(state) {
                 if (state) {
                     window.EJS_emulator.gameManager.loadState(new Uint8Array(state));
+                    _sessionActive = true;
                     console.log('[Save] "' + name + '" loaded from IndexedDB');
                     toast('"' + name + '" chargee !');
                 } else {
@@ -445,6 +451,7 @@
                     reg.push({ name: name, date: dateStr, size: data.length });
                 }
                 setRegistry(reg);
+                _sessionActive = true;
                 closeModals();
                 toast('"' + name + '" importee et chargee !');
             };
@@ -460,6 +467,7 @@
             if (_autoStarted) return;
             _autoStarted = true;
             setInterval(function() {
+                if (!_sessionActive) return;
                 try {
                     var gm = window.EJS_emulator.gameManager;
                     var state = gm.getState();
@@ -501,6 +509,7 @@
 
         // Emergency save on page close
         function emergencySave() {
+            if (!_sessionActive) return;
             try {
                 var state = window.EJS_emulator.gameManager.getState();
                 if (state && state.length > 0) {
@@ -572,12 +581,6 @@
             setTimeout(function() { t.classList.remove('show'); }, 2500);
         }
 
-        // Rename __autosave display in lists
-        var _origEscHtml = escHtml;
-        function formatSlotName(name) {
-            if (name === '__autosave') return 'Auto-save';
-            return name;
-        }
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>
