@@ -199,14 +199,42 @@
             }
         }
 
+        // List files in /data/saves/ for diagnostics
+        function listSaveFiles(label) {
+            var fs = findFS();
+            if (!fs) return;
+            try {
+                var files = fs.readdir('/data/saves');
+                var info = files.filter(function(f) { return f !== '.' && f !== '..'; });
+                if (info.length === 0) {
+                    console.log('[Save] ' + label + ' /data/saves/ is EMPTY');
+                } else {
+                    info.forEach(function(f) {
+                        try {
+                            var stat = fs.stat('/data/saves/' + f);
+                            console.log('[Save] ' + label + ' /data/saves/' + f + ' (' + stat.size + ' bytes)');
+                        } catch(e) {
+                            console.log('[Save] ' + label + ' /data/saves/' + f);
+                        }
+                    });
+                }
+            } catch(e) {
+                console.log('[Save] ' + label + ' Cannot read /data/saves/: ' + e.message);
+            }
+        }
+
         // Poll until FS is found, then sync every 8 seconds
         var _pollInterval = setInterval(function() {
             var fs = findFS();
             if (fs) {
                 clearInterval(_pollInterval);
                 console.log('[Save] FS found! Starting periodic sync (every 8s)');
+                listSaveFiles('INIT');
                 doSync('initial');
-                setInterval(function() { doSync('periodic'); }, 8000);
+                setInterval(function() {
+                    listSaveFiles('PERIODIC');
+                    doSync('periodic');
+                }, 8000);
             }
         }, 2000);
 
