@@ -199,42 +199,106 @@
             }
         }
 
-        // List files in /data/saves/ for diagnostics
-        function listSaveFiles(label) {
-            var fs = findFS();
-            if (!fs) return;
+        // Recursively list files in a directory
+        function listDir(fs, path, label) {
             try {
-                var files = fs.readdir('/data/saves');
-                var info = files.filter(function(f) { return f !== '.' && f !== '..'; });
-                if (info.length === 0) {
-                    console.log('[Save] ' + label + ' /data/saves/ is EMPTY');
-                } else {
-                    info.forEach(function(f) {
-                        try {
-                            var stat = fs.stat('/data/saves/' + f);
-                            console.log('[Save] ' + label + ' /data/saves/' + f + ' (' + stat.size + ' bytes)');
-                        } catch(e) {
-                            console.log('[Save] ' + label + ' /data/saves/' + f);
-                        }
-                    });
-                }
-            } catch(e) {
-                console.log('[Save] ' + label + ' Cannot read /data/saves/: ' + e.message);
-            }
+                var files = fs.readdir(path);
+                files.filter(function(f) { return f !== '.' && f !== '..'; }).forEach(function(f) {
+                    var full = path + '/' + f;
+                    try {
+                        var stat = fs.stat(full);
+                        var isDir = fs.isDir(stat.mode);
+                        console.log('[Save] ' + label + ' ' + full + (isDir ? '/ (dir)' : ' (' + stat.size + ' bytes)'));
+                        if (isDir) listDir(fs, full, label);
+                    } catch(e) {
+                        console.log('[Save] ' + label + ' ' + full + ' (stat error)');
+                    }
+                });
+            } catch(e) { /* ignore */ }
         }
 
-        // Poll until FS is found, then sync every 8 seconds
+        // Get save data directly from RetroArch core and write to FS + IndexedDB
+        function forceSaveFlush() {
+            var fs = findFS();
+            if (!fs) return false;
+            try {
+                var gm = window.EJS_emulator.gameManager;
+                var M = gm.Module;
+
+                // Try RetroArch API: retro_get_memory_data(0) / retro_get_memory_size(0)
+                // 0 = RETRO_MEMORY_SAVE_RAM
+                var getSize = null, getData = null;
+                if (typeof M._retro_get_memory_size === 'function') {
+                    getSize = function(t) { return M._retro_get_memory_size(t); };
+                    getData = function(t) { return M._retro_get_memory_data(t); };
+                } else if (typeof M.cwrap === 'function') {
+                    try {
+                        getSize = M.cwrap('retro_get_memory_size', 'number', ['number']);
+                        getData = M.cwrap('retro_get_memory_data', 'number', ['number']);
+                    } catch(e) { /* not available */ }
+                }
+
+                if (getSize && getData) {
+                    var size = getSize(0); // RETRO_MEMORY_SAVE_RAM
+                    console.log('[Save] Core SRAM size: ' + size + ' bytes');
+
+                    if (size > 0) {
+                        var ptr = getData(0);
+                        var saveData = new Uint8Array(M.HEAPU8.buffer, ptr, size);
+                        // Check if save is non-empty (not all zeros/0xFF)
+                        var nonZero = 0;
+                        for (var i = 0; i < Math.min(256, size); i++) {
+                            if (saveData[i] !== 0 && saveData[i] !== 0xFF) nonZero++;
+                        }
+                        console.log('[Save] SRAM first 256 bytes: ' + nonZero + ' non-zero/FF values');
+
+                        if (nonZero > 0) {
+                            // Write save data directly to filesystem
+                            var savePath = '/data/saves/pokeemerald_custom.srm';
+                            var copy = new Uint8Array(size);
+                            copy.set(saveData);
+                            fs.writeFile(savePath, copy);
+                            console.log('[Save] Wrote ' + size + ' bytes to ' + savePath);
+
+                            // Now sync to IndexedDB
+                            doSync('forced-flush');
+
+                            var t = document.getElementById('save-toast');
+                            t.textContent = 'Sauvegarde OK (' + (size/1024) + ' KB)';
+                            t.style.background = 'rgba(0, 200, 83, 0.9)';
+                            t.classList.add('show');
+                            setTimeout(function() { t.classList.remove('show'); }, 2000);
+                            return true;
+                        } else {
+                            console.log('[Save] SRAM appears empty (no game save yet)');
+                        }
+                    } else {
+                        console.log('[Save] Core reports 0 SRAM size');
+                    }
+                } else {
+                    console.log('[Save] retro_get_memory_data not available');
+                }
+            } catch(e) {
+                console.warn('[Save] forceSaveFlush error:', e);
+            }
+            return false;
+        }
+
+        // Poll until FS is found, then start periodic save + sync
         var _pollInterval = setInterval(function() {
             var fs = findFS();
             if (fs) {
                 clearInterval(_pollInterval);
-                console.log('[Save] FS found! Starting periodic sync (every 8s)');
-                listSaveFiles('INIT');
+                console.log('[Save] FS found! Starting save system');
+                listDir(fs, '/data/saves', 'INIT');
                 doSync('initial');
+
+                // Every 8 seconds: flush core SRAM to FS, then sync FS to IndexedDB
                 setInterval(function() {
-                    listSaveFiles('PERIODIC');
-                    doSync('periodic');
+                    forceSaveFlush();
                 }, 8000);
+
+                console.log('[Save] Periodic save+sync active (every 8s)');
             }
         }, 2000);
 
