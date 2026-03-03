@@ -121,7 +121,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 18 - cloud-only SRAM restore');
+        console.log('[Pokemon] Version 19 - cloud-only + save toast');
 
         // ============================================================
         // SUPABASE
@@ -413,8 +413,13 @@
                     save_type: 'sram',
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'user_id,slot_name' }).then(function(res) {
-                    if (res.error) console.warn('[SRAM] Cloud failed:', res.error.message);
-                    else console.log('[SRAM] Cloud OK');
+                    if (res.error) {
+                        console.warn('[SRAM] Cloud failed:', res.error.message);
+                        toast('Erreur sauvegarde cloud !', true);
+                    } else {
+                        console.log('[SRAM] Cloud OK');
+                        toast('Sauvegarde reussie !');
+                    }
                 });
             } catch(e) {}
         }
