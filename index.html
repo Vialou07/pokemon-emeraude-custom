@@ -121,7 +121,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 16 - SRAM only, no states');
+        console.log('[Pokemon] Version 18 - cloud-only SRAM restore');
 
         // ============================================================
         // SUPABASE
@@ -289,32 +289,26 @@
         // ============================================================
         var _sramInjected = false;
         var _lastSramHash = '';
-        var _lastSramCloudHash = null;
 
-        // Restore SRAM for the logged-in user
+        // Restore SRAM for the logged-in user (cloud-only, no local cache)
         function restoreUserSRAM() {
             if (!_currentUser) return;
-            var key = sramKey();
-            var localSram = localStorage.getItem(key);
-            if (localSram) {
-                console.log('[SRAM] Found local SRAM for user');
-                tryInjectSRAM(localSram);
-            } else {
-                console.log('[SRAM] No local SRAM, trying cloud...');
-                _sb.from('saves')
-                    .select('save_data')
-                    .eq('user_id', _currentUser.id)
-                    .eq('slot_name', '__sram__')
-                    .single().then(function(res) {
-                        if (res.data && res.data.save_data) {
-                            localStorage.setItem(key, res.data.save_data);
-                            console.log('[SRAM] Downloaded from cloud');
-                            tryInjectSRAM(res.data.save_data);
-                        } else {
-                            console.log('[SRAM] No cloud SRAM - new player');
-                        }
-                    });
-            }
+
+            console.log('[SRAM] Fetching save from cloud...');
+            _sb.from('saves')
+                .select('save_data')
+                .eq('user_id', _currentUser.id)
+                .eq('slot_name', '__sram__')
+                .single().then(function(res) {
+                    if (res.data && res.data.save_data) {
+                        console.log('[SRAM] Cloud save found, injecting...');
+                        tryInjectSRAM(res.data.save_data);
+                    } else {
+                        console.log('[SRAM] No cloud save - new player');
+                    }
+                }).catch(function(err) {
+                    console.warn('[SRAM] Cloud fetch failed:', err);
+                });
         }
 
         // Wait for emulator then inject
@@ -409,23 +403,19 @@
                 for (var i = 0; i < sav.length; i++) bin += String.fromCharCode(sav[i]);
                 var b64 = btoa(bin);
 
-                localStorage.setItem(sramKey(), b64);
                 console.log('[SRAM] Backup OK (' + sav.length + 'B, ' + nonEmpty + ' sectors)');
 
-                // Upload to cloud
-                if (hash !== _lastSramCloudHash) {
-                    _lastSramCloudHash = hash;
-                    _sb.from('saves').upsert({
-                        user_id: _currentUser.id,
-                        slot_name: '__sram__',
-                        save_data: b64,
-                        save_type: 'sram',
-                        updated_at: new Date().toISOString()
-                    }, { onConflict: 'user_id,slot_name' }).then(function(res) {
-                        if (res.error) console.warn('[SRAM] Cloud failed:', res.error.message);
-                        else console.log('[SRAM] Cloud OK');
-                    });
-                }
+                // Upload to Supabase (only source of truth)
+                _sb.from('saves').upsert({
+                    user_id: _currentUser.id,
+                    slot_name: '__sram__',
+                    save_data: b64,
+                    save_type: 'sram',
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id,slot_name' }).then(function(res) {
+                    if (res.error) console.warn('[SRAM] Cloud failed:', res.error.message);
+                    else console.log('[SRAM] Cloud OK');
+                });
             } catch(e) {}
         }
 
