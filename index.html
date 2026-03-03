@@ -45,12 +45,13 @@
 
         /* Toast */
         #toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            position: fixed; top: 50px; left: 50%; transform: translateX(-50%);
             background: rgba(0, 200, 83, 0.9); color: white;
-            padding: 10px 24px; border-radius: 20px;
-            font-size: 0.85rem; font-weight: bold;
-            z-index: 40000; pointer-events: none;
+            padding: 12px 28px; border-radius: 20px;
+            font-size: 1rem; font-weight: bold;
+            z-index: 99999; pointer-events: none;
             opacity: 0; transition: opacity 0.3s ease;
+            text-align: center; max-width: 90%;
         }
         #toast.show { opacity: 1; }
 
@@ -278,7 +279,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba';
+        EJS_gameUrl = 'rom/pokemon.gba?v=19';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
