@@ -42,6 +42,43 @@
             cursor: pointer; touch-action: manipulation;
         }
         #top-bar button:active { opacity: 0.6; }
+        #arena-btn { background: rgba(233,69,96,0.6) !important; }
+
+        /* Arena modal */
+        #arena-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 60000;
+            align-items: center; justify-content: center;
+        }
+        #arena-overlay.open { display: flex; }
+        .arena-card {
+            background: #16213e; border: 2px solid #e94560; border-radius: 16px;
+            padding: 24px; width: 92%; max-width: 400px; max-height: 85vh;
+            overflow-y: auto; text-align: center;
+        }
+        .arena-card h3 { color: #e94560; margin-bottom: 14px; font-size: 1.15rem; }
+        .arena-card select {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #555;
+            background: #1a1a2e; color: white; font-size: 0.95rem; margin-bottom: 14px;
+        }
+        .arena-team-preview { text-align: left; margin-bottom: 14px; }
+        .arena-pokemon {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 10px; background: rgba(255,255,255,0.05); border-radius: 8px;
+            margin-bottom: 4px; font-size: 0.85rem;
+        }
+        .arena-pokemon .poke-name { font-weight: bold; color: #0f8; }
+        .arena-pokemon .poke-level { color: #aaa; }
+        .arena-pokemon .poke-item { color: #f5a623; font-size: 0.75rem; }
+        .arena-btns { display: flex; gap: 8px; margin-top: 10px; }
+        .arena-btns button {
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            font-size: 0.9rem; font-weight: bold; cursor: pointer;
+        }
+        .arena-btns .btn-submit { background: #e94560; color: white; }
+        .arena-btns .btn-submit:disabled { opacity: 0.4; }
+        .arena-btns .btn-close { background: #333; color: #aaa; }
+        #arena-status { font-size: 0.8rem; margin-top: 8px; min-height: 1.2em; }
 
         /* Toast */
         #toast {
@@ -116,14 +153,39 @@
     <div id="top-bar" style="display:none">
         <span class="user-info" id="user-display"></span>
         <button onclick="window.open('portal.html','_blank')">Portail</button>
+        <button id="arena-btn" onclick="openArenaModal()">Arena</button>
         <button onclick="doLogout()">Deco</button>
     </div>
 
     <div id="toast"></div>
 
+    <!-- Arena modal -->
+    <div id="arena-overlay">
+        <div class="arena-card">
+            <h3>Devenir Maitre d'Arene</h3>
+            <select id="arena-gym" onchange="onGymSelect()">
+                <option value="">Choisis une arene...</option>
+                <option value="roxanne">Roxanne (Roche)</option>
+                <option value="brawly">Bastien (Combat)</option>
+                <option value="wattson">Voltere (Electrik)</option>
+                <option value="flannery">Adriane (Feu)</option>
+                <option value="norman">Norman (Normal)</option>
+                <option value="winona">Alizee (Vol)</option>
+                <option value="tate_liza">Levy & Tatia (Psy)</option>
+                <option value="juan">Juan (Eau)</option>
+            </select>
+            <div id="arena-team" class="arena-team-preview"></div>
+            <div id="arena-status"></div>
+            <div class="arena-btns">
+                <button class="btn-submit" id="arena-submit" onclick="submitArenaTeam()" disabled>Deposer mon equipe</button>
+                <button class="btn-close" onclick="closeArenaModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 35 - Mega Stones E4/Champions + Dynamax Wallace');
+        console.log('[Pokemon] Version 36 - Arena Multi-Champions MVP');
 
         // ============================================================
         // SUPABASE
@@ -280,7 +342,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=35';
+        EJS_gameUrl = 'rom/pokemon.gba?v=36';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
@@ -468,6 +530,171 @@
             setTimeout(function() { t.classList.remove('show'); }, 2500);
         }
 
+    </script>
+    <script src="js/sram-parser.js"></script>
+    <script>
+        // ============================================================
+        // ARENA SYSTEM
+        // ============================================================
+        var _speciesNames = null;
+        var _movesNames = null;
+        var _itemsNames = null;
+        var _arenaParty = null;
+
+        // Load lookup tables lazily
+        async function loadLookupTables() {
+            if (_speciesNames) return;
+            try {
+                var [sp, mv, it] = await Promise.all([
+                    fetch('data/species_names.json').then(r => r.json()),
+                    fetch('data/moves_names.json').then(r => r.json()),
+                    fetch('data/items_names.json').then(r => r.json()),
+                ]);
+                _speciesNames = sp;
+                _movesNames = mv;
+                _itemsNames = it;
+                console.log('[Arena] Lookup tables loaded');
+            } catch(e) {
+                console.warn('[Arena] Failed to load lookup tables:', e);
+            }
+        }
+
+        function openArenaModal() {
+            document.getElementById('arena-overlay').classList.add('open');
+            document.getElementById('arena-gym').value = '';
+            document.getElementById('arena-team').innerHTML = '';
+            document.getElementById('arena-status').textContent = '';
+            document.getElementById('arena-submit').disabled = true;
+            _arenaParty = null;
+            loadLookupTables();
+            extractCurrentParty();
+        }
+
+        function closeArenaModal() {
+            document.getElementById('arena-overlay').classList.remove('open');
+        }
+
+        function extractCurrentParty() {
+            try {
+                var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+                if (!gm) {
+                    setArenaStatus('Emulateur non pret', true);
+                    return;
+                }
+                gm.saveSaveFiles();
+                var sav = gm.getSaveFile();
+                if (!sav || sav.length === 0) {
+                    setArenaStatus('Pas de sauvegarde detectee', true);
+                    return;
+                }
+                var result = SRAMParser.extractParty(sav);
+                if (!result.party.length) {
+                    setArenaStatus('Aucun Pokemon dans l\'equipe', true);
+                    return;
+                }
+                _arenaParty = result.party;
+                renderPartyPreview(result.party);
+            } catch(e) {
+                console.error('[Arena] Parse error:', e);
+                setArenaStatus('Erreur lecture sauvegarde: ' + e.message, true);
+            }
+        }
+
+        function renderPartyPreview(party) {
+            var html = '';
+            for (var i = 0; i < party.length; i++) {
+                var p = party[i];
+                var name = (_speciesNames && _speciesNames[p.species]) || p.nickname || ('Pokemon #' + p.species);
+                var item = p.heldItem > 0 && _itemsNames ? (_itemsNames[p.heldItem] || '') : '';
+                var moves = p.moves.map(function(m) {
+                    return _movesNames ? (_movesNames[m] || '???') : '#' + m;
+                }).join(', ');
+                html += '<div class="arena-pokemon">' +
+                    '<div><span class="poke-name">' + name + '</span>' +
+                    (item ? ' <span class="poke-item">@ ' + item + '</span>' : '') +
+                    '</div>' +
+                    '<span class="poke-level">Nv.' + p.level + '</span>' +
+                    '</div>';
+            }
+            document.getElementById('arena-team').innerHTML = html;
+        }
+
+        async function onGymSelect() {
+            var gymId = document.getElementById('arena-gym').value;
+            if (!gymId) {
+                document.getElementById('arena-submit').disabled = true;
+                return;
+            }
+            // Check if already a master
+            try {
+                var res = await _sb.from('arena_masters')
+                    .select('master_pseudo')
+                    .eq('gym_id', gymId)
+                    .single();
+                if (res.data) {
+                    setArenaStatus('Maitre actuel : ' + res.data.master_pseudo + ' — Tu peux le detroner !', false);
+                } else {
+                    setArenaStatus('Aucun maitre — Sois le premier !', false);
+                }
+            } catch(e) {}
+            document.getElementById('arena-submit').disabled = !_arenaParty || !_arenaParty.length;
+        }
+
+        async function submitArenaTeam() {
+            var gymId = document.getElementById('arena-gym').value;
+            if (!gymId || !_arenaParty || !_currentUser) return;
+
+            document.getElementById('arena-submit').disabled = true;
+            setArenaStatus('Envoi en cours...', false);
+
+            var pseudo = _currentUser.user_metadata && _currentUser.user_metadata.pseudo
+                ? _currentUser.user_metadata.pseudo
+                : _currentUser.email.split('@')[0];
+
+            // Build team JSON with resolved names
+            var team = _arenaParty.map(function(p) {
+                return {
+                    species: p.species,
+                    speciesName: (_speciesNames && _speciesNames[p.species]) || p.nickname,
+                    heldItem: p.heldItem,
+                    itemName: p.heldItem > 0 && _itemsNames ? (_itemsNames[p.heldItem] || null) : null,
+                    level: p.level,
+                    moves: p.moves.map(function(m) {
+                        return { id: m, name: _movesNames ? (_movesNames[m] || '???') : '???' };
+                    }),
+                    hp: p.maxHP, attack: p.attack, defense: p.defense,
+                    speed: p.speed, spAttack: p.spAttack, spDefense: p.spDefense,
+                };
+            });
+
+            try {
+                var res = await _sb.from('arena_masters').upsert({
+                    gym_id: gymId,
+                    master_pseudo: pseudo,
+                    master_user_id: _currentUser.id,
+                    team: team,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'gym_id' });
+
+                if (res.error) {
+                    setArenaStatus('Erreur: ' + res.error.message, true);
+                    document.getElementById('arena-submit').disabled = false;
+                } else {
+                    setArenaStatus('Tu es le nouveau Maitre !', false);
+                    toast('Maitre d\'arene enregistre !');
+                    setTimeout(closeArenaModal, 2000);
+                }
+            } catch(e) {
+                setArenaStatus('Erreur reseau', true);
+                document.getElementById('arena-submit').disabled = false;
+            }
+        }
+
+        function setArenaStatus(msg, isError) {
+            var el = document.getElementById('arena-status');
+            el.textContent = msg;
+            el.style.color = isError ? '#ff5555' : '#0f8';
+        }
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>

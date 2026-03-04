@@ -240,6 +240,30 @@
         .roadmap-list .status-todo { color: var(--text-dim); font-weight: bold; min-width: 20px; }
         .roadmap-category { color: var(--accent); margin: 24px 0 12px; font-size: 1.1rem; }
 
+        /* ARENA */
+        .arena-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+        .arena-gym-card {
+            background: var(--bg-card); border-radius: 12px; padding: 16px;
+            border-left: 4px solid var(--text-dim); transition: border-color 0.3s;
+        }
+        .arena-gym-card.has-master { border-left-color: var(--gold); }
+        .arena-gym-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .arena-gym-header h3 { font-size: 1rem; margin: 0; }
+        .arena-gym-type { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: white; }
+        .arena-master-name { color: var(--gold); font-weight: bold; font-size: 0.95rem; margin-bottom: 8px; }
+        .arena-no-master { color: var(--text-dim); font-style: italic; font-size: 0.85rem; }
+        .arena-team-list { display: flex; flex-direction: column; gap: 4px; }
+        .arena-mon {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 4px 8px; background: rgba(255,255,255,0.03); border-radius: 6px; font-size: 0.8rem;
+        }
+        .arena-mon-name { font-weight: 600; color: var(--green); }
+        .arena-mon-item { color: var(--gold); font-size: 0.7rem; }
+        .arena-mon-level { color: var(--text-dim); }
+        .arena-mon-moves { color: var(--text-dim); font-size: 0.7rem; margin-top: 2px; }
+        .arena-stats { display: flex; gap: 10px; margin-top: 8px; font-size: 0.75rem; color: var(--text-dim); }
+        .arena-intro { color: var(--text-dim); margin-bottom: 16px; font-size: 0.9rem; }
+
         /* ROUTES / DISTRIBUTION */
         .route-card { background: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--accent2); }
         .route-card.has-fakemons { border-left-color: var(--gold); }
@@ -471,7 +495,7 @@
             <button class="tab" data-tab="types">Types</button>
             <button class="tab" data-tab="play">Jouer</button>
             <button class="tab" data-tab="roadmap">Roadmap</button>
-            <button class="tab" data-tab="arena" disabled style="opacity:0.4">Arena</button>
+            <button class="tab" data-tab="arena">Arena</button>
         </div>
     </nav>
 
@@ -732,7 +756,7 @@
 
         <h3 class="roadmap-category">A venir</h3>
         <ul class="roadmap-list">
-            <li><span class="status-todo">...</span><div><strong>Arena Multi-Champion</strong> — Le premier joueur a battre une arene depose 6 Pokemon et devient Maitre de l'arene. Les autres doivent le battre pour prendre sa place. Historique et stats via Supabase.</div></li>
+            <li><span class="status-wip">WIP</span><div><strong>Arena Multi-Champion</strong> — Le premier joueur a battre une arene depose 6 Pokemon et devient Maitre de l'arene. Les autres doivent le battre pour prendre sa place. Historique et stats via Supabase.</div></li>
             <li><span class="status-todo">...</span><div><strong>PvP en ligne</strong> — Combats joueur contre joueur avec les Pokemon de sa sauvegarde.</div></li>
             <li><span class="status-todo">...</span><div><strong>Echanges en ligne</strong> — Echanges de Pokemon entre joueurs connectes.</div></li>
             <li><span class="status-todo">...</span><div><strong>Traduction FR complete</strong> — Traduire les 70% restants : PNJ, descriptions, attaques, menus.</div></li>
@@ -748,9 +772,11 @@
 
     <!-- ARENA -->
     <div id="arena" class="section">
-        <div style="text-align:center;padding:48px 0;">
-            <h2 style="color:var(--text-dim);margin-bottom:16px;">Arena - Bientot disponible</h2>
-            <p style="color:var(--text-dim);">Combats PvP et echanges en ligne entre amis. En cours de developpement !</p>
+        <h2>Arena Multi-Champions</h2>
+        <p class="arena-intro">Le premier joueur a battre un champion d'arene peut deposer son equipe et devenir le Maitre. Les autres doivent le detroner pour prendre sa place !</p>
+        <p class="arena-intro" style="font-size:0.8rem;">Pour deposer ton equipe : ouvre le jeu, sauvegarde, puis clique sur le bouton <strong style="color:var(--accent)">Arena</strong> en haut a droite de l'ecran de jeu.</p>
+        <div id="arena-grid" class="arena-grid">
+            <div style="text-align:center;padding:40px;color:var(--text-dim);">Chargement des arenes...</div>
         </div>
     </div>
 
@@ -770,7 +796,16 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
+    // ============================================================
+    // SUPABASE (for Arena)
+    // ============================================================
+    const _sbPortal = window.supabase.createClient(
+        'https://oflklqvpqjrggacqypoa.supabase.co',
+        'sb_publishable_cTi55x7b89FizkL-cHwcAw_YCOEC4Xm'
+    );
+
     // ============================================================
     // CONSTANTS
     // ============================================================
@@ -2380,10 +2415,83 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCompare(); } });
 
     // ============================================================
+    // ARENA
+    // ============================================================
+    const ARENA_GYMS = [
+        { id: 'roxanne', name: 'Roxanne', type: 'Rock', typeFr: 'Roche', city: 'Mérouville' },
+        { id: 'brawly', name: 'Bastien', type: 'Fighting', typeFr: 'Combat', city: 'Bastouville' },
+        { id: 'wattson', name: 'Voltère', type: 'Electric', typeFr: 'Electrik', city: 'Lavandia' },
+        { id: 'flannery', name: 'Adriane', type: 'Fire', typeFr: 'Feu', city: 'Vermilava' },
+        { id: 'norman', name: 'Norman', type: 'Normal', typeFr: 'Normal', city: 'Clémenti-Ville' },
+        { id: 'winona', name: 'Alizée', type: 'Flying', typeFr: 'Vol', city: 'Cimetronelle' },
+        { id: 'tate_liza', name: 'Lévy & Tatia', type: 'Psychic', typeFr: 'Psy', city: 'Algatia' },
+        { id: 'juan', name: 'Juan', type: 'Water', typeFr: 'Eau', city: 'Atalanopolis' },
+    ];
+
+    async function loadArenaData() {
+        const grid = document.getElementById('arena-grid');
+        if (!grid) return;
+
+        let masters = [];
+        try {
+            const res = await _sbPortal.from('arena_masters').select('*');
+            if (res.data) masters = res.data;
+        } catch(e) {
+            console.warn('[Arena] Supabase error:', e);
+        }
+
+        const masterMap = {};
+        masters.forEach(m => masterMap[m.gym_id] = m);
+
+        let html = '';
+        ARENA_GYMS.forEach(gym => {
+            const master = masterMap[gym.id];
+            const hasMaster = master && master.team && master.team.length > 0;
+            const typeClass = getTypeClass(gym.typeFr);
+
+            html += `<div class="arena-gym-card ${hasMaster ? 'has-master' : ''}">`;
+            html += `<div class="arena-gym-header">`;
+            html += `<h3>${gym.name}</h3>`;
+            html += `<span class="arena-gym-type type-${typeClass}">${gym.typeFr}</span>`;
+            html += `</div>`;
+            html += `<div style="color:var(--text-dim);font-size:0.75rem;margin-bottom:8px;">${gym.city}</div>`;
+
+            if (hasMaster) {
+                html += `<div class="arena-master-name">Maitre : ${master.master_pseudo}</div>`;
+                html += `<div class="arena-team-list">`;
+                master.team.forEach(p => {
+                    const name = p.speciesName || 'Pokemon #' + p.species;
+                    const item = p.itemName ? ` <span class="arena-mon-item">@ ${p.itemName}</span>` : '';
+                    const moves = p.moves ? p.moves.map(m => m.name || '???').join(', ') : '';
+                    html += `<div class="arena-mon">`;
+                    html += `<div><span class="arena-mon-name">${name}</span>${item}</div>`;
+                    html += `<span class="arena-mon-level">Nv.${p.level}</span>`;
+                    html += `</div>`;
+                    if (moves) {
+                        html += `<div class="arena-mon-moves">${moves}</div>`;
+                    }
+                });
+                html += `</div>`;
+                html += `<div class="arena-stats">`;
+                html += `<span>V: ${master.wins || 0}</span>`;
+                html += `<span>D: ${master.losses || 0}</span>`;
+                html += `</div>`;
+            } else {
+                html += `<div class="arena-no-master">Aucun maitre — Battez le champion et devenez le premier !</div>`;
+            }
+
+            html += `</div>`;
+        });
+
+        grid.innerHTML = html;
+    }
+
+    // ============================================================
     // INIT
     // ============================================================
     loadCatalogue();
     loadGameData();
+    loadArenaData();
     initModalSwipe();
     </script>
 </body>
