@@ -115,6 +115,7 @@
 
     <div id="top-bar" style="display:none">
         <span class="user-info" id="user-display"></span>
+        <button onclick="window.open('portal.html','_blank')">Portail</button>
         <button onclick="doLogout()">Deco</button>
     </div>
 
@@ -122,7 +123,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 27 - Level-up PC + FR translation + Pokedex complet');
+        console.log('[Pokemon] Version 28 - Bugfix level-up + debug combo + Arceus + coherence site');
 
         // ============================================================
         // SUPABASE
@@ -279,7 +280,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=27';
+        EJS_gameUrl = 'rom/pokemon.gba?v=28';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;

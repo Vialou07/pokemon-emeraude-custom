@@ -93,6 +93,9 @@
         .poke-card .poke-name { font-weight: 600; margin: 4px 0; font-size: 0.95rem; }
         .poke-card .poke-types { display: flex; gap: 4px; justify-content: center; margin-top: 4px; }
         .poke-card .poke-bst { color: var(--text-dim); font-size: 0.75rem; margin-top: 4px; }
+        .poke-card .mini-stats { display: flex; gap: 2px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+        .poke-card .mini-stats span { font-size: 0.6rem; color: var(--text-dim); line-height: 1; }
+        .poke-card .mini-stats b { color: var(--text); margin-left: 1px; }
         .type-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: white; text-transform: uppercase; }
 
         /* Type colors */
@@ -433,6 +436,7 @@
                     <option value="official">Officiels uniquement</option>
                 </select>
                 <select id="allpoke-sort">
+                    <option value="dex">Tri: # Pokedex</option>
                     <option value="alpha">Tri: A-Z</option>
                     <option value="routes">Tri: Nb routes</option>
                 </select>
@@ -510,25 +514,52 @@
     <!-- ROADMAP -->
     <div id="roadmap" class="section">
         <h2 style="color:var(--accent);margin-bottom:8px;">Ameliorations et Roadmap</h2>
-        <p style="color:var(--text-dim);margin-bottom:24px;font-size:0.9rem;">Ce qui a ete fait, ce qui est en cours, et ce qui arrive bientot.</p>
-        <h3 class="roadmap-category">Termine</h3>
+        <p style="color:var(--text-dim);margin-bottom:24px;font-size:0.9rem;">Tout ce qui a ete modifie par rapport au jeu d'origine, et ce qui est prevu.</p>
+
+        <h3 class="roadmap-category">Termine — Gameplay</h3>
         <ul class="roadmap-list">
-            <li><span class="status-done">OK</span><div><strong>Phase A — Fondation</strong> — Level caps souples, Box Link, Mega Ring, Dynamax Band. Sauvegardes cloud via Supabase.</div></li>
-            <li><span class="status-done">OK</span><div><strong>Phase B — 194 Fakemons</strong> — 194 Fakemons integres avec stats, types, talents et sprites (inspirations LoL, Yu-Gi-Oh, Digimon, Mario, Naruto, Disney et creations originales).</div></li>
-            <li><span class="status-done">OK</span><div><strong>Phase C — Champions & nouveaux types</strong> — Champions, Conseil 4 et Pierre ont des Fakemons dans leurs equipes. 3 types custom : Cosmic, Void et Divine (triangle Cosmic > Void > Divine > Cosmic).</div></li>
+            <li><span class="status-done">OK</span><div><strong>194 Fakemons</strong> — 194 Fakemons integres avec stats, types, talents, sprites, evolutions et chaines completes. Inspires de LoL, Yu-Gi-Oh, Digimon, Mario, Naruto, Disney + creations originales.</div></li>
+            <li><span class="status-done">OK</span><div><strong>3 types custom</strong> — Cosmic, Void et Divine avec un triangle d'efficacite (Cosmic &gt; Void &gt; Divine &gt; Cosmic). Table de types complete.</div></li>
+            <li><span class="status-done">OK</span><div><strong>1377 Pokemon trouvables</strong> — Tous les Pokemon Gen 1-9 repartis sur toutes les routes, grottes, surf, peche et Safari Zone. Les fakemons aussi.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Level caps souples</strong> — Limite de niveau par badge (15/19/24/29/31/33/42/46/58). L'XP diminue quand le Pokemon approche du cap.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Box Link (PC portable)</strong> — Acces au PC depuis n'importe ou via le menu. Donne au debut du jeu.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Level-up PC</strong> — Parler a l'assistant du Pr. Birch apres une arene pour monter tous ses Pokemon au level cap precedent.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Mega-Evolution & Dynamax</strong> — Mega Ring et Dynamax Band donnes en jeu. Les champions et Conseil 4 utilisent des Mega/Dynamax/Gigamax.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Dresseurs modifies</strong> — Champions d'arene, Conseil 4, Pierre et 15+ dresseurs de route ont des fakemons dans leurs equipes.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Fakemons en cadeau</strong> — Battre un dresseur qui a un fakemon vous donne ce fakemon (champions, C4, dresseurs de route).</div></li>
+            <li><span class="status-done">OK</span><div><strong>Rival avec Aurelisk</strong> — La rivale utilise Aurelisk et vous le donne apres la 3e rencontre (Route 119, niveau 1).</div></li>
+            <li><span class="status-done">OK</span><div><strong>Debug menu secret</strong> — Menu debug cache, activable avec la combinaison Start+Select+B+A.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Arceus trouvable</strong> — Arceus est a 1% dans Sky Pillar 5F (niveau 55-60). Le Pokemon le plus rare du jeu.</div></li>
         </ul>
+
+        <h3 class="roadmap-category">Termine — Technique</h3>
+        <ul class="roadmap-list">
+            <li><span class="status-done">OK</span><div><strong>Sauvegardes cloud</strong> — Saves stockees sur Supabase. Connexion par pseudo, synchronisation automatique toutes les 10s.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Jouable en navigateur</strong> — EmulatorJS integre, jouable sur mobile et PC sans installation.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Portail web compagnon</strong> — Pokedex complet (1377 Pokemon), carte des routes, infos dresseurs, table des types.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Sprites PixelLab</strong> — Sprites 64x64 pixel art generes par IA pour tous les fakemons.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Traduction FR partielle</strong> — ~30% du jeu traduit en francais (dialogues principaux, champions, Conseil 4, rival).</div></li>
+        </ul>
+
         <h3 class="roadmap-category">En cours</h3>
         <ul class="roadmap-list">
-            <li><span class="status-wip">WIP</span><div><strong>Phase D — Tous les Fakemons obtenables</strong> — Rendre tous les Fakemons accessibles en jeu : rencontres sauvages, cadeaux PNJ et equipe du rival.</div></li>
+            <li><span class="status-wip">WIP</span><div><strong>Traduction FR complete</strong> — Traduire les 70% restants : PNJ secondaires, descriptions d'objets, attaques, menus.</div></li>
+            <li><span class="status-wip">WIP</span><div><strong>Coherence site/jeu</strong> — Verification que toutes les infos du portail correspondent a la realite du jeu.</div></li>
         </ul>
+
         <h3 class="roadmap-category">A venir</h3>
         <ul class="roadmap-list">
-            <li><span class="status-todo">...</span><div><strong>Phase E — Evenements legendaires</strong> — Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes et conditions speciales.</div></li>
-            <li><span class="status-todo">...</span><div><strong>Phase F — Arena Multi-Champion</strong> — Le premier joueur a battre une arene peut deposer 6 Pokemon (dont 1+ du type de l'arene) et devenir Maitre d'arene. Les autres joueurs doivent battre le PNJ puis l'equipe du Maitre-joueur. Le vainqueur prend le titre. Historique des combats. Interface web + Supabase.</div></li>
+            <li><span class="status-todo">...</span><div><strong>Mode Nuzlocke</strong> — Option au debut de l'aventure : Normal, Nuzlocke (1 capture/zone), Nuzlocke Hardcore (+ mort permanente).</div></li>
+            <li><span class="status-todo">...</span><div><strong>Evenements legendaires</strong> — Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes et conditions speciales.</div></li>
+            <li><span class="status-todo">...</span><div><strong>Plus de fakemons</strong> — Objectif 300-500 fakemons au total avec de nouvelles familles et evolutions.</div></li>
+            <li><span class="status-todo">...</span><div><strong>Equilibrage post-game</strong> — Ajuster les stats, movepools et rencontres en fonction des retours joueurs.</div></li>
         </ul>
+
         <h3 class="roadmap-category">Concept</h3>
         <ul class="roadmap-list">
-            <li><span class="status-todo">?</span><div><strong>Phase G — PvP & echanges</strong> — Combats PvP et echanges de Pokemon entre joueurs.</div></li>
+            <li><span class="status-todo">?</span><div><strong>Arena Multi-Champion</strong> — Le premier joueur a battre une arene depose 6 Pokemon et devient Maitre. Les autres doivent le battre. Historique des combats via Supabase.</div></li>
+            <li><span class="status-todo">?</span><div><strong>PvP & echanges</strong> — Combats PvP et echanges de Pokemon entre joueurs en ligne.</div></li>
+            <li><span class="status-todo">?</span><div><strong>Interface admin</strong> — Page web pour editer fakemons, dresseurs et level caps sans recompiler.</div></li>
         </ul>
     </div>
 
@@ -917,12 +948,22 @@
     function renderGrid(list) {
         document.getElementById('pokedex-grid').innerHTML = list.map(p => {
             const sel = compareSlots.includes(p.id) ? 'compare-selected' : '';
+            const s = p.stats || {};
+            const miniStats = (s.hp || s.atk) ? `<div class="mini-stats">
+                <span title="HP ${s.hp||0}">HP<b>${s.hp||'?'}</b></span>
+                <span title="ATK ${s.atk||0}">AT<b>${s.atk||'?'}</b></span>
+                <span title="DEF ${s.def||0}">DF<b>${s.def||'?'}</b></span>
+                <span title="SPA ${s.spa||0}">SA<b>${s.spa||'?'}</b></span>
+                <span title="SPD ${s.spd||0}">SD<b>${s.spd||'?'}</b></span>
+                <span title="SPE ${s.spe||0}">SP<b>${s.spe||'?'}</b></span>
+            </div>` : '';
             return `<div class="poke-card ${sel}" onclick="onCardClick(${p.id})" data-id="${p.id}">
                 <span class="poke-id">#${String(p.id).padStart(3,'0')}</span>
                 <img class="poke-sprite" src="${spriteUrl(p.name)}" onerror="this.src='${FALLBACK}'" alt="${p.name}" loading="lazy">
                 <div class="poke-name">${p.name}</div>
                 <div class="poke-types">${p.types.map(t => `<span class="type-badge type-${t.toLowerCase()}">${t}</span>`).join('')}</div>
                 <div class="poke-bst">BST ${p.bst}</div>
+                ${miniStats}
             </div>`;
         }).join('');
     }
@@ -1101,14 +1142,32 @@
         }
 
         let encHTML = '';
-        if (p.encounter || p.encounter_note) {
-            encHTML = '<div class="detail-section"><h4>Ou le trouver</h4><div class="encounter-info">';
-            if (p.encounter) {
-                encHTML += `<strong>Route :</strong> ${p.encounter.route||'Inconnue'}<br>`;
-                encHTML += `<strong>Niveau :</strong> ${p.encounter.min_level||'?'}-${p.encounter.max_level||'?'}`;
+        {
+            // Build encounter info from game_data.json (real data) instead of catalogue encounter_note
+            const realEnc = [];
+            if (gameData) {
+                const lowerName = p.name.toLowerCase();
+                gameData.routes.forEach(route => {
+                    route.pokemon.forEach(pk => {
+                        if (pk.name.toLowerCase() === lowerName && pk.isFakemon) {
+                            realEnc.push({ route: route.name, method: pk.method, minLv: pk.minLv, maxLv: pk.maxLv, rate: pk.rate });
+                        }
+                    });
+                });
             }
-            if (p.encounter_note) encHTML += `<br><em>${p.encounter_note}</em>`;
-            encHTML += '</div></div>';
+            if (p.encounter && p.encounter.route) {
+                encHTML = '<div class="detail-section"><h4>Ou le trouver</h4><div class="encounter-info">';
+                encHTML += `<strong>Route :</strong> ${p.encounter.route}<br>`;
+                encHTML += `<strong>Niveau :</strong> ${p.encounter.min_level||'?'}-${p.encounter.max_level||'?'}`;
+                encHTML += '</div></div>';
+            } else if (realEnc.length > 0) {
+                encHTML = '<div class="detail-section"><h4>Ou le trouver</h4><div class="encounter-info">';
+                realEnc.slice(0, 5).forEach(r => {
+                    encHTML += `<strong>${r.route}</strong> — ${r.method}, Lv${r.minLv}-${r.maxLv} (${r.rate}%)<br>`;
+                });
+                if (realEnc.length > 5) encHTML += `<em>+${realEnc.length - 5} autres zones...</em>`;
+                encHTML += '</div></div>';
+            }
         }
 
         document.getElementById('modal-content').innerHTML = `
@@ -1370,7 +1429,11 @@
             route.pokemon.forEach(p => {
                 const key = p.name;
                 if (!pokeMap[key]) {
-                    pokeMap[key] = { name: p.name, isFakemon: p.isFakemon, routes: [] };
+                    pokeMap[key] = { name: p.name, isFakemon: p.isFakemon, routes: [], dexNum: p.dexNum || 0 };
+                }
+                // Update dex number if available
+                if (p.dexNum && p.dexNum > pokeMap[key].dexNum) {
+                    pokeMap[key].dexNum = p.dexNum;
                 }
                 // Also mark as fakemon if any entry says so
                 if (p.isFakemon) pokeMap[key].isFakemon = true;
@@ -1435,7 +1498,17 @@
             return true;
         });
 
-        if (sort === 'alpha') allPokeFiltered.sort((a,b) => a.name.localeCompare(b.name));
+        if (sort === 'dex') {
+            // Sort by national dex order: officials first (by dex number), then fakemons
+            allPokeFiltered.sort((a,b) => {
+                if (a.isFakemon !== b.isFakemon) return a.isFakemon ? 1 : -1;
+                const aNum = a.dexNum || 9999;
+                const bNum = b.dexNum || 9999;
+                if (aNum !== bNum) return aNum - bNum;
+                return a.name.localeCompare(b.name);
+            });
+        }
+        else if (sort === 'alpha') allPokeFiltered.sort((a,b) => a.name.localeCompare(b.name));
         else if (sort === 'routes') allPokeFiltered.sort((a,b) => {
             const ra = new Set(a.routes.map(r => r.route)).size;
             const rb = new Set(b.routes.map(r => r.route)).size;
@@ -1468,10 +1541,11 @@
             ).join('<br>');
             const moreText = routeList.length > 3 ? `<br><em>+${routeList.length - 3} autres zones...</em>` : '';
 
+            const dexLabel = p.dexNum ? `<span style="color:var(--text-dim);font-size:0.7rem;margin-right:4px">#${p.dexNum}</span>` : '';
             html += `<div class="allpoke-card ${p.isFakemon ? 'is-fakemon' : ''}" onclick="showAllPokeDetail('${p.name.replace(/'/g,"\\'")}')">
                 ${allPokeSpriteHTML(p.name, p.isFakemon)}
                 <div class="ap-info">
-                    <div class="ap-name ${p.isFakemon ? 'fakemon' : ''}">${p.name} ${p.isFakemon ? '<span style="font-size:0.7rem;color:var(--gold)">[Fakemon]</span>' : ''}</div>
+                    <div class="ap-name ${p.isFakemon ? 'fakemon' : ''}">${dexLabel}${p.name} ${p.isFakemon ? '<span style="font-size:0.7rem;color:var(--gold)">[Fakemon]</span>' : ''}</div>
                     <div class="ap-routes">${routePreview}${moreText}</div>
                 </div>
             </div>`;
@@ -1657,18 +1731,32 @@
                             label: '1',
                             text: `<strong>Capturer ${m.name}</strong> : Trouvable sur <strong>${m.encounter.route}</strong>, niveaux ${m.encounter.min_level || '?'}-${m.encounter.max_level || '?'}.`
                         });
-                    } else if (m.encounter_note) {
-                        steps.push({
-                            icon: 'special',
-                            label: '1',
-                            text: `<strong>Obtenir ${m.name}</strong> : ${translateEncounterNote(m.encounter_note)}`
-                        });
                     } else {
-                        steps.push({
-                            icon: 'wild',
-                            label: '1',
-                            text: `<strong>Obtenir ${m.name}</strong> : <em>Methode d'obtention a confirmer.</em>`
-                        });
+                        // Check game_data.json for real wild encounters of base form
+                        let baseFound = false;
+                        if (gameData) {
+                            const baseLower = m.name.toLowerCase();
+                            const baseRoutes = [];
+                            gameData.routes.forEach(route => {
+                                route.pokemon.forEach(pk => {
+                                    if (pk.name.toLowerCase() === baseLower && pk.isFakemon) {
+                                        baseRoutes.push({ route: route.name, method: pk.method, minLv: pk.minLv, maxLv: pk.maxLv, rate: pk.rate });
+                                    }
+                                });
+                            });
+                            if (baseRoutes.length > 0) {
+                                const routeTexts = baseRoutes.slice(0, 3).map(r => `<strong>${r.route}</strong> (${r.method}, Lv${r.minLv}-${r.maxLv}, ${r.rate}%)`);
+                                steps.push({ icon: 'wild', label: '1', text: `<strong>Capturer ${m.name}</strong> : ${routeTexts.join(' / ')}` });
+                                baseFound = true;
+                            }
+                        }
+                        if (!baseFound) {
+                            steps.push({
+                                icon: 'wild',
+                                label: '1',
+                                text: `<strong>Obtenir ${m.name}</strong> : <em>Methode d'obtention a confirmer.</em>`
+                            });
+                        }
                     }
                 }
                 if (i > 0 && i <= memberIdx) {
@@ -1692,13 +1780,25 @@
             }
         }
 
-        // 3. If it has a special encounter_note (legendaries, bosses)
-        if (member.encounter_note) {
-            steps.push({
-                icon: member.encounter_note.toLowerCase().includes('boss') || member.encounter_note.toLowerCase().includes('ultimate') ? 'boss' : 'special',
-                label: String(steps.length + 1),
-                text: `<strong>Rencontre speciale</strong> : ${translateEncounterNote(member.encounter_note)}`
+        // 3. Check game_data.json for REAL wild encounters (replaces encounter_note which may be inaccurate)
+        if (gameData) {
+            const lowerName = member.name.toLowerCase();
+            const realRoutes = [];
+            gameData.routes.forEach(route => {
+                route.pokemon.forEach(p => {
+                    if (p.name.toLowerCase() === lowerName && p.isFakemon) {
+                        realRoutes.push({ route: route.name, method: p.method, minLv: p.minLv, maxLv: p.maxLv, rate: p.rate });
+                    }
+                });
             });
+            if (realRoutes.length > 0) {
+                const routeTexts = realRoutes.slice(0, 5).map(r => `<strong>${r.route}</strong> (${r.method}, Lv${r.minLv}-${r.maxLv}, ${r.rate}%)`);
+                steps.push({
+                    icon: 'wild',
+                    label: String(steps.length + 1),
+                    text: `<strong>Rencontre sauvage</strong> : ${routeTexts.join(' / ')}${realRoutes.length > 5 ? ` <em>+${realRoutes.length - 5} autres zones</em>` : ''}`
+                });
+            }
         }
 
         // 4. If it has an evolution_note (special branched evolutions, 5th forms)
