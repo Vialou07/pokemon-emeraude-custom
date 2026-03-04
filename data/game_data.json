@@ -66719,7 +66719,7 @@
         },
         {
           "name": "Camerupt",
-          "item": null,
+          "item": "Cameruptite",
           "moves": [
             "Overheat",
             "Tackle",
@@ -67332,7 +67332,7 @@
       "nameFr": "Damien",
       "title": "Conseil 4 - 1er",
       "badge": 9,
-      "type": "Ténèbres",
+      "type": "Tenebres",
       "currentTeam": [
         {
           "name": "Shiftry",
@@ -67375,7 +67375,7 @@
         },
         {
           "name": "Absol",
-          "item": "Sitrus Berry",
+          "item": "Absolite",
           "moves": [
             "Aerial Ace",
             "Rock Slide",
@@ -67501,7 +67501,7 @@
         },
         {
           "name": "Banette",
-          "item": null,
+          "item": "Banettite",
           "moves": [
             "Shadow Ball",
             "Psychic",
@@ -67615,7 +67615,7 @@
       "currentTeam": [
         {
           "name": "Glalie",
-          "item": null,
+          "item": "Glalitite",
           "moves": [
             "Light Screen",
             "Crunch",
@@ -67794,7 +67794,7 @@
         },
         {
           "name": "Salamence",
-          "item": "Sitrus Berry",
+          "item": "Salamencite",
           "moves": [
             "Flamethrower",
             "Dragon Claw",
