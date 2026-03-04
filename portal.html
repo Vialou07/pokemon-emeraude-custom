@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Pokemon Emeraude Custom</title>
+    <style>
+        :root {
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #22223a;
+            --accent: #e94560;
+            --accent2: #0f3460;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --gold: #ffd700;
+            --green: #00c853;
+            --blue: #4fc3f7;
+            --red: #e94560;
+            --purple: #bb86fc;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-dark); font-family: 'Segoe UI', -apple-system, sans-serif; color: var(--text); min-height: 100vh; }
+
+        /* NAV */
+        nav { background: var(--bg-card); border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; display: flex; align-items: center; padding: 0 16px; height: 56px; box-shadow: 0 2px 12px rgba(0,0,0,0.5); }
+        nav .logo { font-size: 1.2rem; font-weight: bold; color: var(--accent); margin-right: 24px; white-space: nowrap; }
+        nav .logo span { color: var(--gold); }
+        nav .tabs { display: flex; gap: 4px; flex: 1; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        nav .tab { padding: 8px 16px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--text-dim); background: transparent; border: none; white-space: nowrap; transition: all 0.2s; }
+        nav .tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+        nav .tab.active { color: white; background: var(--accent); }
+
+        /* SECTIONS */
+        .section { display: none; padding: 24px 16px; max-width: 1200px; margin: 0 auto; }
+        .section.active { display: block; }
+
+        /* HOME */
+        .hero { text-align: center; padding: 48px 24px 32px; background: linear-gradient(135deg, rgba(233,69,96,0.15), rgba(15,52,96,0.15)); border-radius: 16px; margin-bottom: 32px; }
+        .hero h1 { font-size: 2.4rem; color: var(--accent); margin-bottom: 8px; }
+        .hero h1 span { color: var(--gold); }
+        .hero p { color: var(--text-dim); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+        .hero .play-btn { display: inline-block; margin-top: 24px; padding: 14px 40px; background: var(--accent); color: white; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; text-decoration: none; transition: transform 0.2s; }
+        .hero .play-btn:hover { transform: scale(1.05); }
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+        .feature-card { background: var(--bg-card); border-radius: 12px; padding: 24px; border-left: 4px solid var(--accent); transition: transform 0.2s; }
+        .feature-card:hover { transform: translateY(-2px); }
+        .feature-card h3 { color: var(--accent); margin-bottom: 8px; font-size: 1.1rem; }
+        .feature-card p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; }
+        .info-section { margin-bottom: 32px; }
+        .info-section h2 { color: var(--gold); margin-bottom: 16px; font-size: 1.4rem; }
+        .info-section .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .info-item { background: var(--bg-card); padding: 16px; border-radius: 8px; }
+        .info-item h4 { color: var(--blue); margin-bottom: 6px; }
+        .info-item p { color: var(--text-dim); font-size: 0.85rem; line-height: 1.4; }
+        .info-item code { color: var(--green); background: rgba(0,200,83,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+
+        /* POKEDEX */
+        .pokedex-toolbar { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+        .pokedex-toolbar input[type="text"] { flex: 1; min-width: 200px; padding: 10px 16px; background: var(--bg-card); color: white; border: 2px solid #333; border-radius: 8px; font-size: 1rem; outline: none; }
+        .pokedex-toolbar input:focus { border-color: var(--accent); }
+        .pokedex-toolbar select { padding: 10px 12px; background: var(--bg-card); color: white; border: 2px solid #333; border-radius: 8px; font-size: 0.9rem; }
+        .pokedex-toolbar .stats-badge { color: var(--text-dim); font-size: 0.85rem; }
+
+        /* View toggle */
+        .view-toggle { display: flex; gap: 4px; }
+        .view-toggle button { padding: 8px 14px; border: 2px solid #333; background: var(--bg-card); color: var(--text-dim); border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .view-toggle button.active { border-color: var(--accent); color: white; background: var(--accent); }
+
+        .compare-toggle { padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 2px solid var(--purple); background: transparent; color: var(--purple); transition: all 0.2s; }
+        .compare-toggle.active { background: var(--purple); color: white; }
+        .compare-selection-bar { display: none; background: var(--purple); color: white; padding: 10px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 0.9rem; align-items: center; gap: 12px; }
+        .compare-selection-bar.active { display: flex; flex-wrap: wrap; }
+        .compare-selection-bar .compare-slot { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 6px; font-weight: 600; }
+        .compare-selection-bar button { margin-left: auto; padding: 6px 16px; background: white; color: var(--purple); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+        .ability-filter-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+        .ability-filter-row input { flex: 1; max-width: 300px; padding: 8px 12px; background: var(--bg-card); color: white; border: 2px solid #333; border-radius: 8px; font-size: 0.85rem; outline: none; }
+        .ability-filter-row input:focus { border-color: var(--purple); }
+        .ability-filter-row label { color: var(--text-dim); font-size: 0.85rem; }
+
+        .type-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+        .type-btn { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 2px solid transparent; cursor: pointer; color: white; transition: all 0.2s; text-transform: uppercase; }
+        .type-btn.active { border-color: white; box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+
+        .pokedex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .poke-card { background: var(--bg-card); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; position: relative; }
+        .poke-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+        .poke-card.compare-selected { border-color: var(--purple); box-shadow: 0 0 12px rgba(187,134,252,0.4); }
+        .poke-card .poke-id { position: absolute; top: 8px; left: 12px; color: var(--text-dim); font-size: 0.7rem; }
+        .poke-card .poke-sprite { width: 64px; height: 64px; image-rendering: pixelated; margin: 8px auto; }
+        .poke-card .poke-name { font-weight: 600; margin: 4px 0; font-size: 0.95rem; }
+        .poke-card .poke-types { display: flex; gap: 4px; justify-content: center; margin-top: 4px; }
+        .poke-card .poke-bst { color: var(--text-dim); font-size: 0.75rem; margin-top: 4px; }
+        .type-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: white; text-transform: uppercase; }
+
+        /* Type colors */
+        .type-normal { background: #a8a878; } .type-fire { background: #f08030; }
+        .type-water { background: #6890f0; } .type-grass { background: #78c850; }
+        .type-electric { background: #f8d030; color: #333; } .type-ice { background: #98d8d8; color: #333; }
+        .type-fighting { background: #c03028; } .type-poison { background: #a040a0; }
+        .type-ground { background: #e0c068; color: #333; } .type-flying { background: #a890f0; }
+        .type-psychic { background: #f85888; } .type-bug { background: #a8b820; }
+        .type-rock { background: #b8a038; } .type-ghost { background: #705898; }
+        .type-dragon { background: #7038f8; } .type-dark { background: #705848; }
+        .type-steel { background: #b8b8d0; color: #333; } .type-fairy { background: #ee99ac; }
+        .type-cosmic { background: #7b2ff7; } .type-void { background: #1a0a2e; border: 1px solid #555; }
+        .type-divine { background: linear-gradient(135deg, #fff4b0, #ffd700); color: #333; }
+
+        /* Route view */
+        .route-view { display: none; }
+        .route-view.active { display: block; }
+        .route-group { background: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .route-group h3 { color: var(--blue); margin-bottom: 12px; font-size: 1rem; }
+        .route-pokemon-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .route-pokemon { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04); padding: 6px 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+        .route-pokemon:hover { background: rgba(255,255,255,0.1); }
+        .route-pokemon img { width: 32px; height: 32px; image-rendering: pixelated; }
+        .route-pokemon .rp-name { font-weight: 600; font-size: 0.85rem; }
+        .route-pokemon .rp-info { font-size: 0.7rem; color: var(--text-dim); }
+
+        /* All Pokemon view */
+        .allpoke-view { display: none; }
+        .allpoke-view.active { display: block; }
+        .allpoke-toolbar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .allpoke-toolbar input { flex: 1; min-width: 200px; padding: 10px 16px; background: var(--bg-card); color: white; border: 2px solid #333; border-radius: 8px; font-size: 1rem; outline: none; }
+        .allpoke-toolbar input:focus { border-color: var(--accent); }
+        .allpoke-toolbar select { padding: 10px 12px; background: var(--bg-card); color: white; border: 2px solid #333; border-radius: 8px; font-size: 0.9rem; }
+        .allpoke-toolbar .stats-badge { color: var(--text-dim); font-size: 0.85rem; }
+        .allpoke-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+        .allpoke-card { background: var(--bg-card); border-radius: 10px; padding: 12px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+        .allpoke-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .allpoke-card.is-fakemon { border-left: 3px solid var(--gold); }
+        .allpoke-card img { width: 48px; height: 48px; image-rendering: pixelated; flex-shrink: 0; }
+        .allpoke-card .ap-info { flex: 1; min-width: 0; }
+        .allpoke-card .ap-name { font-weight: 600; font-size: 0.95rem; }
+        .allpoke-card .ap-name.fakemon { color: var(--gold); }
+        .allpoke-card .ap-routes { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+        .allpoke-card .ap-routes strong { color: var(--blue); }
+        .allpoke-card .ap-method-tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 600; background: rgba(255,255,255,0.08); color: var(--text-dim); margin-right: 4px; }
+        .allpoke-card .ap-method-tag.herbe { background: rgba(120,200,80,0.15); color: #78c850; }
+        .allpoke-card .ap-method-tag.surf { background: rgba(104,144,240,0.15); color: #6890f0; }
+        .allpoke-card .ap-method-tag.canne { background: rgba(79,195,247,0.15); color: #4fc3f7; }
+        .allpoke-card .ap-method-tag.rock { background: rgba(184,160,56,0.15); color: #b8a038; }
+        .allpoke-load-more { text-align: center; padding: 20px; }
+        .allpoke-load-more button { padding: 12px 32px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .allpoke-load-more button:hover { opacity: 0.9; }
+
+        /* Acquisition guide */
+        .acquisition-guide { background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.2); border-radius: 10px; padding: 14px; margin-top: 12px; }
+        .acquisition-guide h4 { color: var(--gold); margin-bottom: 10px; font-size: 0.95rem; }
+        .acq-step { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+        .acq-step .acq-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+        .acq-step .acq-icon.wild { background: rgba(120,200,80,0.2); color: #78c850; }
+        .acq-step .acq-icon.evo { background: rgba(104,144,240,0.2); color: #6890f0; }
+        .acq-step .acq-icon.item { background: rgba(187,134,252,0.2); color: #bb86fc; }
+        .acq-step .acq-icon.special { background: rgba(233,69,96,0.2); color: #e94560; }
+        .acq-step .acq-icon.boss { background: rgba(255,215,0,0.2); color: #ffd700; }
+        .acq-step .acq-text { font-size: 0.85rem; color: var(--text); line-height: 1.4; }
+        .acq-step .acq-text em { color: var(--text-dim); }
+
+        /* All Pokemon detail modal */
+        .allpoke-detail-routes { margin-top: 12px; }
+        .allpoke-detail-routes table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .allpoke-detail-routes th { text-align: left; color: var(--text-dim); font-size: 0.75rem; padding: 6px 8px; border-bottom: 1px solid #333; }
+        .allpoke-detail-routes td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+        /* DETAIL MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 32px 16px; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--bg-card); border-radius: 16px; padding: 32px; max-width: 640px; width: 100%; position: relative; }
+        .modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--text-dim); font-size: 1.5rem; cursor: pointer; }
+        .modal-close:hover { color: white; }
+        .modal .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .modal .detail-sprite { width: 96px; height: 96px; image-rendering: pixelated; }
+        .modal .detail-name { font-size: 1.8rem; font-weight: bold; }
+        .stat-bar-row { display: flex; align-items: center; margin: 4px 0; }
+        .stat-label { width: 35px; font-size: 0.8rem; font-weight: 600; color: var(--text-dim); }
+        .stat-value { width: 35px; text-align: right; font-size: 0.8rem; margin-right: 8px; }
+        .stat-bar-bg { flex: 1; height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
+        .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+        .stat-hp { background: #ff5555; } .stat-atk { background: #f08030; } .stat-def { background: #f8d030; }
+        .stat-spa { background: #6890f0; } .stat-spd { background: #78c850; } .stat-spe { background: #f85888; }
+        .detail-section { margin-top: 16px; }
+        .detail-section h4 { color: var(--gold); margin-bottom: 8px; font-size: 0.95rem; }
+        .ability-tag { display: inline-block; padding: 4px 12px; margin: 2px 4px 2px 0; background: rgba(255,255,255,0.08); border-radius: 6px; font-size: 0.85rem; cursor: help; position: relative; }
+        .ability-tag:hover { background: rgba(255,255,255,0.15); }
+        .ability-tooltip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #2a2a4a; color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; width: 280px; z-index: 300; box-shadow: 0 4px 16px rgba(0,0,0,0.5); line-height: 1.4; pointer-events: none; }
+        .ability-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #2a2a4a; }
+        .ability-tag:hover .ability-tooltip { display: block; }
+        .evo-chain { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .evo-arrow { color: var(--text-dim); font-size: 1.2rem; }
+        .evo-member { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 0.85rem; }
+        .evo-member:hover { background: rgba(255,255,255,0.1); }
+        .evo-member img { width: 48px; height: 48px; image-rendering: pixelated; display: block; margin: 0 auto 4px; }
+        .evo-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        .evo-group .evo-member { border: 1px solid rgba(255,255,255,0.1); flex: 1; min-width: 100px; }
+        .encounter-info { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; font-size: 0.85rem; color: var(--text-dim); }
+        .encounter-info strong { color: var(--text); }
+
+        /* COMPARE MODAL */
+        .compare-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 300; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 32px 16px; }
+        .compare-modal.active { display: flex; }
+        .compare-panel { background: var(--bg-card); border-radius: 16px; padding: 24px; max-width: 800px; width: 100%; position: relative; }
+        .compare-panel .modal-close { position: absolute; top: 12px; right: 16px; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: start; }
+        .compare-poke { text-align: center; }
+        .compare-poke img { width: 80px; height: 80px; image-rendering: pixelated; margin-bottom: 8px; }
+        .compare-poke h3 { margin-bottom: 4px; font-size: 1.1rem; }
+        .compare-vs { display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: var(--accent); padding-top: 40px; }
+        .compare-stats { margin-top: 20px; }
+        .compare-stat-row { display: grid; grid-template-columns: 60px 1fr 40px 1fr 60px; gap: 4px; align-items: center; margin: 6px 0; }
+        .compare-stat-row .cs-val { font-size: 0.85rem; font-weight: 600; text-align: center; }
+        .compare-stat-row .cs-val.higher { color: var(--green); }
+        .compare-stat-row .cs-val.lower { color: var(--red); }
+        .compare-stat-row .cs-label { text-align: center; color: var(--text-dim); font-size: 0.8rem; font-weight: 600; }
+        .cs-bar-left { direction: rtl; }
+        .cs-bar-fill { height: 6px; border-radius: 3px; transition: width 0.5s; display: block; }
+
+        /* TYPE CHART */
+        .type-chart-wrapper { overflow-x: auto; }
+        .type-chart { border-collapse: collapse; font-size: 0.7rem; }
+        .type-chart th, .type-chart td { width: 36px; height: 28px; text-align: center; border: 1px solid #333; }
+        .type-chart th { background: var(--bg-card); font-weight: 600; font-size: 0.65rem; }
+        .type-chart .tc-se { background: #4caf50; color: white; font-weight: 700; }
+        .type-chart .tc-nve { background: #e53935; color: white; font-weight: 700; }
+        .type-chart .tc-imm { background: #1a1a2e; color: #ff6b6b; font-weight: bold; }
+        .type-chart .tc-n { background: transparent; }
+        .type-chart .rotated { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); padding: 4px 2px; height: 60px; font-size: 0.6rem; }
+
+        /* ROADMAP */
+        .roadmap-list { list-style: none; }
+        .roadmap-list li { padding: 10px 16px; background: var(--bg-card); border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 10px; }
+        .roadmap-list .status-done { color: var(--green); font-weight: bold; min-width: 20px; }
+        .roadmap-list .status-wip { color: var(--gold); font-weight: bold; min-width: 20px; }
+        .roadmap-list .status-todo { color: var(--text-dim); font-weight: bold; min-width: 20px; }
+        .roadmap-category { color: var(--accent); margin: 24px 0 12px; font-size: 1.1rem; }
+
+        /* ROUTES / DISTRIBUTION */
+        .route-card { background: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--accent2); }
+        .route-card.has-fakemons { border-left-color: var(--gold); }
+        .route-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; }
+        .route-card-header h3 { font-size: 1rem; color: var(--blue); margin: 0; }
+        .route-card-header .route-badges { display: flex; gap: 6px; align-items: center; }
+        .route-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .route-badge-method { background: rgba(255,255,255,0.08); color: var(--text-dim); }
+        .route-badge-fakemon { background: rgba(255,215,0,0.2); color: var(--gold); }
+        .route-badge-level { background: rgba(79,195,247,0.15); color: var(--blue); }
+        .route-encounters { display: none; }
+        .route-card.expanded .route-encounters { display: block; }
+        .route-card .expand-icon { color: var(--text-dim); transition: transform 0.2s; font-size: 0.8rem; }
+        .route-card.expanded .expand-icon { transform: rotate(90deg); }
+        .enc-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .enc-table th { text-align: left; color: var(--text-dim); font-size: 0.75rem; padding: 6px 8px; border-bottom: 1px solid #333; font-weight: 600; }
+        .enc-table td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .enc-table tr.fakemon-row { background: rgba(255,215,0,0.04); }
+        .enc-table tr.fakemon-row td:first-child { color: var(--gold); font-weight: 600; }
+        .enc-rate-bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--accent); vertical-align: middle; margin-left: 4px; }
+        .distribution-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+        .dist-stat-card { background: var(--bg-card); border-radius: 12px; padding: 16px; text-align: center; }
+        .dist-stat-card .big-num { font-size: 2rem; font-weight: bold; color: var(--accent); }
+        .dist-stat-card .label { color: var(--text-dim); font-size: 0.85rem; margin-top: 4px; }
+        .dist-toolbar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .dist-toolbar input, .dist-toolbar select { padding: 8px 12px; background: var(--bg-card); color: white; border: 2px solid #333; border-radius: 8px; font-size: 0.85rem; outline: none; }
+        .dist-toolbar input:focus { border-color: var(--accent); }
+        .balance-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 4px; }
+        .balance-bar .vanilla-part { background: var(--blue); }
+        .balance-bar .fakemon-part { background: var(--gold); }
+
+        /* TRAINERS */
+        .trainer-card { background: var(--bg-card); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+        .trainer-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .trainer-header .trainer-icon { width: 48px; height: 48px; background: var(--accent2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+        .trainer-header .trainer-info h3 { font-size: 1.1rem; color: var(--text); margin: 0 0 2px; }
+        .trainer-header .trainer-info .trainer-title { color: var(--text-dim); font-size: 0.85rem; }
+        .trainer-header .trainer-type-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; margin-left: auto; }
+        .team-comparison { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; }
+        .team-col h4 { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 10px; text-align: center; }
+        .team-col h4.modified { color: var(--gold); }
+        .team-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent); padding-top: 30px; }
+        .team-poke { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; }
+        .team-poke.is-fakemon { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); }
+        .team-poke .poke-lv { color: var(--text-dim); font-size: 0.75rem; white-space: nowrap; }
+        .team-poke .poke-item { color: var(--purple); font-size: 0.75rem; }
+        .team-poke-name { font-weight: 600; }
+        .team-poke-name.fakemon { color: var(--gold); }
+        .team-moves { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+        .team-moves span { padding: 1px 6px; background: rgba(255,255,255,0.06); border-radius: 3px; font-size: 0.7rem; color: var(--text-dim); }
+        .trainer-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+        .trainer-summary-card { background: var(--bg-card); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+        .trainer-summary-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .trainer-summary-card .trainer-name { font-weight: 600; font-size: 0.95rem; }
+        .trainer-summary-card .trainer-badge { color: var(--text-dim); font-size: 0.8rem; }
+        .trainer-summary-card .team-preview { display: flex; justify-content: center; gap: 2px; margin-top: 8px; }
+        .trainer-summary-card .team-preview .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+        .trainer-summary-card .team-preview .dot.fakemon { background: var(--gold); }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) { .features { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) {
+            nav { padding: 0 8px; height: 48px; } nav .logo { font-size: 1rem; margin-right: 12px; }
+            nav .tab { padding: 6px 10px; font-size: 0.8rem; }
+            .hero h1 { font-size: 1.6rem; } .section { padding: 16px 8px; }
+            .features { grid-template-columns: 1fr; } .info-section .info-grid { grid-template-columns: 1fr; }
+            .pokedex-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+            .allpoke-grid { grid-template-columns: 1fr; gap: 8px; }
+            .allpoke-card { padding: 10px; }
+            .allpoke-toolbar { gap: 8px; }
+            .allpoke-toolbar input { min-width: 140px; }
+            .modal { padding: 20px; }
+            .compare-grid { grid-template-columns: 1fr; } .compare-vs { padding: 8px 0; }
+            .team-comparison { grid-template-columns: 1fr; } .team-arrow { transform: rotate(90deg); padding: 0; }
+            .distribution-stats { grid-template-columns: repeat(2, 1fr); }
+            .trainer-summary { grid-template-columns: repeat(2, 1fr); }
+            #main-view-toggle { gap: 2px; }
+            #main-view-toggle button { padding: 6px 8px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">Poke<span>Custom</span></div>
+        <div class="tabs">
+            <button class="tab active" data-tab="home">Accueil</button>
+            <button class="tab" data-tab="pokedex">Pokedex</button>
+            <button class="tab" data-tab="routes">Routes</button>
+            <button class="tab" data-tab="trainers">Dresseurs</button>
+            <button class="tab" data-tab="types">Types</button>
+            <button class="tab" data-tab="play">Jouer</button>
+            <button class="tab" data-tab="roadmap">Roadmap</button>
+            <button class="tab" data-tab="arena" disabled style="opacity:0.4">Arena</button>
+        </div>
+    </nav>
+
+    <!-- HOME -->
+    <div id="home" class="section active">
+        <div class="hero">
+            <h1>Pokemon Emeraude <span>Custom</span></h1>
+            <p>Une version unique de Pokemon Emeraude avec 194 Fakemons, tous les Pokemon Gen 1-9, Mega Evolutions, Dynamax et bien plus encore !</p>
+            <a href="index.html" class="play-btn">Jouer maintenant</a>
+        </div>
+        <div class="features">
+            <div class="feature-card"><h3>194 Fakemons</h3><p>Des creatures originales inspirees de League of Legends, Yu-Gi-Oh, Digimon et plus. 108 familles evolutives, des trolls hilarants et 9 boss ultimes a decouvrir !</p></div>
+            <div class="feature-card"><h3>Gen 1 a 9 completes</h3><p>Tous les Pokemon officiels sont trouvables dans la nature. Attrapez Eevee, Pikachu, Gible, Dreepy et bien d'autres sur toutes les routes de Hoenn !</p></div>
+            <div class="feature-card"><h3>Mega Evolutions</h3><p>Le Mega Ring est donne des le debut. Achetez les Mega Stones au grand magasin de Nenuphare (3F). 18 Mega Stones disponibles !</p></div>
+            <div class="feature-card"><h3>Dynamax</h3><p>Le Dynamax Band est actif des le debut ! Dynamisez vos Pokemon dans tous les combats importants.</p></div>
+            <div class="feature-card"><h3>Arenes surboostees</h3><p>Les champions d'arene ont des Fakemons uniques dans leurs equipes. Consultez l'onglet Dresseurs pour voir les changements !</p></div>
+            <div class="feature-card"><h3>Sauvegardes cloud</h3><p>Connectez-vous avec votre pseudo pour retrouver votre progression. Sauvegardez en jeu et attendez le message vert de confirmation !</p></div>
+        </div>
+        <div class="info-section">
+            <h2>Comment jouer ?</h2>
+            <div class="info-grid">
+                <div class="info-item"><h4>1. Connexion</h4><p>Entrez votre pseudo sur la page de jeu. C'est votre identifiant unique pour les sauvegardes cloud.</p></div>
+                <div class="info-item"><h4>2. Controles</h4><p>Sur mobile, les touches tactiles apparaissent automatiquement. Sur PC : fleches + <code>Z</code> <code>X</code> <code>Enter</code> <code>Backspace</code>.</p></div>
+                <div class="info-item"><h4>3. Sauvegarder</h4><p>Ouvrez le menu en jeu puis "Sauvegarder". <strong>Attendez le message vert de confirmation</strong> avant de fermer la page. Pas de sauvegarde automatique !</p></div>
+                <div class="info-item"><h4>4. Tips</h4><p>Explorez chaque recoin ! Des Pokemon rares se cachent dans les hautes herbes. Les boss sont dans des endroits secrets post-game.</p></div>
+            </div>
+        </div>
+        <div class="info-section">
+            <h2>Nouveautes vs Emeraude original</h2>
+            <div class="info-grid">
+                <div class="info-item"><h4>Level Caps</h4><p>Vos Pokemon ne peuvent pas depasser le level cap du badge actuel. Badge 1: Lv15, Badge 8: Lv46, Champion: Lv58.</p></div>
+                <div class="info-item"><h4>Box Link</h4><p>Acces a votre PC depuis n'importe ou ! Donne par le Prof. Bouleau avec le Pokedex (objet Box Link dans votre sac).</p></div>
+                <div class="info-item"><h4>9 Boss Ultimes</h4><p>Des creatures d'une puissance inegalee dans la Ligue et le post-game. Chaque champion d'arene et membre du Conseil 4 vous offre son Fakemon apres sa defaite !</p></div>
+                <div class="info-item"><h4>Pokemon Trolls</h4><p>Certains Pokemon ont l'air faibles mais sont secretement surpuissants. Un caillou avec 150 ATK ? A vous de decouvrir !</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POKEDEX -->
+    <div id="pokedex" class="section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+            <h2 style="color:var(--accent)" id="pokedex-title">Pokedex Custom <span style="font-size:0.8rem;color:var(--text-dim)">(Fakemons)</span></h2>
+            <div class="view-toggle" id="main-view-toggle">
+                <button class="active" onclick="setMainView('fakemons')">Fakemons</button>
+                <button onclick="setMainView('allpokemon')">Tous les Pokemon</button>
+                <button onclick="setMainView('byroute')">Par Route</button>
+            </div>
+        </div>
+
+        <!-- FAKEMON SUB-VIEW -->
+        <div id="fakemon-subview">
+            <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+                <div class="view-toggle" id="fakemon-view-toggle">
+                    <button class="active" onclick="setFakemonSubView('grid')">Grille</button>
+                    <button onclick="setFakemonSubView('route')">Par Route</button>
+                </div>
+            </div>
+            <div class="pokedex-toolbar">
+                <input type="text" id="search" placeholder="Rechercher un Fakemon..." autocomplete="off">
+                <select id="category-filter">
+                    <option value="all">Toutes categories</option>
+                    <option value="boss">Boss ultimes</option>
+                    <option value="legendary">Legendaires</option>
+                    <option value="troll">Trolls / Sleepers</option>
+                    <option value="pseudo">Pseudo-legendaires</option>
+                </select>
+                <select id="sort-by">
+                    <option value="id">Tri: #ID</option>
+                    <option value="name">Tri: Nom</option>
+                    <option value="bst-desc">Tri: BST (fort)</option>
+                    <option value="bst-asc">Tri: BST (faible)</option>
+                    <option value="type">Tri: Type</option>
+                    <option value="ability">Tri: Talent</option>
+                </select>
+                <button class="compare-toggle" id="compare-toggle">Comparer</button>
+                <span class="stats-badge" id="result-count"></span>
+            </div>
+            <div class="ability-filter-row">
+                <label>Talent :</label>
+                <input type="text" id="ability-filter" placeholder="Filtrer par talent (ex: Intimidation, Levitate...)" autocomplete="off">
+            </div>
+            <div class="compare-selection-bar" id="compare-bar">
+                <span>Comparaison :</span>
+                <span class="compare-slot" id="compare-slot-1">Slot 1 : -</span>
+                <span class="compare-slot" id="compare-slot-2">Slot 2 : -</span>
+                <button onclick="launchCompare()">Comparer !</button>
+                <button onclick="clearCompare()" style="background:var(--red);color:white;margin-left:0;">Reset</button>
+            </div>
+            <div class="type-filters" id="type-filters"></div>
+            <div class="pokedex-grid" id="pokedex-grid"></div>
+            <div class="route-view" id="route-view"></div>
+        </div>
+
+        <!-- ALL POKEMON SUB-VIEW -->
+        <div id="allpokemon-subview" style="display:none;">
+            <div class="allpoke-toolbar">
+                <input type="text" id="allpoke-search" placeholder="Rechercher parmi les 1377 Pokemon..." autocomplete="off">
+                <select id="allpoke-filter">
+                    <option value="all">Tous</option>
+                    <option value="fakemon">Fakemons uniquement</option>
+                    <option value="official">Officiels uniquement</option>
+                </select>
+                <select id="allpoke-sort">
+                    <option value="alpha">Tri: A-Z</option>
+                    <option value="routes">Tri: Nb routes</option>
+                </select>
+                <span class="stats-badge" id="allpoke-count"></span>
+            </div>
+            <div class="allpoke-grid" id="allpoke-grid"></div>
+            <div class="allpoke-load-more" id="allpoke-load-more" style="display:none;"><button onclick="loadMoreAllPoke()">Charger plus...</button></div>
+        </div>
+
+        <!-- BY ROUTE SUB-VIEW (all Pokemon, from game_data.json) -->
+        <div id="byroute-subview" style="display:none;">
+            <div class="allpoke-toolbar">
+                <input type="text" id="byroute-search" placeholder="Rechercher une route..." autocomplete="off">
+                <select id="byroute-filter">
+                    <option value="all">Toutes les routes</option>
+                    <option value="fakemons">Routes avec Fakemons</option>
+                    <option value="main">Routes principales</option>
+                    <option value="caves">Grottes</option>
+                    <option value="water">Routes aquatiques</option>
+                </select>
+                <span class="stats-badge" id="byroute-count"></span>
+            </div>
+            <div id="byroute-list"></div>
+        </div>
+    </div>
+
+    <!-- ROUTES / DISTRIBUTION -->
+    <div id="routes" class="section">
+        <h2 style="color:var(--accent);margin-bottom:4px;">Distribution des Pokemon</h2>
+        <p style="color:var(--text-dim);margin-bottom:20px;font-size:0.9rem;">Tous les Pokemon et Fakemons trouvables dans le jeu, route par route, avec leurs taux de capture et niveaux.</p>
+        <div class="distribution-stats" id="dist-stats"></div>
+        <div class="dist-toolbar">
+            <input type="text" id="route-search" placeholder="Rechercher une route..." style="flex:1;min-width:200px;">
+            <select id="route-filter">
+                <option value="all">Toutes les routes</option>
+                <option value="fakemons">Routes avec Fakemons</option>
+                <option value="main">Routes principales</option>
+                <option value="caves">Grottes</option>
+                <option value="water">Routes aquatiques</option>
+            </select>
+            <select id="route-sort">
+                <option value="progression">Tri: Progression</option>
+                <option value="name">Tri: Nom A-Z</option>
+                <option value="fakemon-count">Tri: + de Fakemons</option>
+                <option value="level">Tri: Niveau moyen</option>
+            </select>
+        </div>
+        <div id="routes-list"></div>
+    </div>
+
+    <!-- TRAINERS -->
+    <div id="trainers" class="section">
+        <h2 style="color:var(--accent);margin-bottom:4px;">Dresseurs modifies</h2>
+        <p style="color:var(--text-dim);margin-bottom:20px;font-size:0.9rem;">Les champions d'arene et la Ligue Pokemon ont ete renforces avec des Fakemons et des equipes ameliorees. Decouvrez les changements !</p>
+        <div class="trainer-summary" id="trainer-overview"></div>
+        <div id="trainer-details"></div>
+    </div>
+
+    <!-- TYPES -->
+    <div id="types" class="section">
+        <h2 style="color:var(--accent);margin-bottom:8px;">Table des Types</h2>
+        <p style="color:var(--text-dim);margin-bottom:16px;font-size:0.9rem;">Lignes = type attaquant, colonnes = type defenseur. <span style="color:#4caf50;font-weight:bold;">2x</span> = super efficace, <span style="color:#e53935;font-weight:bold;">&frac12;</span> = pas tres efficace, <span style="color:#666;font-weight:bold;">0</span> = immunite.</p>
+        <div class="type-chart-wrapper" id="type-chart-container"></div>
+    </div>
+
+    <!-- PLAY -->
+    <div id="play" class="section">
+        <div style="text-align:center;padding:48px 0;">
+            <h2 style="color:var(--accent);margin-bottom:16px;">Lancer le jeu</h2>
+            <p style="color:var(--text-dim);margin-bottom:24px;">Le jeu s'ouvre dans une nouvelle page optimisee pour le plein ecran.</p>
+            <a href="index.html" style="display:inline-block;padding:16px 48px;background:var(--accent);color:white;font-size:1.2rem;font-weight:bold;border-radius:12px;text-decoration:none;">Jouer</a>
+        </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div id="roadmap" class="section">
+        <h2 style="color:var(--accent);margin-bottom:8px;">Ameliorations et Roadmap</h2>
+        <p style="color:var(--text-dim);margin-bottom:24px;font-size:0.9rem;">Ce qui a ete fait, ce qui est en cours, et ce qui arrive bientot.</p>
+        <h3 class="roadmap-category">Termine</h3>
+        <ul class="roadmap-list">
+            <li><span class="status-done">OK</span><div><strong>Phase A — Fondation</strong> — Level caps souples, Box Link, Mega Ring, Dynamax Band. Sauvegardes cloud via Supabase.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Phase B — 194 Fakemons</strong> — 194 Fakemons integres avec stats, types, talents et sprites (inspirations LoL, Yu-Gi-Oh, Digimon, Mario, Naruto, Disney et creations originales).</div></li>
+            <li><span class="status-done">OK</span><div><strong>Phase C — Champions & nouveaux types</strong> — Champions, Conseil 4 et Pierre ont des Fakemons dans leurs equipes. 3 types custom : Cosmic, Void et Divine (triangle Cosmic > Void > Divine > Cosmic).</div></li>
+        </ul>
+        <h3 class="roadmap-category">En cours</h3>
+        <ul class="roadmap-list">
+            <li><span class="status-wip">WIP</span><div><strong>Phase D — Tous les Fakemons obtenables</strong> — Rendre tous les Fakemons accessibles en jeu : rencontres sauvages, cadeaux PNJ et equipe du rival.</div></li>
+        </ul>
+        <h3 class="roadmap-category">A venir</h3>
+        <ul class="roadmap-list">
+            <li><span class="status-todo">...</span><div><strong>Phase E — Evenements legendaires</strong> — Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes et conditions speciales.</div></li>
+            <li><span class="status-todo">...</span><div><strong>Phase F — Arena Multi-Champion</strong> — Le premier joueur a battre une arene peut deposer 6 Pokemon (dont 1+ du type de l'arene) et devenir Maitre d'arene. Les autres joueurs doivent battre le PNJ puis l'equipe du Maitre-joueur. Le vainqueur prend le titre. Historique des combats. Interface web + Supabase.</div></li>
+        </ul>
+        <h3 class="roadmap-category">Concept</h3>
+        <ul class="roadmap-list">
+            <li><span class="status-todo">?</span><div><strong>Phase G — PvP & echanges</strong> — Combats PvP et echanges de Pokemon entre joueurs.</div></li>
+        </ul>
+    </div>
+
+    <!-- ARENA -->
+    <div id="arena" class="section">
+        <div style="text-align:center;padding:48px 0;">
+            <h2 style="color:var(--text-dim);margin-bottom:16px;">Arena - Bientot disponible</h2>
+            <p style="color:var(--text-dim);">Combats PvP et echanges en ligne entre amis. En cours de developpement !</p>
+        </div>
+    </div>
+
+    <!-- DETAIL MODAL -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <!-- COMPARISON MODAL -->
+    <div class="compare-modal" id="compare-modal">
+        <div class="compare-panel">
+            <button class="modal-close" onclick="closeCompare()">&times;</button>
+            <div id="compare-content"></div>
+        </div>
+    </div>
+
+    <script>
+    // ============================================================
+    // CONSTANTS
+    // ============================================================
+    const ALL_TYPES = ['Normal','Fire','Water','Grass','Electric','Ice','Fighting','Poison','Ground','Flying','Psychic','Bug','Rock','Ghost','Dragon','Dark','Steel','Fairy','Cosmic','Void','Divine'];
+
+    const ABILITY_FR = {
+        'Adaptability':   {fr:'Adaptabilite',desc:"Le bonus STAB passe de x1.5 a x2."},
+        'Aerilate':       {fr:'Peau Celeste',desc:"Les attaques Normal deviennent Vol et gagnent 20%."},
+        'Analytic':       {fr:'Analyste',desc:"Booste de 30% si le Pokemon agit en dernier."},
+        'Bad Dreams':     {fr:'Mauvais Reve',desc:"Inflige des degats aux adversaires endormis chaque tour."},
+        'Battle Armor':   {fr:'Armurbaston',desc:"Empeche les coups critiques adverses."},
+        'Beast Boost':    {fr:'Boost Chimere',desc:"Monte la meilleure stat apres chaque KO."},
+        'Blaze':          {fr:'Brasier',desc:"Booste les attaques Feu quand les PV sont bas."},
+        'Bulletproof':    {fr:'Pare-Balles',desc:"Immunise contre les attaques de type balle et bombe."},
+        'Chlorophyll':    {fr:'Chlorophylle',desc:"Double la Vitesse au soleil."},
+        'Clear Body':     {fr:'Corps Sain',desc:"Empeche la baisse de stats par l'adversaire."},
+        'Competitive':    {fr:'Competitive',desc:"Monte l'Atq. Spe. de 2 crans quand une stat est baissee."},
+        'Compound Eyes':  {fr:'Oeil Compose',desc:"Augmente la precision des attaques de 30%."},
+        'Contrary':       {fr:'Contestation',desc:"Inverse tous les changements de stats."},
+        'Corrosion':      {fr:'Corrosion',desc:"Peut empoisonner les types Acier et Poison."},
+        'Cursed Body':    {fr:'Corps Maudit',desc:"30% de chance d'entraver la derniere attaque de l'adversaire."},
+        'Cute Charm':     {fr:'Joli Sourire',desc:"30% de chance de seduire l'adversaire au contact."},
+        'Damp':           {fr:'Moiteur',desc:"Empeche l'utilisation d'Explosion et Destruction."},
+        'Dark Aura':      {fr:'Aura Tenebreuse',desc:"Booste les attaques Tenebres de tous les Pokemon."},
+        'Defiant':        {fr:'Defiant',desc:"Monte l'Attaque de 2 crans quand une stat est baissee."},
+        'Download':       {fr:'Telecharge',desc:"Monte Atq ou Atq. Spe selon la Defense la plus faible de l'adversaire."},
+        'Drizzle':        {fr:'Crachin',desc:"Invoque la pluie en entrant au combat."},
+        'Drought':        {fr:'Secheresse',desc:"Invoque le soleil en entrant au combat."},
+        'Effect Spore':   {fr:'Pose Spore',desc:"Peut empoisonner, paralyser ou endormir l'attaquant au contact."},
+        'Fairy Aura':     {fr:'Aura Feerique',desc:"Booste les attaques Fee de tous les Pokemon."},
+        'Filter':         {fr:'Filtre',desc:"Reduit les degats super efficaces de 25%."},
+        'Flame Body':     {fr:'Corps Ardent',desc:"30% de chance de bruler l'attaquant au contact."},
+        'Flash Fire':     {fr:'Torche',desc:"Absorbe les attaques Feu et booste ses propres attaques Feu."},
+        'Fur Coat':       {fr:'Toison Epaisse',desc:"Double la stat de Defense."},
+        'Gale Wings':     {fr:'Ailes Bourrasque',desc:"Les attaques Vol ont la priorite +1 (PV pleins)."},
+        'Guts':           {fr:'Cran',desc:"Booste l'Attaque de 50% en cas d'alteration de statut."},
+        'Huge Power':     {fr:'Force Pure',desc:"Double la stat d'Attaque."},
+        'Hustle':         {fr:'Agitation',desc:"Booste l'Attaque de 50% mais baisse la precision."},
+        'Ice Body':       {fr:'Corps Gel',desc:"Recupere des PV sous la grele."},
+        'Ice Scales':     {fr:'Ecailles Glacees',desc:"Reduit les degats speciaux de moitie."},
+        'Illuminate':     {fr:'Lumiattirance',desc:"Augmente le taux de rencontres sauvages."},
+        'Infiltrator':    {fr:'Infiltrateur',desc:"Ignore Protection, Mur Lumiere, Brume et Clonage."},
+        'Intimidate':     {fr:'Intimidation',desc:"Baisse l'Attaque de l'adversaire en entrant au combat."},
+        'Iron Barbs':     {fr:'Epine de Fer',desc:"Inflige des degats a l'adversaire qui attaque au contact."},
+        'Iron Fist':      {fr:'Poing de Fer',desc:"Booste les attaques de type poing de 20%."},
+        'Keen Eye':       {fr:'Regard Vif',desc:"Empeche la perte de precision."},
+        'Levitate':       {fr:'Levitation',desc:"Immunise contre les attaques de type Sol."},
+        'Libero':         {fr:'Libero',desc:"Change de type pour correspondre a l'attaque utilisee."},
+        'Lightning Rod':  {fr:'Paratonnerre',desc:"Attire les attaques Electrik et monte l'Atq. Spe."},
+        'Limber':         {fr:'Echauffement',desc:"Empeche la paralysie."},
+        'Magic Bounce':   {fr:'Miroir Magik',desc:"Renvoie les attaques de statut a l'adversaire."},
+        'Magic Guard':    {fr:'Garde Magik',desc:"Ne subit que les degats d'attaques directes."},
+        'Marvel Scale':   {fr:'Ecaille Speciale',desc:"Monte la Defense de 50% en cas d'alteration de statut."},
+        'Mold Breaker':   {fr:'Brise Moule',desc:"Ignore le talent de l'adversaire."},
+        'Motor Drive':    {fr:'Motorise',desc:"Absorbe les attaques Electrik et monte la Vitesse."},
+        'Moxie':          {fr:'Impudence',desc:"Monte l'Attaque d'un cran apres chaque KO."},
+        'Multiscale':     {fr:'Multiecaille',desc:"Reduit les degats de moitie quand les PV sont pleins."},
+        'Natural Cure':   {fr:'Medic Nature',desc:"Guerit les alterations de statut en quittant le combat."},
+        'No Guard':       {fr:'Annule Garde',desc:"Les attaques des deux camps ne peuvent pas manquer."},
+        'Oblivious':      {fr:'Benêt',desc:"Empeche la seduction et Provoc."},
+        'Overgrow':       {fr:'Engrais',desc:"Booste les attaques Plante quand les PV sont bas."},
+        'Own Tempo':      {fr:'Tempo Perso',desc:"Empeche la confusion."},
+        'Pixilate':       {fr:'Peau Feerique',desc:"Les attaques Normal deviennent Fee et gagnent 20%."},
+        'Poison Point':   {fr:'Point Poison',desc:"30% de chance d'empoisonner l'attaquant au contact."},
+        'Poison Touch':   {fr:'Toxitouche',desc:"30% de chance d'empoisonner au contact."},
+        'Power Construct': {fr:'Rassemblement',desc:"Change en forme Complete quand les PV passent sous 50%."},
+        'Prankster':      {fr:'Farceur',desc:"Les attaques de statut ont la priorite +1."},
+        'Pressure':       {fr:'Pression',desc:"L'adversaire utilise 2 PP au lieu de 1."},
+        'Protean':        {fr:'Proteen',desc:"Change de type pour correspondre a l'attaque utilisee."},
+        'Pure Power':     {fr:'Meditation',desc:"Double la stat d'Attaque."},
+        'Reckless':       {fr:'Temerite',desc:"Booste les attaques a recul de 20%."},
+        'Refrigerate':    {fr:'Peau Gelee',desc:"Les attaques Normal deviennent Glace et gagnent 20%."},
+        'Regenerator':    {fr:'Rege-Force',desc:"Recupere 1/3 des PV en quittant le combat."},
+        'Rock Head':      {fr:'Tete de Roc',desc:"Immunise contre les degats de recul."},
+        'Rough Skin':     {fr:'Peau Dure',desc:"Inflige des degats a l'adversaire qui attaque au contact."},
+        'Sand Rush':      {fr:'Force Sable',desc:"Double la Vitesse sous tempete de sable."},
+        'Sand Stream':    {fr:'Sable Volant',desc:"Invoque une tempete de sable en entrant au combat."},
+        'Sand Veil':      {fr:'Voile Sable',desc:"Monte l'Esquive sous tempete de sable."},
+        'Sap Sipper':     {fr:'Herbivore',desc:"Absorbe les attaques Plante et monte l'Attaque."},
+        'Scrappy':        {fr:'Querelleur',desc:"Les attaques Normal et Combat touchent les Spectres."},
+        'Serene Grace':   {fr:'Serenite',desc:"Double les chances d'effets secondaires des attaques."},
+        'Shadow Shield':  {fr:'Bouclier Spectral',desc:"Reduit les degats subis quand les PV sont pleins."},
+        'Shed Skin':      {fr:'Mue',desc:"33% de chance de guerir une alteration de statut chaque tour."},
+        'Sheer Force':    {fr:'Sans Limite',desc:"Booste de 30% les attaques avec effets secondaires (supprime l'effet)."},
+        'Shell Armor':    {fr:'Coque Armure',desc:"Empeche les coups critiques adverses."},
+        'Skill Link':     {fr:'Talent Lien',desc:"Les attaques multi-coups frappent toujours 5 fois."},
+        'Slush Rush':     {fr:'Chasse-Neige',desc:"Double la Vitesse sous la grele."},
+        'Snow Cloak':     {fr:'Voile Neige',desc:"Monte l'Esquive sous la grele."},
+        'Snow Warning':   {fr:'Alerte Neige',desc:"Invoque la grele en entrant au combat."},
+        'Solar Power':    {fr:'Force Soleil',desc:"Monte l'Atq. Spe. au soleil mais perd des PV chaque tour."},
+        'Solid Rock':     {fr:'Solide Roc',desc:"Reduit les degats super efficaces de 25%."},
+        'Soul Heart':     {fr:'Animacoeur',desc:"Monte l'Attaque Speciale quand un Pokemon tombe KO."},
+        'Speed Boost':    {fr:'Turbo',desc:"Augmente la Vitesse d'un cran a chaque tour."},
+        'Static':         {fr:'Statik',desc:"30% de chance de paralyser l'attaquant au contact."},
+        'Storm Drain':    {fr:'Lavabo',desc:"Attire les attaques Eau et monte l'Atq. Spe."},
+        'Strong Jaw':     {fr:'Machoire Forte',desc:"Booste les attaques de type morsure de 50%."},
+        'Sturdy':         {fr:'Fermete',desc:"Survit a un coup fatal avec 1 PV (si PV pleins)."},
+        'Swarm':          {fr:'Essaim',desc:"Booste les attaques Insecte quand les PV sont bas."},
+        'Swift Swim':     {fr:'Glissade',desc:"Double la Vitesse sous la pluie."},
+        'Synchronize':    {fr:'Synchro',desc:"Transmet les alterations de statut a l'adversaire."},
+        'Technician':     {fr:'Technicien',desc:"Booste les attaques de puissance 60 ou moins."},
+        'Thick Fat':      {fr:'Isograisse',desc:"Reduit de moitie les degats Feu et Glace subis."},
+        'Tinted Lens':    {fr:'Lentiteintee',desc:"Les attaques pas tres efficaces font le double de degats."},
+        'Torrent':        {fr:'Torrent',desc:"Booste les attaques Eau quand les PV sont bas."},
+        'Tough Claws':    {fr:'Griffe Dure',desc:"Booste les attaques de contact de 30%."},
+        'Trace':          {fr:'Calque',desc:"Copie le talent de l'adversaire."},
+        'Unaware':        {fr:'Inconscient',desc:"Ignore les changements de stats de l'adversaire."},
+        'Unnerve':        {fr:'Tension',desc:"Les adversaires ne peuvent pas manger de Baies."},
+        'Volt Absorb':    {fr:'Absorb Volt',desc:"Recupere 25% des PV quand touche par une attaque Electrik."},
+        'Water Absorb':   {fr:'Absorb Eau',desc:"Recupere 25% des PV quand touche par une attaque Eau."},
+        'Weak Armor':     {fr:'Armure Fragile',desc:"Quand touche par une attaque physique: -1 Def, +2 Vit."},
+        'White Smoke':    {fr:'Ecran Fumee',desc:"Empeche la baisse de stats par l'adversaire."},
+        'Wonder Guard':   {fr:'Garde Mystik',desc:"N'est touche que par les attaques super efficaces."},
+        'Anger Point':    {fr:'Colerique',desc:"Monte l'Attaque au maximum apres un coup critique."},
+        'Dauntless Shield':{fr:'Egide Inflexible',desc:"Monte la Defense d'un cran en entrant au combat."},
+        'Delta Stream':   {fr:'Vent Mauvais',desc:"Invoque un courant ascendant qui annule les faiblesses du type Vol."},
+        'Disguise':       {fr:'Fantômasque',desc:"Absorbe un coup grace au deguisement (une fois par combat)."},
+        'Electric Surge': {fr:'Electro-Genese',desc:"Cree un Champ Electrique en entrant au combat."},
+        'Flower Veil':    {fr:'Flora-Voile',desc:"Protege les allies Plante des baisses de stats et alterations."},
+        'Fluffy':         {fr:'Boule de Poils',desc:"Reduit les degats de contact mais augmente les degats Feu subis."},
+        'Friend Guard':   {fr:'Garde Amie',desc:"Reduit les degats subis par les allies de 25%."},
+        'Grassy Surge':   {fr:'Herbo-Genese',desc:"Cree un Champ Herbu en entrant au combat."},
+        'Hadron Engine':  {fr:'Moteur Hadron',desc:"Cree un Champ Electrique et booste l'Atq. Spe. sur ce terrain."},
+        'Heatproof':      {fr:'Ignifuge',desc:"Reduit de moitie les degats Feu subis."},
+        'Illusion':       {fr:'Illusion',desc:"Prend l'apparence du dernier Pokemon de l'equipe."},
+        'Inner Focus':    {fr:'Attention',desc:"Empeche la peur (flinch)."},
+        'Justified':      {fr:'Coeur Noble',desc:"Monte l'Attaque quand touche par une attaque Tenebres."},
+        'Leaf Guard':     {fr:'Feuille Garde',desc:"Empeche les alterations de statut au soleil."},
+        'Orichalcum Pulse':{fr:'Pouls Orichalque',desc:"Invoque le soleil et booste l'Attaque au soleil."},
+        'Pickup':         {fr:'Ramassage',desc:"Peut ramasser un objet apres un combat."},
+        'Poison Heal':    {fr:'Soin Poison',desc:"Recupere des PV quand empoisonne au lieu d'en perdre."},
+        'Primordial Sea': {fr:'Mer Primaire',desc:"Invoque une pluie diluvienne qui annule les attaques Feu."},
+        'Prism Armor':    {fr:'Prisme-Armure',desc:"Reduit les degats super efficaces."},
+        'Psychic Surge':  {fr:'Psycho-Genese',desc:"Cree un Champ Psychique en entrant au combat."},
+        'Rain Dish':      {fr:'Cuvette',desc:"Recupere des PV sous la pluie."},
+        'Rattled':        {fr:'Phobique',desc:"Monte la Vitesse quand touche par Insecte, Tenebres ou Spectre."},
+        'Rivalry':        {fr:'Rivalite',desc:"Booste les attaques contre le meme genre, reduit contre l'autre."},
+        'Run Away':       {fr:'Fuite',desc:"Permet de fuir a coup sur les combats sauvages."},
+        'Sand Force':     {fr:'Force Sable',desc:"Booste les attaques Sol, Roche et Acier sous tempete de sable."},
+        'Shadow Tag':     {fr:'Marque Ombre',desc:"Empeche l'adversaire de fuir ou de switcher."},
+        'Simple':         {fr:'Simple',desc:"Double l'effet des changements de stats."},
+        'Steam Engine':   {fr:'Turbine',desc:"Monte la Vitesse de 6 crans quand touche par Feu ou Eau."},
+        'Super Luck':     {fr:'Chanceux',desc:"Augmente le taux de coups critiques."},
+        'Sword of Ruin':  {fr:'Lame de Ruine',desc:"Baisse la Defense de tous les autres Pokemon."},
+        'Teravolt':       {fr:'Tera-Voltage',desc:"Les attaques ignorent le talent de l'adversaire."},
+        'Toxic Debris':   {fr:'Debris Toxiques',desc:"Pose des Pics Toxik quand touche par une attaque physique."},
+        'Triage':         {fr:'Triage',desc:"Les attaques de soin ont la priorite +3."},
+        'Turboblaze':     {fr:'Turbo-Brasier',desc:"Les attaques ignorent le talent de l'adversaire."},
+        'Wind Rider':     {fr:'Cavale Eolienne',desc:"Monte l'Attaque quand un Vent Arriere est active."},
+    };
+
+    const CATEGORY_FR = {
+        '1evo':'Lignee 1 evo','1evo_troll':'Troll (1 evo)','2evo':'Lignee 2 evos','2evo_branched':'Evo branchee',
+        '3evo':'Lignee 3 evos','4evo_godtier':'Lignee 4 evos (God)','boss_legendary':'Boss legendaire',
+        'godtier_legendary':'God-tier','legendary':'Legendaire','legendary_duo':'Duo legendaire',
+        'legendary_trio':'Trio legendaire','no_evo':'Sans evolution','no_evo_boss':'Boss (sans evo)',
+        'no_evo_troll':'Troll (sans evo)','pseudo_legendary':'Pseudo-legendaire','ultimate_boss':'Boss ultime',
+    };
+
+    // Type effectiveness (row = attacker, col = defender)
+    // 0=immune, 0.5=not very effective, 1=normal, 2=super effective
+    const TYPE_CHART = {
+        Normal:   {Rock:0.5,Ghost:0,Steel:0.5},
+        Fire:     {Fire:0.5,Water:0.5,Grass:2,Ice:2,Bug:2,Rock:0.5,Dragon:0.5,Steel:2,Cosmic:1,Void:1,Divine:1},
+        Water:    {Fire:2,Water:0.5,Grass:0.5,Ground:2,Rock:2,Dragon:0.5},
+        Grass:    {Fire:0.5,Water:2,Grass:0.5,Poison:0.5,Ground:2,Flying:0.5,Bug:0.5,Rock:2,Dragon:0.5,Steel:0.5},
+        Electric: {Water:2,Grass:0.5,Electric:0.5,Ground:0,Flying:2,Dragon:0.5},
+        Ice:      {Fire:0.5,Water:0.5,Grass:2,Ice:0.5,Ground:2,Flying:2,Dragon:2,Steel:0.5},
+        Fighting: {Normal:2,Ice:2,Poison:0.5,Flying:0.5,Psychic:0.5,Bug:0.5,Rock:2,Ghost:0,Dark:2,Steel:2,Fairy:0.5,Void:2},
+        Poison:   {Grass:2,Poison:0.5,Ground:0.5,Rock:0.5,Ghost:0.5,Steel:0,Fairy:2},
+        Ground:   {Fire:2,Grass:0.5,Electric:2,Poison:2,Flying:0,Bug:0.5,Rock:2,Steel:2},
+        Flying:   {Grass:2,Electric:0.5,Fighting:2,Bug:2,Rock:0.5,Steel:0.5},
+        Psychic:  {Fighting:2,Poison:2,Psychic:0.5,Dark:0,Steel:0.5},
+        Bug:      {Fire:0.5,Grass:2,Fighting:0.5,Poison:0.5,Flying:0.5,Psychic:2,Ghost:0.5,Dark:2,Steel:0.5,Fairy:0.5},
+        Rock:     {Fire:2,Ice:2,Fighting:0.5,Ground:0.5,Flying:2,Bug:2,Steel:0.5},
+        Ghost:    {Normal:0,Psychic:2,Ghost:2,Dark:0.5,Divine:0},
+        Dragon:   {Dragon:2,Steel:0.5,Fairy:0,Divine:2},
+        Dark:     {Fighting:0.5,Psychic:2,Ghost:2,Dark:0.5,Fairy:0.5,Cosmic:2,Divine:2},
+        Steel:    {Fire:0.5,Water:0.5,Electric:0.5,Ice:2,Rock:2,Steel:0.5,Fairy:2},
+        Fairy:    {Fire:0.5,Poison:0.5,Fighting:2,Dragon:2,Dark:2,Steel:0.5,Void:2},
+        Cosmic:   {Psychic:0.5,Dragon:0.5,Fairy:0.5,Flying:0.5,Dark:2,Ghost:2,Cosmic:0.5,Void:2,Divine:0.5},
+        Void:     {Normal:2,Poison:0.5,Dark:0.5,Ghost:0.5,Fairy:0.5,Cosmic:0.5,Void:0.5,Divine:2},
+        Divine:   {Normal:0.5,Fighting:0.5,Fairy:0.5,Flying:0.5,Void:0.5,Dark:2,Dragon:2,Ghost:2,Cosmic:2,Divine:0.5},
+    };
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let allPokemon = [];
+    let catalogue = null;
+    let compareMode = false;
+    let compareSlots = [null, null];
+    let currentView = 'grid';
+
+    // ============================================================
+    // TAB NAV
+    // ============================================================
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            if (tab.disabled) return;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ============================================================
+    // CATALOGUE
+    // ============================================================
+    async function loadCatalogue() {
+        try {
+            const res = await fetch('data/catalogue.json');
+            catalogue = await res.json();
+            buildPokedex();
+            buildTypeChart();
+        } catch(e) {
+            document.getElementById('pokedex-grid').innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:32px;">Catalogue non disponible.</p>';
+        }
+    }
+
+    function buildPokedex() {
+        allPokemon = [];
+        let id = 1;
+        for (const family of catalogue.families) {
+            if (family._comment || !family.members) continue;
+            const cat = family.category || '';
+            const isGroup = ['legendary_trio','legendary_duo'].includes(cat);
+            const hasEvo = family.members.some(m => m.evolution);
+            for (const member of family.members) {
+                allPokemon.push({
+                    id: id++, name: member.name, types: member.types || [], bst: member.bst || 0,
+                    stats: member.stats || {}, abilities: member.abilities || [],
+                    evolution: member.evolution || null, encounter: member.encounter || null,
+                    encounter_note: member.encounter_note || '', familyId: family.id,
+                    category: cat, categoryFr: CATEGORY_FR[cat] || cat,
+                    familyMembers: family.members, isGroup: isGroup || !hasEvo, status: family.status,
+                });
+            }
+        }
+        const typeFiltersEl = document.getElementById('type-filters');
+        const usedTypes = new Set();
+        allPokemon.forEach(p => p.types.forEach(t => usedTypes.add(t)));
+        typeFiltersEl.innerHTML = ALL_TYPES.filter(t => usedTypes.has(t))
+            .map(t => `<button class="type-btn type-${t.toLowerCase()}" data-type="${t}">${t}</button>`).join('');
+        typeFiltersEl.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', () => { btn.classList.toggle('active'); filterPokedex(); });
+        });
+        filterPokedex();
+    }
+
+    // ============================================================
+    // FILTERING
+    // ============================================================
+    function filterPokedex() {
+        const search = document.getElementById('search').value.toLowerCase().trim();
+        const catFilter = document.getElementById('category-filter').value;
+        const sortBy = document.getElementById('sort-by').value;
+        const abilitySearch = document.getElementById('ability-filter').value.toLowerCase().trim();
+        const activeTypes = [...document.querySelectorAll('.type-btn.active')].map(b => b.dataset.type);
+
+        let filtered = allPokemon.filter(p => {
+            if (search && !p.name.toLowerCase().includes(search)) return false;
+            if (catFilter !== 'all') {
+                if (catFilter === 'boss' && !p.category.includes('ultimate_boss')) return false;
+                if (catFilter === 'legendary' && !p.category.includes('legendary')) return false;
+                if (catFilter === 'troll' && !p.category.includes('troll')) return false;
+                if (catFilter === 'pseudo' && !p.category.includes('pseudo')) return false;
+            }
+            if (activeTypes.length > 0 && !p.types.some(t => activeTypes.includes(t))) return false;
+            if (abilitySearch) {
+                const match = p.abilities.some(a => {
+                    if (a.toLowerCase().includes(abilitySearch)) return true;
+                    const info = ABILITY_FR[a];
+                    return info && info.fr.toLowerCase().includes(abilitySearch);
+                });
+                if (!match) return false;
+            }
+            return true;
+        });
+
+        if (sortBy === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+        else if (sortBy === 'bst-desc') filtered.sort((a,b) => b.bst - a.bst);
+        else if (sortBy === 'bst-asc') filtered.sort((a,b) => a.bst - b.bst);
+        else if (sortBy === 'type') filtered.sort((a,b) => (a.types[0]||'').localeCompare(b.types[0]||''));
+        else if (sortBy === 'ability') filtered.sort((a,b) => (a.abilities[0]||'').localeCompare(b.abilities[0]||''));
+        else filtered.sort((a,b) => a.id - b.id);
+
+        document.getElementById('result-count').textContent = `${filtered.length} / ${allPokemon.length}`;
+
+        if (currentView === 'grid') {
+            renderGrid(filtered);
+        } else {
+            renderRouteView(filtered);
+        }
+    }
+
+    // ============================================================
+    // MAIN VIEW TOGGLE (Fakemons / Tous les Pokemon / Par Route)
+    // ============================================================
+    let currentMainView = 'fakemons';
+
+    function setMainView(view) {
+        currentMainView = view;
+        // Update toggle buttons
+        document.querySelectorAll('#main-view-toggle button').forEach(b => b.classList.remove('active'));
+        document.querySelector(`#main-view-toggle button[onclick="setMainView('${view}')"]`).classList.add('active');
+        // Show/hide subviews
+        document.getElementById('fakemon-subview').style.display = view === 'fakemons' ? 'block' : 'none';
+        document.getElementById('allpokemon-subview').style.display = view === 'allpokemon' ? 'block' : 'none';
+        document.getElementById('byroute-subview').style.display = view === 'byroute' ? 'block' : 'none';
+        // Update title
+        const titleEl = document.getElementById('pokedex-title');
+        if (view === 'fakemons') titleEl.innerHTML = 'Pokedex Custom <span style="font-size:0.8rem;color:var(--text-dim)">(Fakemons)</span>';
+        else if (view === 'allpokemon') titleEl.innerHTML = 'Pokedex Complet <span style="font-size:0.8rem;color:var(--text-dim)">(1377 Pokemon)</span>';
+        else titleEl.innerHTML = 'Pokemon par Route <span style="font-size:0.8rem;color:var(--text-dim)">(toutes les zones)</span>';
+        // Render if needed
+        if (view === 'allpokemon') renderAllPokemon();
+        if (view === 'byroute') renderByRoute();
+    }
+
+    // ============================================================
+    // FAKEMON SUB-VIEW TOGGLE (Grid / Par Route)
+    // ============================================================
+    function setFakemonSubView(view) {
+        currentView = view;
+        document.querySelectorAll('#fakemon-view-toggle button').forEach(b => b.classList.remove('active'));
+        document.querySelector(`#fakemon-view-toggle button[onclick="setFakemonSubView('${view}')"]`).classList.add('active');
+        document.getElementById('pokedex-grid').style.display = view === 'grid' ? 'grid' : 'none';
+        document.getElementById('route-view').classList.toggle('active', view === 'route');
+        filterPokedex();
+    }
+
+    // ============================================================
+    // GRID VIEW
+    // ============================================================
+    function spriteUrl(name) { return `sprites/${name.toLowerCase().replace(/ /g,'_')}.png`; }
+    function pokespriteUrl(name) {
+        // For fakemons: use local sprites
+        const lower = name.toLowerCase().replace(/ /g,'_');
+        const localUrl = `sprites/${lower}.png`;
+        // For official Pokemon: use PokeAPI CDN as fallback
+        const POKEAPI_CDN = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+        // Simple name→dex number mapping for common Pokemon (loaded dynamically)
+        return localUrl;
+    }
+    function routeSpriteImg(name, isFakemon) {
+        if (isFakemon) {
+            return `<img src="${spriteUrl(name)}" onerror="this.style.display='none'" style="width:24px;height:24px;vertical-align:middle;margin-right:4px;image-rendering:pixelated;">`;
+        }
+        // Official Pokemon: use Pokemon Showdown sprites (name-based URLs)
+        const slug = name.toLowerCase().replace(/[♀]/g,'f').replace(/[♂]/g,'m').replace(/[''.]/g,'').replace(/ /g,'').replace(/[^a-z0-9-]/g,'');
+        const cdnUrl = `https://play.pokemonshowdown.com/sprites/gen5/${slug}.png`;
+        return `<img src="${cdnUrl}" onerror="this.style.display='none'" style="width:24px;height:24px;vertical-align:middle;margin-right:4px;image-rendering:pixelated;">`;
+    }
+    const FALLBACK = "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect fill=%22%23333%22 width=%2264%22 height=%2264%22 rx=%228%22/><text x=%2232%22 y=%2236%22 fill=%22%23666%22 text-anchor=%22middle%22 font-size=%2210%22>?</text></svg>";
+
+    function renderGrid(list) {
+        document.getElementById('pokedex-grid').innerHTML = list.map(p => {
+            const sel = compareSlots.includes(p.id) ? 'compare-selected' : '';
+            return `<div class="poke-card ${sel}" onclick="onCardClick(${p.id})" data-id="${p.id}">
+                <span class="poke-id">#${String(p.id).padStart(3,'0')}</span>
+                <img class="poke-sprite" src="${spriteUrl(p.name)}" onerror="this.src='${FALLBACK}'" alt="${p.name}" loading="lazy">
+                <div class="poke-name">${p.name}</div>
+                <div class="poke-types">${p.types.map(t => `<span class="type-badge type-${t.toLowerCase()}">${t}</span>`).join('')}</div>
+                <div class="poke-bst">BST ${p.bst}</div>
+            </div>`;
+        }).join('');
+    }
+
+    // ============================================================
+    // ROUTE VIEW
+    // ============================================================
+    function renderRouteView(list) {
+        // Build route lookup from game_data.json encounters
+        const routeLookup = {};
+        if (gameData && gameData.routes) {
+            gameData.routes.forEach(route => {
+                route.pokemon.forEach(p => {
+                    if (p.isFakemon) {
+                        const key = p.name.toLowerCase().replace(/ /g, '');
+                        if (!routeLookup[key]) routeLookup[key] = route.name;
+                    }
+                });
+            });
+        }
+
+        const byRoute = {};
+        list.forEach(p => {
+            let route = 'Inconnu';
+            if (p.encounter && p.encounter.route) route = p.encounter.route;
+            else if (p.encounter_note) route = p.encounter_note.substring(0, 60);
+            else {
+                // Fallback: check game_data.json encounters
+                const key = p.name.toLowerCase().replace(/ /g, '');
+                if (routeLookup[key]) route = routeLookup[key];
+            }
+            if (!byRoute[route]) byRoute[route] = [];
+            byRoute[route].push(p);
+        });
+        // Sort routes
+        const routeNames = Object.keys(byRoute).sort((a, b) => {
+            const numA = parseInt((a.match(/\d+/) || ['999'])[0]);
+            const numB = parseInt((b.match(/\d+/) || ['999'])[0]);
+            return numA - numB;
+        });
+
+        document.getElementById('route-view').innerHTML = routeNames.map(route => `
+            <div class="route-group">
+                <h3>${route}</h3>
+                <div class="route-pokemon-list">
+                    ${byRoute[route].map(p => `
+                        <div class="route-pokemon" onclick="showDetail(${p.id})">
+                            <img src="${spriteUrl(p.name)}" onerror="this.style.display='none'" alt="${p.name}">
+                            <div>
+                                <div class="rp-name">${p.name}</div>
+                                <div class="rp-info">${p.types.join('/')} - BST ${p.bst}${p.encounter ? ` - Lv${p.encounter.min_level||'?'}-${p.encounter.max_level||'?'}` : ''}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function onCardClick(id) { compareMode ? addToCompare(id) : showDetail(id); }
+
+    // ============================================================
+    // COMPARE
+    // ============================================================
+    document.getElementById('compare-toggle').addEventListener('click', () => {
+        compareMode = !compareMode;
+        document.getElementById('compare-toggle').classList.toggle('active', compareMode);
+        document.getElementById('compare-bar').classList.toggle('active', compareMode);
+        if (!compareMode) clearCompare();
+    });
+    function addToCompare(id) {
+        if (compareSlots.includes(id)) return;
+        const slot = compareSlots[0] === null ? 0 : compareSlots[1] === null ? 1 : -1;
+        if (slot < 0) return;
+        compareSlots[slot] = id;
+        const p = allPokemon.find(x => x.id === id);
+        document.getElementById(`compare-slot-${slot+1}`).textContent = `Slot ${slot+1} : ${p.name}`;
+        document.querySelectorAll('.poke-card').forEach(c => {
+            c.classList.toggle('compare-selected', compareSlots.includes(parseInt(c.dataset.id)));
+        });
+    }
+    function clearCompare() {
+        compareSlots = [null, null];
+        document.getElementById('compare-slot-1').textContent = 'Slot 1 : -';
+        document.getElementById('compare-slot-2').textContent = 'Slot 2 : -';
+        document.querySelectorAll('.poke-card.compare-selected').forEach(c => c.classList.remove('compare-selected'));
+    }
+    function launchCompare() {
+        if (!compareSlots[0] || !compareSlots[1]) return;
+        const p1 = allPokemon.find(x => x.id === compareSlots[0]);
+        const p2 = allPokemon.find(x => x.id === compareSlots[1]);
+        if (!p1 || !p2) return;
+        const keys = ['hp','atk','def','spa','spd','spe'];
+        const labels = {hp:'HP',atk:'ATK',def:'DEF',spa:'SPA',spd:'SPD',spe:'SPE'};
+        const colors = {hp:'#ff5555',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
+        let bst1=0,bst2=0,html='';
+        for (const k of keys) {
+            const v1=p1.stats[k]||0, v2=p2.stats[k]||0; bst1+=v1; bst2+=v2;
+            const c1=v1>v2?'higher':v1<v2?'lower':'', c2=v2>v1?'higher':v2<v1?'lower':'';
+            html += `<div class="compare-stat-row">
+                <span class="cs-val ${c1}">${v1}</span>
+                <div class="stat-bar-bg cs-bar-left"><span class="cs-bar-fill" style="width:${v1/255*100}%;background:${colors[k]}"></span></div>
+                <span class="cs-label">${labels[k]}</span>
+                <div class="stat-bar-bg"><span class="cs-bar-fill" style="width:${v2/255*100}%;background:${colors[k]}"></span></div>
+                <span class="cs-val ${c2}">${v2}</span>
+            </div>`;
+        }
+        const bc1=bst1>bst2?'higher':bst1<bst2?'lower':'', bc2=bst2>bst1?'higher':bst2<bst1?'lower':'';
+        html += `<div class="compare-stat-row" style="margin-top:8px;border-top:1px solid #333;padding-top:8px;">
+            <span class="cs-val ${bc1}" style="font-size:1rem">${bst1}</span><div></div>
+            <span class="cs-label" style="font-size:0.9rem;font-weight:bold">BST</span><div></div>
+            <span class="cs-val ${bc2}" style="font-size:1rem">${bst2}</span></div>`;
+        document.getElementById('compare-content').innerHTML = `
+            <h3 style="text-align:center;color:var(--gold);margin-bottom:20px;">Comparaison</h3>
+            <div class="compare-grid">
+                <div class="compare-poke"><img src="${spriteUrl(p1.name)}" onerror="this.style.display='none'"><h3>${p1.name}</h3>
+                    <div class="poke-types" style="justify-content:center">${p1.types.map(t=>`<span class="type-badge type-${t.toLowerCase()}">${t}</span>`).join('')}</div></div>
+                <div class="compare-vs">VS</div>
+                <div class="compare-poke"><img src="${spriteUrl(p2.name)}" onerror="this.style.display='none'"><h3>${p2.name}</h3>
+                    <div class="poke-types" style="justify-content:center">${p2.types.map(t=>`<span class="type-badge type-${t.toLowerCase()}">${t}</span>`).join('')}</div></div>
+            </div><div class="compare-stats">${html}</div>`;
+        document.getElementById('compare-modal').classList.add('active');
+    }
+    function closeCompare() { document.getElementById('compare-modal').classList.remove('active'); }
+    document.getElementById('compare-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCompare(); });
+
+    // ============================================================
+    // ABILITIES
+    // ============================================================
+    function getAbilityFr(name) { const i = ABILITY_FR[name]; return i ? i.fr : name; }
+    function abilityTagHTML(name) {
+        const i = ABILITY_FR[name];
+        const fr = i ? i.fr : name;
+        const desc = i ? i.desc : '';
+        return `<span class="ability-tag">${fr}${desc ? `<span class="ability-tooltip"><strong>${name}</strong><br>${desc}</span>` : ''}</span>`;
+    }
+
+    // ============================================================
+    // DETAIL MODAL
+    // ============================================================
+    function showDetail(id) {
+        const p = allPokemon.find(x => x.id === id);
+        if (!p) return;
+        const statNames = {hp:'HP',atk:'ATK',def:'DEF',spa:'SPA',spd:'SPD',spe:'SPE'};
+        const statCls = {hp:'stat-hp',atk:'stat-atk',def:'stat-def',spa:'stat-spa',spd:'stat-spd',spe:'stat-spe'};
+        let statsHTML = '', bst = 0;
+        for (const [k,label] of Object.entries(statNames)) {
+            const v = p.stats[k]||0; bst += v;
+            statsHTML += `<div class="stat-bar-row"><span class="stat-label">${label}</span><span class="stat-value">${v}</span>
+                <div class="stat-bar-bg"><div class="stat-bar-fill ${statCls[k]}" style="width:${Math.min(100,v/255*100)}%"></div></div></div>`;
+        }
+        const abHTML = p.abilities.length ? p.abilities.map(a => abilityTagHTML(a)).join('') : '<span style="color:var(--text-dim)">Inconnu</span>';
+
+        let evoHTML = '';
+        if (p.familyMembers && p.familyMembers.length > 1) {
+            if (p.isGroup) {
+                const title = p.category.includes('trio') ? 'Trio legendaire' : p.category.includes('duo') ? 'Duo legendaire' : 'Groupe';
+                evoHTML = `<div class="detail-section"><h4>${title}</h4><div class="evo-group">`;
+                for (const m of p.familyMembers) {
+                    const ep = allPokemon.find(x => x.name === m.name);
+                    evoHTML += `<div class="evo-member" onclick="showDetail(${ep?ep.id:0})"><img src="${spriteUrl(m.name)}" onerror="this.style.display='none'"><div>${m.name}</div><div style="font-size:0.7rem;color:var(--text-dim)">BST ${m.bst||'?'}</div></div>`;
+                }
+                evoHTML += '</div></div>';
+            } else {
+                evoHTML = '<div class="detail-section"><h4>Chaine evolutive</h4><div class="evo-chain">';
+                p.familyMembers.forEach((m,i) => {
+                    if (i > 0) evoHTML += '<span class="evo-arrow">&#8594;</span>';
+                    const ep = allPokemon.find(x => x.name === m.name);
+                    const method = m.evolution ? `${m.evolution.method} ${m.evolution.param||''}`.trim() : '';
+                    evoHTML += `<div class="evo-member" onclick="showDetail(${ep?ep.id:0})"><img src="${spriteUrl(m.name)}" onerror="this.style.display='none'">
+                        <div style="${m.name===p.name?'font-weight:bold;color:var(--gold)':''}">${m.name}</div>
+                        ${method?`<div style="font-size:0.7rem;color:var(--text-dim)">${method}</div>`:''}</div>`;
+                });
+                evoHTML += '</div></div>';
+            }
+        }
+
+        let encHTML = '';
+        if (p.encounter || p.encounter_note) {
+            encHTML = '<div class="detail-section"><h4>Ou le trouver</h4><div class="encounter-info">';
+            if (p.encounter) {
+                encHTML += `<strong>Route :</strong> ${p.encounter.route||'Inconnue'}<br>`;
+                encHTML += `<strong>Niveau :</strong> ${p.encounter.min_level||'?'}-${p.encounter.max_level||'?'}`;
+            }
+            if (p.encounter_note) encHTML += `<br><em>${p.encounter_note}</em>`;
+            encHTML += '</div></div>';
+        }
+
+        document.getElementById('modal-content').innerHTML = `
+            <div class="detail-header">
+                <img class="detail-sprite" src="${spriteUrl(p.name)}" onerror="this.style.display='none'">
+                <div>
+                    <div style="color:var(--text-dim);font-size:0.8rem">#${String(p.id).padStart(3,'0')} - ${p.categoryFr}</div>
+                    <div class="detail-name">${p.name}</div>
+                    <div class="poke-types" style="margin-top:6px">${p.types.map(t => `<span class="type-badge type-${t.toLowerCase()}">${t}</span>`).join('')}</div>
+                </div>
+            </div>
+            <div class="detail-section"><h4>Stats (BST: ${bst||p.bst})</h4>${statsHTML}</div>
+            <div class="detail-section"><h4>Talents</h4><div>${abHTML}</div></div>
+            ${evoHTML}${encHTML}${buildAcquisitionGuide(p)}`;
+        document.getElementById('detail-modal').classList.add('active');
+    }
+    function closeModal() { document.getElementById('detail-modal').classList.remove('active'); }
+    document.getElementById('detail-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+    // ============================================================
+    // TYPE CHART
+    // ============================================================
+    function buildTypeChart() {
+        const types = ALL_TYPES;
+        let html = '<table class="type-chart"><thead><tr><th></th>';
+        types.forEach(t => { html += `<th class="rotated"><span class="type-badge type-${t.toLowerCase()}" style="writing-mode:horizontal-tb;font-size:0.55rem;padding:1px 3px;">${t.substring(0,3)}</span></th>`; });
+        html += '</tr></thead><tbody>';
+        types.forEach(atk => {
+            html += `<tr><th><span class="type-badge type-${atk.toLowerCase()}" style="font-size:0.55rem;padding:1px 4px;">${atk.substring(0,3)}</span></th>`;
+            types.forEach(def => {
+                const eff = (TYPE_CHART[atk] && TYPE_CHART[atk][def] !== undefined) ? TYPE_CHART[atk][def] : 1;
+                let cls = 'tc-n', txt = '';
+                if (eff === 2) { cls = 'tc-se'; txt = '2'; }
+                else if (eff === 0.5) { cls = 'tc-nve'; txt = '\u00BD'; }
+                else if (eff === 0) { cls = 'tc-imm'; txt = '0'; }
+                html += `<td class="${cls}">${txt}</td>`;
+            });
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        document.getElementById('type-chart-container').innerHTML = html;
+    }
+
+    // ============================================================
+    // ROUTES / DISTRIBUTION
+    // ============================================================
+    let gameData = null;
+
+    async function loadGameData() {
+        try {
+            const res = await fetch('data/game_data.json');
+            gameData = await res.json();
+            renderDistStats();
+            filterRoutes();
+            renderTrainers();
+        } catch(e) {
+            console.warn('game_data.json not available:', e);
+        }
+    }
+
+    function renderDistStats() {
+        if (!gameData) return;
+        const s = gameData.stats;
+        document.getElementById('dist-stats').innerHTML = `
+            <div class="dist-stat-card"><div class="big-num">${s.totalRoutes}</div><div class="label">Zones explorees</div></div>
+            <div class="dist-stat-card"><div class="big-num" style="color:var(--gold)">${s.fakemonEncounters}</div><div class="label">Emplacements Fakemons</div></div>
+            <div class="dist-stat-card"><div class="big-num" style="color:var(--blue)">${s.uniquePokemon}</div><div class="label">Pokemon uniques</div></div>
+            <div class="dist-stat-card"><div class="big-num" style="color:var(--green)">${s.totalTrainers}</div><div class="label">Dresseurs modifies</div></div>
+        `;
+    }
+
+    function filterRoutes() {
+        if (!gameData) return;
+        const search = document.getElementById('route-search').value.toLowerCase().trim();
+        const filter = document.getElementById('route-filter').value;
+        const sort = document.getElementById('route-sort').value;
+
+        let routes = [...gameData.routes];
+
+        // Filter
+        if (search) routes = routes.filter(r => r.name.toLowerCase().includes(search));
+        if (filter === 'fakemons') routes = routes.filter(r => r.pokemon.some(p => p.isFakemon));
+        if (filter === 'main') routes = routes.filter(r => /^Route \d+$/.test(r.name));
+        if (filter === 'caves') routes = routes.filter(r => r.name.match(/cave|tunnel|path|falls|mt |pyre|pillar/i));
+        if (filter === 'water') routes = routes.filter(r => r.pokemon.some(p => ['Surf','Canne','Super Canne','Mega Canne'].includes(p.method)));
+
+        // Sort
+        if (sort === 'name') routes.sort((a,b) => a.name.localeCompare(b.name));
+        else if (sort === 'fakemon-count') routes.sort((a,b) => b.pokemon.filter(p=>p.isFakemon).length - a.pokemon.filter(p=>p.isFakemon).length);
+        else if (sort === 'level') {
+            routes.sort((a,b) => {
+                const avgA = a.pokemon.reduce((s,p)=>s+(p.minLv+p.maxLv)/2,0)/a.pokemon.length;
+                const avgB = b.pokemon.reduce((s,p)=>s+(p.minLv+p.maxLv)/2,0)/b.pokemon.length;
+                return avgA - avgB;
+            });
+        }
+        // progression sort is default order from extraction
+
+        renderRoutes(routes);
+    }
+
+    function renderRoutes(routes) {
+        const html = routes.map(route => {
+            const fakeCount = route.pokemon.filter(p => p.isFakemon).length;
+            const avgLv = Math.round(route.pokemon.reduce((s,p) => s + (p.minLv+p.maxLv)/2, 0) / route.pokemon.length);
+            const methods = [...new Set(route.pokemon.map(p => p.method))];
+            const hasFake = fakeCount > 0;
+            const vanillaCount = route.pokemon.length - fakeCount;
+
+            // Deduplicate Pokemon (same name + method = combine rates)
+            const seen = {};
+            const uniqueEnc = [];
+            route.pokemon.forEach(p => {
+                const key = p.name + '|' + p.method;
+                if (seen[key]) {
+                    seen[key].rate += p.rate;
+                    seen[key].count++;
+                } else {
+                    seen[key] = {...p, count: 1};
+                    uniqueEnc.push(seen[key]);
+                }
+            });
+
+            const rows = uniqueEnc.map(p => {
+                const rateWidth = Math.min(100, p.rate * 1.5);
+                return `<tr class="${p.isFakemon ? 'fakemon-row' : ''}">
+                    <td>${routeSpriteImg(p.name, p.isFakemon)}${p.name}${p.count > 1 ? ` <span style="color:var(--text-dim);font-size:0.7rem;">(x${p.count})</span>` : ''}</td>
+                    <td>${p.method}</td>
+                    <td>Lv ${p.minLv}-${p.maxLv}</td>
+                    <td>${p.rate}% <span class="enc-rate-bar" style="width:${rateWidth}px;${p.isFakemon?'background:var(--gold)':''}"></span></td>
+                </tr>`;
+            }).join('');
+
+            return `<div class="route-card ${hasFake ? 'has-fakemons' : ''}" id="route-${route.map}">
+                <div class="route-card-header" onclick="this.parentElement.classList.toggle('expanded')">
+                    <h3><span class="expand-icon">&#9654;</span> ${route.name}</h3>
+                    <div class="route-badges">
+                        ${methods.map(m => `<span class="route-badge route-badge-method">${m}</span>`).join('')}
+                        <span class="route-badge route-badge-level">Lv ~${avgLv}</span>
+                        ${hasFake ? `<span class="route-badge route-badge-fakemon">${fakeCount} Fakemon${fakeCount>1?'s':''}</span>` : ''}
+                    </div>
+                </div>
+                <div class="route-encounters">
+                    <div class="balance-bar" style="margin-bottom:10px;">
+                        <div class="vanilla-part" style="width:${vanillaCount/(vanillaCount+fakeCount)*100}%" title="${vanillaCount} officiels"></div>
+                        <div class="fakemon-part" style="width:${fakeCount/(vanillaCount+fakeCount)*100}%" title="${fakeCount} fakemons"></div>
+                    </div>
+                    <table class="enc-table">
+                        <thead><tr><th>Pokemon</th><th>Methode</th><th>Niveau</th><th>Taux</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('routes-list').innerHTML = html || '<p style="color:var(--text-dim);text-align:center;padding:32px;">Aucune route trouvee.</p>';
+    }
+
+    document.getElementById('route-search').addEventListener('input', filterRoutes);
+    document.getElementById('route-filter').addEventListener('change', filterRoutes);
+    document.getElementById('route-sort').addEventListener('change', filterRoutes);
+
+    // ============================================================
+    // TRAINERS
+    // ============================================================
+    function renderTrainers() {
+        if (!gameData || !gameData.trainers) return;
+        const trainers = gameData.trainers;
+
+        // Overview cards
+        document.getElementById('trainer-overview').innerHTML = trainers.map((t, i) => {
+            const dots = t.currentTeam.map(p => `<div class="dot ${p.isFakemon ? 'fakemon' : ''}"></div>`).join('');
+            return `<div class="trainer-summary-card" onclick="scrollToTrainer(${i})">
+                <div class="trainer-name">${t.nameFr}</div>
+                <div class="trainer-badge">${t.title}</div>
+                <div class="team-preview">${dots}</div>
+            </div>`;
+        }).join('');
+
+        // Detail cards
+        document.getElementById('trainer-details').innerHTML = trainers.map((t, i) => {
+            const typeClass = getTypeClass(t.type);
+
+            const origTeam = t.originalTeam.map(p => renderTeamPoke(p, false)).join('');
+            const newTeam = t.currentTeam.map(p => renderTeamPoke(p, true)).join('');
+
+            const origCount = t.originalTeam.length;
+            const newCount = t.currentTeam.length;
+            const fakeCount = t.currentTeam.filter(p => p.isFakemon).length;
+            const origMaxLv = Math.max(...t.originalTeam.map(p => p.level || 0));
+            const newMaxLv = Math.max(...t.currentTeam.map(p => p.level || 0));
+            const lvDiff = newMaxLv - origMaxLv;
+
+            return `<div class="trainer-card" id="trainer-${i}">
+                <div class="trainer-header">
+                    <div class="trainer-icon">${t.badge <= 8 ? t.badge : (t.badge === 13 ? 'C' : 'E')}</div>
+                    <div class="trainer-info">
+                        <h3>${t.nameFr}</h3>
+                        <div class="trainer-title">${t.title}</div>
+                    </div>
+                    <span class="trainer-type-badge type-badge ${typeClass}">${t.type}</span>
+                </div>
+                <div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">
+                    <div style="font-size:0.8rem;color:var(--text-dim)">Pokemon : <strong style="color:var(--text)">${origCount}</strong> &#8594; <strong style="color:var(--gold)">${newCount}</strong></div>
+                    <div style="font-size:0.8rem;color:var(--text-dim)">Niveau max : <strong style="color:var(--text)">${origMaxLv}</strong> &#8594; <strong style="color:${lvDiff>0?'var(--red)':'var(--green)'}">${newMaxLv}${lvDiff!==0?' ('+(lvDiff>0?'+':'')+lvDiff+')':''}</strong></div>
+                    <div style="font-size:0.8rem;color:var(--text-dim)">Fakemons : <strong style="color:var(--gold)">${fakeCount}</strong></div>
+                </div>
+                <div class="team-comparison">
+                    <div class="team-col">
+                        <h4>Equipe originale</h4>
+                        ${origTeam || '<div style="color:var(--text-dim);font-size:0.85rem;text-align:center">-</div>'}
+                    </div>
+                    <div class="team-arrow">&#8594;</div>
+                    <div class="team-col">
+                        <h4 class="modified">Equipe modifiee</h4>
+                        ${newTeam}
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderTeamPoke(p, showMoves) {
+        const isFake = p.isFakemon;
+        return `<div class="team-poke ${isFake ? 'is-fakemon' : ''}">
+            <div style="flex:1">
+                <span class="team-poke-name ${isFake ? 'fakemon' : ''}">${p.name}</span>
+                <span class="poke-lv">Lv${p.level || '?'}</span>
+                ${p.item ? `<span class="poke-item">@ ${p.item}</span>` : ''}
+                ${showMoves && p.moves && p.moves.length ? `<div class="team-moves">${p.moves.map(m => `<span>${m}</span>`).join('')}</div>` : ''}
+            </div>
+        </div>`;
+    }
+
+    function getTypeClass(type) {
+        const map = {'Roche':'type-rock','Combat':'type-fighting','Electrik':'type-electric','Feu':'type-fire',
+            'Normal':'type-normal','Vol':'type-flying','Psy':'type-psychic','Eau':'type-water',
+            'Tenebres':'type-dark','Spectre':'type-ghost','Glace':'type-ice','Dragon':'type-dragon','Acier':'type-steel'};
+        return map[type] || 'type-normal';
+    }
+
+    function scrollToTrainer(idx) {
+        const el = document.getElementById('trainer-' + idx);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ============================================================
+    // ALL POKEMON VIEW (from game_data.json)
+    // ============================================================
+    let allPokeData = []; // {name, isFakemon, routes: [{route, method, minLv, maxLv, rate}]}
+    let allPokeFiltered = [];
+    let allPokeDisplayed = 0;
+    const ALLPOKE_PAGE_SIZE = 100;
+
+    function buildAllPokeData() {
+        if (!gameData || allPokeData.length > 0) return;
+        const pokeMap = {};
+        gameData.routes.forEach(route => {
+            route.pokemon.forEach(p => {
+                const key = p.name;
+                if (!pokeMap[key]) {
+                    pokeMap[key] = { name: p.name, isFakemon: p.isFakemon, routes: [] };
+                }
+                // Also mark as fakemon if any entry says so
+                if (p.isFakemon) pokeMap[key].isFakemon = true;
+                pokeMap[key].routes.push({
+                    route: route.name,
+                    method: p.method,
+                    minLv: p.minLv,
+                    maxLv: p.maxLv,
+                    rate: p.rate
+                });
+            });
+        });
+        allPokeData = Object.values(pokeMap);
+    }
+
+    function getShowdownSprite(name) {
+        const slug = name.toLowerCase()
+            .replace(/['\u2019.]/g, '')
+            .replace(/\u2640/g, 'f').replace(/\u2642/g, 'm')
+            .replace(/ galar$/i, '-galar').replace(/ hisui$/i, '-hisui').replace(/ alola$/i, '-alola')
+            .replace(/ plant$/i, '-plant').replace(/ sandy$/i, '-sandy').replace(/ trash$/i, '-trash')
+            .replace(/ hero$/i, '').replace(/ blade$/i, '-blade').replace(/ shield$/i, '-shield')
+            .replace(/ attack$/i, '-attack').replace(/ defense$/i, '-defense').replace(/ speed$/i, '-speed')
+            .replace(/ 10 .*$/i, '-10').replace(/ 50 .*$/i, '-50').replace(/ complete$/i, '-complete')
+            .replace(/ dada$/i, '-dada')
+            .replace(/ therian$/i, '-therian').replace(/ incarnate$/i, '')
+            .replace(/ midnight$/i, '-midnight').replace(/ midday$/i, '')
+            .replace(/ origin$/i, '-origin').replace(/ altered$/i, '')
+            .replace(/ sky$/i, '-sky').replace(/ land$/i, '')
+            .replace(/ black$/i, '-black').replace(/ white$/i, '-white')
+            .replace(/ mega$/i, '-mega')
+            .replace(/ /g, '').replace(/[^a-z0-9-]/g, '');
+        return `https://play.pokemonshowdown.com/sprites/gen5/${slug}.png`;
+    }
+
+    function allPokeSpriteHTML(name, isFakemon, size) {
+        size = size || 48;
+        if (isFakemon) {
+            return `<img src="${spriteUrl(name)}" onerror="this.src='${FALLBACK}'" style="width:${size}px;height:${size}px;image-rendering:pixelated;">`;
+        }
+        return `<img src="${getShowdownSprite(name)}" onerror="this.src='${FALLBACK}'" style="width:${size}px;height:${size}px;image-rendering:pixelated;">`;
+    }
+
+    function methodTagClass(method) {
+        if (method === 'Herbe') return 'herbe';
+        if (method === 'Surf') return 'surf';
+        if (method.includes('Canne')) return 'canne';
+        if (method === 'Rock Smash') return 'rock';
+        return '';
+    }
+
+    function renderAllPokemon() {
+        buildAllPokeData();
+        const search = document.getElementById('allpoke-search').value.toLowerCase().trim();
+        const filter = document.getElementById('allpoke-filter').value;
+        const sort = document.getElementById('allpoke-sort').value;
+
+        allPokeFiltered = allPokeData.filter(p => {
+            if (search && !p.name.toLowerCase().includes(search)) return false;
+            if (filter === 'fakemon' && !p.isFakemon) return false;
+            if (filter === 'official' && p.isFakemon) return false;
+            return true;
+        });
+
+        if (sort === 'alpha') allPokeFiltered.sort((a,b) => a.name.localeCompare(b.name));
+        else if (sort === 'routes') allPokeFiltered.sort((a,b) => {
+            const ra = new Set(a.routes.map(r => r.route)).size;
+            const rb = new Set(b.routes.map(r => r.route)).size;
+            return rb - ra || a.name.localeCompare(b.name);
+        });
+
+        document.getElementById('allpoke-count').textContent = `${allPokeFiltered.length} Pokemon`;
+        allPokeDisplayed = 0;
+        document.getElementById('allpoke-grid').innerHTML = '';
+        loadMoreAllPoke();
+    }
+
+    function loadMoreAllPoke() {
+        const end = Math.min(allPokeDisplayed + ALLPOKE_PAGE_SIZE, allPokeFiltered.length);
+        let html = '';
+        for (let i = allPokeDisplayed; i < end; i++) {
+            const p = allPokeFiltered[i];
+            // Deduplicate routes
+            const uniqueRoutes = {};
+            p.routes.forEach(r => {
+                const key = r.route + '|' + r.method;
+                if (!uniqueRoutes[key]) uniqueRoutes[key] = r;
+            });
+            const routeList = Object.values(uniqueRoutes);
+            const routeCount = new Set(routeList.map(r => r.route)).size;
+
+            // Show first 3 routes max in card
+            const routePreview = routeList.slice(0, 3).map(r =>
+                `<span class="ap-method-tag ${methodTagClass(r.method)}">${r.method}</span><strong>${r.route}</strong> Lv${r.minLv}-${r.maxLv}`
+            ).join('<br>');
+            const moreText = routeList.length > 3 ? `<br><em>+${routeList.length - 3} autres zones...</em>` : '';
+
+            html += `<div class="allpoke-card ${p.isFakemon ? 'is-fakemon' : ''}" onclick="showAllPokeDetail('${p.name.replace(/'/g,"\\'")}')">
+                ${allPokeSpriteHTML(p.name, p.isFakemon)}
+                <div class="ap-info">
+                    <div class="ap-name ${p.isFakemon ? 'fakemon' : ''}">${p.name} ${p.isFakemon ? '<span style="font-size:0.7rem;color:var(--gold)">[Fakemon]</span>' : ''}</div>
+                    <div class="ap-routes">${routePreview}${moreText}</div>
+                </div>
+            </div>`;
+        }
+        document.getElementById('allpoke-grid').innerHTML += html;
+        allPokeDisplayed = end;
+
+        // Show/hide load more button
+        const loadMoreEl = document.getElementById('allpoke-load-more');
+        loadMoreEl.style.display = allPokeDisplayed < allPokeFiltered.length ? 'block' : 'none';
+    }
+
+    function showAllPokeDetail(name) {
+        const p = allPokeData.find(x => x.name === name);
+        if (!p) return;
+
+        // Deduplicate routes
+        const uniqueRoutes = {};
+        p.routes.forEach(r => {
+            const key = r.route + '|' + r.method;
+            if (!uniqueRoutes[key]) uniqueRoutes[key] = {...r};
+            else uniqueRoutes[key].rate += r.rate;
+        });
+        const routeList = Object.values(uniqueRoutes).sort((a,b) => b.rate - a.rate);
+
+        const rows = routeList.map(r => `<tr>
+            <td><strong>${r.route}</strong></td>
+            <td><span class="ap-method-tag ${methodTagClass(r.method)}">${r.method}</span></td>
+            <td>Lv ${r.minLv}-${r.maxLv}</td>
+            <td>${r.rate}% <span class="enc-rate-bar" style="width:${Math.min(100, r.rate * 1.5)}px;${p.isFakemon?'background:var(--gold)':''}"></span></td>
+        </tr>`).join('');
+
+        // Check if this fakemon is also in the catalogue for more detail
+        let catalogueInfo = '';
+        if (p.isFakemon) {
+            const fmk = allPokemon.find(x => x.name.toLowerCase() === name.toLowerCase());
+            if (fmk) {
+                catalogueInfo = `<div style="margin-top:16px;text-align:center;">
+                    <button onclick="closeModal();showDetail(${fmk.id})" style="padding:10px 24px;background:var(--gold);color:#333;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Voir la fiche Fakemon detaillee</button>
+                </div>`;
+            }
+        }
+
+        document.getElementById('modal-content').innerHTML = `
+            <div class="detail-header">
+                ${allPokeSpriteHTML(p.name, p.isFakemon, 96)}
+                <div>
+                    <div style="color:var(--text-dim);font-size:0.8rem">${p.isFakemon ? 'Fakemon' : 'Pokemon officiel'}</div>
+                    <div class="detail-name">${p.name}</div>
+                    <div style="color:var(--text-dim);font-size:0.85rem;margin-top:4px;">Trouvable dans ${new Set(routeList.map(r=>r.route)).size} zone${new Set(routeList.map(r=>r.route)).size > 1 ? 's' : ''}</div>
+                </div>
+            </div>
+            <div class="allpoke-detail-routes">
+                <h4 style="color:var(--gold);margin-bottom:8px;">Toutes les zones de rencontre</h4>
+                <table>
+                    <thead><tr><th>Zone</th><th>Methode</th><th>Niveau</th><th>Taux</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+            ${catalogueInfo}
+        `;
+        document.getElementById('detail-modal').classList.add('active');
+    }
+
+    // Events for all pokemon view
+    document.getElementById('allpoke-search').addEventListener('input', renderAllPokemon);
+    document.getElementById('allpoke-filter').addEventListener('change', renderAllPokemon);
+    document.getElementById('allpoke-sort').addEventListener('change', renderAllPokemon);
+
+    // ============================================================
+    // BY ROUTE VIEW (all Pokemon from game_data.json)
+    // ============================================================
+    function renderByRoute() {
+        if (!gameData) return;
+        const search = document.getElementById('byroute-search').value.toLowerCase().trim();
+        const filter = document.getElementById('byroute-filter').value;
+
+        let routes = [...gameData.routes];
+
+        if (search) routes = routes.filter(r => r.name.toLowerCase().includes(search));
+        if (filter === 'fakemons') routes = routes.filter(r => r.pokemon.some(p => p.isFakemon));
+        if (filter === 'main') routes = routes.filter(r => /^Route \d+$/.test(r.name));
+        if (filter === 'caves') routes = routes.filter(r => r.name.match(/cave|tunnel|path|falls|mt |pyre|pillar/i));
+        if (filter === 'water') routes = routes.filter(r => r.pokemon.some(p => ['Surf','Canne','Super Canne','Mega Canne'].includes(p.method)));
+
+        document.getElementById('byroute-count').textContent = `${routes.length} zones`;
+
+        const html = routes.map(route => {
+            const fakeCount = route.pokemon.filter(p => p.isFakemon).length;
+            const avgLv = Math.round(route.pokemon.reduce((s,p) => s + (p.minLv+p.maxLv)/2, 0) / route.pokemon.length);
+            const methods = [...new Set(route.pokemon.map(p => p.method))];
+            const totalPoke = route.pokemon.length;
+
+            // Deduplicate
+            const seen = {};
+            const uniqueEnc = [];
+            route.pokemon.forEach(p => {
+                const key = p.name + '|' + p.method;
+                if (seen[key]) { seen[key].rate += p.rate; seen[key].count++; }
+                else { seen[key] = {...p, count: 1}; uniqueEnc.push(seen[key]); }
+            });
+
+            const pokemonCards = uniqueEnc.map(p => {
+                const spriteHtml = p.isFakemon
+                    ? `<img src="${spriteUrl(p.name)}" onerror="this.style.display='none'" style="width:32px;height:32px;image-rendering:pixelated;">`
+                    : `<img src="${getShowdownSprite(p.name)}" onerror="this.style.display='none'" style="width:32px;height:32px;image-rendering:pixelated;">`;
+                return `<div class="route-pokemon" onclick="showAllPokeDetail('${p.name.replace(/'/g,"\\'")}')">
+                    ${spriteHtml}
+                    <div>
+                        <div class="rp-name" style="${p.isFakemon ? 'color:var(--gold)' : ''}">${p.name}</div>
+                        <div class="rp-info">${p.method} | Lv${p.minLv}-${p.maxLv} | ${p.rate}%</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            return `<div class="route-group">
+                <h3>${route.name} <span style="font-size:0.75rem;color:var(--text-dim);">${totalPoke} Pokemon | Lv ~${avgLv} | ${methods.join(', ')}${fakeCount > 0 ? ` | <span style="color:var(--gold)">${fakeCount} Fakemon${fakeCount>1?'s':''}</span>` : ''}</span></h3>
+                <div class="route-pokemon-list">${pokemonCards}</div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('byroute-list').innerHTML = html || '<p style="color:var(--text-dim);text-align:center;padding:32px;">Aucune route trouvee.</p>';
+    }
+
+    document.getElementById('byroute-search').addEventListener('input', renderByRoute);
+    document.getElementById('byroute-filter').addEventListener('change', renderByRoute);
+
+    // ============================================================
+    // ACQUISITION GUIDE (for fakemon detail modal)
+    // ============================================================
+    const ITEM_NAMES_FR = {
+        'ITEM_FIRE_STONE': 'Pierre Feu',
+        'ITEM_WATER_STONE': 'Pierre Eau',
+        'ITEM_THUNDER_STONE': 'Pierre Foudre',
+        'ITEM_LEAF_STONE': 'Pierre Plante',
+        'ITEM_MOON_STONE': 'Pierre Lune',
+        'ITEM_SUN_STONE': 'Pierre Soleil',
+        'ITEM_SHINY_STONE': 'Pierre Eclat',
+        'ITEM_DUSK_STONE': 'Pierre Nuit',
+        'ITEM_DAWN_STONE': 'Pierre Aube',
+        'ITEM_DRAGON_SCALE': 'Ecaille Draco',
+        'ITEM_METAL_COAT': 'Peau Metal',
+        'ITEM_COMET_SHARD': 'Morceau Comete',
+    };
+
+    const MOVE_NAMES_FR = {
+        'MOVE_SWORDS_DANCE': 'Danse-Lames',
+    };
+
+    function buildAcquisitionGuide(pokemon) {
+        // Find the family and the base member
+        const family = catalogue.families.find(f => f.members && f.members.some(m => m.name === pokemon.name));
+        if (!family) return '';
+
+        const memberIdx = family.members.findIndex(m => m.name === pokemon.name);
+        const member = family.members[memberIdx];
+        const isBase = memberIdx === 0 || member.encounter;
+        const baseForm = family.members[0];
+
+        let steps = [];
+
+        // --- Determine how to get this specific Pokemon ---
+
+        // 1. If it's directly catchable in the wild
+        if (member.encounter && member.encounter.route) {
+            steps.push({
+                icon: 'wild',
+                label: '1',
+                text: `<strong>Capture sauvage</strong> : Trouvable dans les hautes herbes sur <strong>${member.encounter.route}</strong>, niveaux ${member.encounter.min_level || '?'}-${member.encounter.max_level || '?'}.`
+            });
+        }
+
+        // 2. If it's an evolution: explain from the base form
+        if (!isBase && !member.encounter) {
+            // Trace the chain from base to this Pokemon
+            for (let i = 0; i <= memberIdx; i++) {
+                const m = family.members[i];
+                if (i === 0) {
+                    // Base form: how to get it
+                    if (m.encounter && m.encounter.route) {
+                        steps.push({
+                            icon: 'wild',
+                            label: '1',
+                            text: `<strong>Capturer ${m.name}</strong> : Trouvable sur <strong>${m.encounter.route}</strong>, niveaux ${m.encounter.min_level || '?'}-${m.encounter.max_level || '?'}.`
+                        });
+                    } else if (m.encounter_note) {
+                        steps.push({
+                            icon: 'special',
+                            label: '1',
+                            text: `<strong>Obtenir ${m.name}</strong> : ${translateEncounterNote(m.encounter_note)}`
+                        });
+                    } else {
+                        steps.push({
+                            icon: 'wild',
+                            label: '1',
+                            text: `<strong>Obtenir ${m.name}</strong> : <em>Methode d'obtention a confirmer.</em>`
+                        });
+                    }
+                }
+                if (i > 0 && i <= memberIdx) {
+                    const prev = family.members[i-1];
+                    const evo = m.evolution || prev.evolution;
+                    const evoNote = m.evolution_note || prev.evolution_note;
+                    if (evoNote) {
+                        steps.push({
+                            icon: 'evo',
+                            label: String(steps.length + 1),
+                            text: `<strong>Evoluer en ${m.name}</strong> : ${translateEvoNote(evoNote)}`
+                        });
+                    } else if (evo) {
+                        steps.push({
+                            icon: evo.method.includes('ITEM') ? 'item' : 'evo',
+                            label: String(steps.length + 1),
+                            text: `<strong>Evoluer en ${m.name}</strong> : ${translateEvoMethod(evo)}`
+                        });
+                    }
+                }
+            }
+        }
+
+        // 3. If it has a special encounter_note (legendaries, bosses)
+        if (member.encounter_note) {
+            steps.push({
+                icon: member.encounter_note.toLowerCase().includes('boss') || member.encounter_note.toLowerCase().includes('ultimate') ? 'boss' : 'special',
+                label: String(steps.length + 1),
+                text: `<strong>Rencontre speciale</strong> : ${translateEncounterNote(member.encounter_note)}`
+            });
+        }
+
+        // 4. If it has an evolution_note (special branched evolutions, 5th forms)
+        if (member.evolution_note && !steps.some(s => s.text.includes(member.evolution_note))) {
+            steps.push({
+                icon: 'item',
+                label: String(steps.length + 1),
+                text: `<strong>Evolution speciale</strong> : ${translateEvoNote(member.evolution_note)}`
+            });
+        }
+
+        // 5. If this Pokemon itself has an evolution (show what it evolves into)
+        if (member.evolution && memberIdx < family.members.length - 1) {
+            const nextMember = family.members[memberIdx + 1];
+            if (nextMember) {
+                steps.push({
+                    icon: 'evo',
+                    label: 'i',
+                    text: `<em>Peut evoluer en <strong>${nextMember.name}</strong> : ${translateEvoMethod(member.evolution)}</em>`
+                });
+            }
+        }
+
+        // Also check for game_data.json wild encounters if not already covered
+        if (gameData && steps.length === 0) {
+            const lowerName = pokemon.name.toLowerCase();
+            const wildRoutes = [];
+            gameData.routes.forEach(route => {
+                route.pokemon.forEach(p => {
+                    if (p.name.toLowerCase() === lowerName && p.isFakemon) {
+                        wildRoutes.push({ route: route.name, method: p.method, minLv: p.minLv, maxLv: p.maxLv, rate: p.rate });
+                    }
+                });
+            });
+            if (wildRoutes.length > 0) {
+                const routeTexts = wildRoutes.map(r => `<strong>${r.route}</strong> (${r.method}, Lv${r.minLv}-${r.maxLv}, ${r.rate}%)`);
+                steps.push({
+                    icon: 'wild',
+                    label: '1',
+                    text: `<strong>Capture sauvage</strong> : ${routeTexts.join(' / ')}`
+                });
+            }
+        }
+
+        if (steps.length === 0) return '';
+
+        const stepsHTML = steps.map(s => `<div class="acq-step">
+            <div class="acq-icon ${s.icon}">${s.label}</div>
+            <div class="acq-text">${s.text}</div>
+        </div>`).join('');
+
+        return `<div class="acquisition-guide"><h4>Comment obtenir ${pokemon.name}</h4>${stepsHTML}</div>`;
+    }
+
+    function translateEvoMethod(evo) {
+        if (!evo) return 'Methode inconnue';
+        const method = evo.method;
+        const param = evo.param;
+        if (method === 'EVO_LEVEL') return `Evolue au <strong>niveau ${param}</strong>.`;
+        if (method === 'EVO_LEVEL_NIGHT') return `Evolue au <strong>niveau ${param}</strong> pendant la <strong>nuit</strong>.`;
+        if (method === 'EVO_ITEM') {
+            const itemFr = ITEM_NAMES_FR[param] || param.replace('ITEM_','').replace(/_/g,' ');
+            return `Utiliser une <strong>${itemFr}</strong>.`;
+        }
+        if (method === 'EVO_MOVE') {
+            const moveFr = MOVE_NAMES_FR[param] || param.replace('MOVE_','').replace(/_/g,' ');
+            return `Monter de niveau en connaissant <strong>${moveFr}</strong>.`;
+        }
+        if (method === 'EVO_FRIENDSHIP') return `Evolue par <strong>bonheur</strong> (amitie elevee).`;
+        return `${method} ${param || ''}`;
+    }
+
+    function translateEncounterNote(note) {
+        // Translate common English encounter notes to French
+        return note
+            .replace(/Static legendary/gi, 'Legendaire statique')
+            .replace(/static encounter/gi, 'rencontre statique')
+            .replace(/Requires defeating/gi, 'Necessite de battre')
+            .replace(/Requires collecting/gi, 'Necessite de collecter')
+            .replace(/Requires all 8 badges/gi, 'Necessite les 8 badges')
+            .replace(/Requires/gi, 'Necessite')
+            .replace(/Appears in/gi, 'Apparait dans')
+            .replace(/Appears when/gi, 'Apparait quand')
+            .replace(/Appears at/gi, 'Apparait a')
+            .replace(/after defeating/gi, 'apres avoir battu')
+            .replace(/after collecting/gi, 'apres avoir collecte')
+            .replace(/after solving/gi, 'apres avoir resolu')
+            .replace(/after powering/gi, 'apres avoir alimente')
+            .replace(/after/gi, 'apres')
+            .replace(/Ultimate boss/gi, 'Boss ultime')
+            .replace(/Boss legendary/gi, 'Boss legendaire')
+            .replace(/God-tier/gi, 'Tier divin')
+            .replace(/Rare encounter/gi, 'Rencontre rare')
+            .replace(/hidden room/gi, 'salle secrete')
+            .replace(/secret room/gi, 'salle secrete')
+            .replace(/secret cave/gi, 'grotte secrete')
+            .replace(/Must have/gi, 'Il faut avoir')
+            .replace(/in party/gi, 'dans l\'equipe')
+            .replace(/at nighttime/gi, 'pendant la nuit')
+            .replace(/at midnight/gi, 'a minuit')
+            .replace(/at night/gi, 'pendant la nuit')
+            .replace(/during night/gi, 'pendant la nuit')
+            .replace(/during daytime/gi, 'pendant le jour')
+            .replace(/daytime, clear weather/gi, 'jour, temps clair')
+            .replace(/nighttime/gi, 'nuit')
+            .replace(/Impossible to flee from/gi, 'Impossible de fuir')
+            .replace(/The only/gi, 'Le seul')
+            .replace(/Counterpart to/gi, 'Pendant de')
+            .replace(/both a Fire and Ice type/gi, 'un type Feu et un type Glace')
+            .replace(/holding/gi, 'tenant')
+            .replace(/Interact/gi, 'Interagir')
+            .replace(/it awakens/gi, 'il se reveille')
+            .replace(/Use all 5/gi, 'Utiliser les 5')
+            .replace(/hidden items across the game/gi, 'objets caches a travers le jeu')
+            .replace(/both in party/gi, 'tous les deux dans l\'equipe')
+            .replace(/solving 3 puzzles/gi, 'resolu 3 enigmes')
+            .replace(/4 dragon guardians/gi, '4 gardiens dragons')
+            .replace(/all gym leaders with fakemons only/gi, 'tous les champions d\'arene avec uniquement des fakemons')
+            .replace(/3 sacred tablets/gi, '3 tablettes sacrees')
+            .replace(/5 Exodia Pieces/gi, '5 Pieces d\'Exodia')
+            .replace(/The sky darkens/gi, 'Le ciel s\'assombrit')
+            .replace(/the ground shakes as it descends/gi, 'le sol tremble a sa descente')
+            .replace(/The water boils as you enter/gi, 'L\'eau bout quand vous entrez')
+            .replace(/The armor stands motionless until you read the ancient inscription/gi, 'L\'armure reste immobile jusqu\'a ce que vous lisiez l\'inscription antique')
+            .replace(/lunar event/gi, 'evenement lunaire')
+            .replace(/solar event/gi, 'evenement solaire')
+            .replace(/time-based puzzle/gi, 'enigme temporelle')
+            .replace(/interact with 4 sundials in correct order/gi, 'interagir avec 4 cadrans solaires dans le bon ordre')
+            .replace(/all generators/gi, 'tous les generateurs')
+            .replace(/deepest room/gi, 'salle la plus profonde')
+            .replace(/deepest chamber/gi, 'chambre la plus profonde')
+            .replace(/deepest grove/gi, 'clairiere la plus profonde')
+            .replace(/back room/gi, 'arriere-salle')
+            .replace(/rooftop/gi, 'sommet')
+            .replace(/summit/gi, 'sommet')
+            .replace(/top of/gi, 'sommet de')
+            .replace(/first/gi, 'premier');
+    }
+
+    function translateEvoNote(note) {
+        return note
+            .replace(/Evolves into/gi, 'Evolue en')
+            .replace(/Requires/gi, 'Necessite')
+            .replace(/at level/gi, 'au niveau')
+            .replace(/at lv/gi, 'au Lv')
+            .replace(/at night/gi, 'pendant la nuit')
+            .replace(/during night/gi, 'pendant la nuit')
+            .replace(/during daytime/gi, 'pendant le jour')
+            .replace(/5th form/gi, '5eme forme')
+            .replace(/use/gi, 'utiliser')
+            .replace(/ on /gi, ' sur ')
+            .replace(/ in /gi, ' dans ')
+            .replace(/Fire Stone/gi, 'Pierre Feu')
+            .replace(/Dusk Stone/gi, 'Pierre Nuit')
+            .replace(/Moon Stone/gi, 'Pierre Lune')
+            .replace(/Comet Shard/gi, 'Morceau Comete')
+            .replace(/ or /gi, ' ou ');
+    }
+
+    // ============================================================
+    // EVENTS
+    // ============================================================
+    document.getElementById('search').addEventListener('input', filterPokedex);
+    document.getElementById('category-filter').addEventListener('change', filterPokedex);
+    document.getElementById('sort-by').addEventListener('change', filterPokedex);
+    document.getElementById('ability-filter').addEventListener('input', filterPokedex);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCompare(); } });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    loadCatalogue();
+    loadGameData();
+    </script>
+</body>
+</html>

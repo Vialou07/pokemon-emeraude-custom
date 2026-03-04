@@ -1,0 +1,5889 @@
+{
+  "meta": {
+    "version": 1,
+    "description": "Master catalogue of all planned fakemons",
+    "next_species_id": 1589,
+    "custom_types": [
+      "Cosmic",
+      "Void",
+      "Divine"
+    ]
+  },
+  "families": [
+    {
+      "id": "ogeko",
+      "status": "INJECTED_V23",
+      "inspiration": "original",
+      "members": [
+        {
+          "name": "Ogeko",
+          "species_id": 1573,
+          "types": [
+            "Water"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 45,
+            "atk": 50,
+            "def": 40,
+            "spa": 65,
+            "spd": 50,
+            "spe": 60
+          },
+          "abilities": [
+            "Torrent",
+            "Swift Swim"
+          ]
+        },
+        {
+          "name": "Triton",
+          "species_id": 1574,
+          "types": [
+            "Water",
+            "Dragon"
+          ],
+          "bst": 420,
+          "stats": {
+            "hp": 65,
+            "atk": 70,
+            "def": 55,
+            "spa": 85,
+            "spd": 65,
+            "spe": 75
+          },
+          "abilities": [
+            "Torrent",
+            "Swift Swim"
+          ]
+        },
+        {
+          "name": "Poseidon",
+          "species_id": 1575,
+          "types": [
+            "Water",
+            "Dragon"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 85,
+            "atk": 90,
+            "def": 75,
+            "spa": 110,
+            "spd": 85,
+            "spe": 95
+          },
+          "abilities": [
+            "Torrent",
+            "Swift Swim"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "flamber",
+      "status": "INJECTED_V23",
+      "inspiration": "original",
+      "members": [
+        {
+          "name": "Flamber",
+          "species_id": 1576,
+          "types": [
+            "Fire"
+          ],
+          "bst": 310,
+          "stats": {
+            "hp": 45,
+            "atk": 65,
+            "def": 35,
+            "spa": 45,
+            "spd": 40,
+            "spe": 80
+          },
+          "abilities": [
+            "Blaze",
+            "Flash Fire"
+          ]
+        },
+        {
+          "name": "Pyrosol",
+          "species_id": 1577,
+          "types": [
+            "Fire",
+            "Ground"
+          ],
+          "bst": 420,
+          "stats": {
+            "hp": 65,
+            "atk": 90,
+            "def": 55,
+            "spa": 55,
+            "spd": 60,
+            "spe": 95
+          },
+          "abilities": [
+            "Blaze",
+            "Flash Fire"
+          ]
+        },
+        {
+          "name": "Infernox",
+          "species_id": 1578,
+          "types": [
+            "Fire",
+            "Ground"
+          ],
+          "bst": 550,
+          "stats": {
+            "hp": 85,
+            "atk": 120,
+            "def": 75,
+            "spa": 70,
+            "spd": 90,
+            "spe": 110
+          },
+          "abilities": [
+            "Blaze",
+            "Flash Fire"
+          ]
+        },
+        {
+          "name": "Infernoxxx",
+          "species_id": 1579,
+          "types": [
+            "Fire",
+            "Ground"
+          ],
+          "bst": 650,
+          "stats": {
+            "hp": 95,
+            "atk": 155,
+            "def": 85,
+            "spa": 80,
+            "spd": 105,
+            "spe": 130
+          },
+          "abilities": [
+            "Drought",
+            "Flash Fire"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "azy",
+      "status": "INJECTED_V23",
+      "inspiration": "lol_azir",
+      "members": [
+        {
+          "name": "Azy",
+          "species_id": 1580,
+          "types": [
+            "Ground"
+          ],
+          "bst": 250,
+          "stats": {
+            "hp": 40,
+            "atk": 30,
+            "def": 35,
+            "spa": 40,
+            "spd": 35,
+            "spe": 70
+          },
+          "abilities": [
+            "Sand Veil",
+            "Sand Stream"
+          ]
+        },
+        {
+          "name": "Azir",
+          "species_id": 1581,
+          "types": [
+            "Ground",
+            "Psychic"
+          ],
+          "bst": 500,
+          "stats": {
+            "hp": 75,
+            "atk": 65,
+            "def": 75,
+            "spa": 110,
+            "spd": 70,
+            "spe": 105
+          },
+          "abilities": [
+            "Sand Stream",
+            "Intimidate"
+          ]
+        },
+        {
+          "name": "Darkazir",
+          "species_id": 1582,
+          "types": [
+            "Ground",
+            "Dark"
+          ],
+          "bst": 620,
+          "stats": {
+            "hp": 85,
+            "atk": 80,
+            "def": 85,
+            "spa": 145,
+            "spd": 95,
+            "spe": 130
+          },
+          "abilities": [
+            "Sand Stream",
+            "Dark Aura",
+            "Intimidate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "frostie",
+      "status": "INJECTED_V23",
+      "inspiration": "original",
+      "members": [
+        {
+          "name": "Frostie",
+          "species_id": 1583,
+          "types": [
+            "Ice"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 45,
+            "atk": 30,
+            "def": 40,
+            "spa": 60,
+            "spd": 50,
+            "spe": 65
+          },
+          "abilities": [
+            "Snow Cloak",
+            "Ice Body"
+          ]
+        },
+        {
+          "name": "Glacielle",
+          "species_id": 1584,
+          "types": [
+            "Ice",
+            "Fairy"
+          ],
+          "bst": 410,
+          "stats": {
+            "hp": 65,
+            "atk": 40,
+            "def": 60,
+            "spa": 90,
+            "spd": 70,
+            "spe": 85
+          },
+          "abilities": [
+            "Snow Cloak",
+            "Ice Body"
+          ]
+        },
+        {
+          "name": "Cryoqueen",
+          "species_id": 1585,
+          "types": [
+            "Ice",
+            "Fairy"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 80,
+            "atk": 50,
+            "def": 80,
+            "spa": 130,
+            "spd": 95,
+            "spe": 105
+          },
+          "abilities": [
+            "Snow Warning",
+            "Ice Body"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rocklit",
+      "status": "INJECTED_V23",
+      "inspiration": "original",
+      "members": [
+        {
+          "name": "Rocklit",
+          "species_id": 1586,
+          "types": [
+            "Rock"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 55,
+            "atk": 65,
+            "def": 60,
+            "spa": 25,
+            "spd": 45,
+            "spe": 30
+          },
+          "abilities": [
+            "Sturdy",
+            "Rock Head"
+          ]
+        },
+        {
+          "name": "Boulderge",
+          "species_id": 1587,
+          "types": [
+            "Rock",
+            "Steel"
+          ],
+          "bst": 415,
+          "stats": {
+            "hp": 80,
+            "atk": 100,
+            "def": 95,
+            "spa": 35,
+            "spd": 65,
+            "spe": 40
+          },
+          "abilities": [
+            "Sturdy",
+            "Rock Head"
+          ]
+        },
+        {
+          "name": "Titanore",
+          "species_id": 1588,
+          "types": [
+            "Rock",
+            "Steel"
+          ],
+          "bst": 530,
+          "stats": {
+            "hp": 100,
+            "atk": 135,
+            "def": 120,
+            "spa": 45,
+            "spd": 80,
+            "spe": 50
+          },
+          "abilities": [
+            "Sturdy",
+            "Filter"
+          ]
+        }
+      ]
+    },
+    {
+      "_comment": "=== LEAGUE OF LEGENDS ==="
+    },
+    {
+      "id": "teemo",
+      "status": "PLANNED",
+      "inspiration": "lol_teemo",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Shroomi",
+          "types": [
+            "Grass",
+            "Poison"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 40,
+            "atk": 30,
+            "def": 35,
+            "spa": 55,
+            "spd": 40,
+            "spe": 80
+          },
+          "abilities": [
+            "Poison Point",
+            "Prankster"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 18
+          },
+          "encounter": {
+            "route": "Route 104",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 5,
+            "max_level": 7
+          },
+          "sprite_prompt": "A tiny cute scout hamster creature with a green hat and blowpipe, Pokemon GBA battle sprite style, small and mischievous"
+        },
+        {
+          "name": "Teemork",
+          "types": [
+            "Grass",
+            "Poison"
+          ],
+          "bst": 440,
+          "stats": {
+            "hp": 60,
+            "atk": 45,
+            "def": 55,
+            "spa": 90,
+            "spd": 65,
+            "spe": 125
+          },
+          "abilities": [
+            "Poison Point",
+            "Prankster"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 36
+          },
+          "sprite_prompt": "A medium-sized mischievous hamster scout creature with a large mushroom hat, blowpipe, poison darts, green and purple colors, Pokemon GBA style"
+        },
+        {
+          "name": "Captoxic",
+          "types": [
+            "Grass",
+            "Poison"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 70,
+            "atk": 55,
+            "def": 65,
+            "spa": 120,
+            "spd": 80,
+            "spe": 150
+          },
+          "abilities": [
+            "Toxic Debris",
+            "Prankster"
+          ],
+          "sprite_prompt": "Captain Teemo from League of Legends in omega strike form, sinister hamster captain with massive toxic mushroom hat, wielding poisoned blowpipe, surrounded by scattered toxic shroom mines, glowing purple poison aura, Teemo silhouette clearly recognizable with his hat and blowpipe, menacing despite small size, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "thresh",
+      "status": "PLANNED",
+      "inspiration": "lol_thresh",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Lantrin",
+          "types": [
+            "Ghost"
+          ],
+          "bst": 270,
+          "stats": {
+            "hp": 45,
+            "atk": 30,
+            "def": 50,
+            "spa": 40,
+            "spd": 55,
+            "spe": 50
+          },
+          "abilities": [
+            "Cursed Body",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 20
+          },
+          "encounter": {
+            "route": "Route 121",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 26,
+            "max_level": 28
+          },
+          "sprite_prompt": "A small green ghostly lantern creature with a chain, eerie glow, simple ghost design, Pokemon GBA battle sprite style"
+        },
+        {
+          "name": "Threshol",
+          "types": [
+            "Ghost",
+            "Steel"
+          ],
+          "bst": 450,
+          "stats": {
+            "hp": 70,
+            "atk": 55,
+            "def": 90,
+            "spa": 65,
+            "spd": 85,
+            "spe": 85
+          },
+          "abilities": [
+            "Cursed Body",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 40
+          },
+          "sprite_prompt": "A spectral warden with chains and a glowing green lantern, armored ghost, imposing figure, green and dark gray, Pokemon GBA style"
+        },
+        {
+          "name": "Threshoul",
+          "types": [
+            "Ghost",
+            "Steel"
+          ],
+          "bst": 560,
+          "stats": {
+            "hp": 85,
+            "atk": 70,
+            "def": 110,
+            "spa": 80,
+            "spd": 105,
+            "spe": 110
+          },
+          "abilities": [
+            "Soul Heart",
+            "Intimidate"
+          ],
+          "sprite_prompt": "Unbound Thresh from League of Legends, massive spectral chain warden with shattered chains orbiting around, blazing green soulfire lantern burning bright, dark tattered soul-shroud flowing, green spectral souls screaming around him, imposing reaper of souls, recognizable Thresh hook and lantern, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "ahri",
+      "status": "PLANNED",
+      "inspiration": "lol_ahri",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Foxini",
+          "types": [
+            "Fire",
+            "Fairy"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 45,
+            "atk": 30,
+            "def": 35,
+            "spa": 65,
+            "spd": 50,
+            "spe": 65
+          },
+          "abilities": [
+            "Flash Fire",
+            "Cute Charm"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 20
+          },
+          "encounter": {
+            "route": "Route 119",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 20,
+            "max_level": 22
+          },
+          "sprite_prompt": "A tiny cute baby fox with one fluffy tail, blue magical fire wisps around it, white and pink fur, adorable eyes, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Ahrine",
+          "types": [
+            "Fire",
+            "Fairy"
+          ],
+          "bst": 460,
+          "stats": {
+            "hp": 65,
+            "atk": 40,
+            "def": 55,
+            "spa": 110,
+            "spd": 75,
+            "spe": 115
+          },
+          "abilities": [
+            "Flash Fire",
+            "Cute Charm"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_SHINY_STONE"
+          },
+          "sprite_prompt": "An elegant nine-tailed fox spirit with flowing white and pink fur, blue spirit orbs floating around, graceful pose, mystical aura, Pokemon GBA style"
+        },
+        {
+          "name": "Ahrinity",
+          "types": [
+            "Fire",
+            "Fairy"
+          ],
+          "bst": 570,
+          "stats": {
+            "hp": 75,
+            "atk": 45,
+            "def": 65,
+            "spa": 140,
+            "spd": 90,
+            "spe": 155
+          },
+          "abilities": [
+            "Pixilate",
+            "Cute Charm"
+          ],
+          "sprite_prompt": "Spirit Blossom Ahri from League of Legends, divine nine-tailed celestial fox, nine ethereal spirit tails flowing with cherry blossom petals and blue foxfire, elegant yet deadly, spirit orbs circling, recognizable Ahri fox ears and multiple tails, white and pink with spiritual energy, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "jinx",
+      "status": "PLANNED",
+      "inspiration": "lol_jinx",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Sparkit",
+          "types": [
+            "Electric"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 35,
+            "atk": 55,
+            "def": 30,
+            "spa": 55,
+            "spd": 30,
+            "spe": 75
+          },
+          "abilities": [
+            "Reckless",
+            "Hustle"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 22
+          },
+          "encounter": {
+            "route": "Route 110",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 12,
+            "max_level": 14
+          },
+          "sprite_prompt": "A small crazy blue-haired girl creature with sparks, manic grin, chaotic energy, pink and electric blue, tiny rockets, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Jinxette",
+          "types": [
+            "Electric",
+            "Fire"
+          ],
+          "bst": 450,
+          "stats": {
+            "hp": 55,
+            "atk": 95,
+            "def": 45,
+            "spa": 95,
+            "spd": 50,
+            "spe": 110
+          },
+          "abilities": [
+            "Reckless",
+            "Hustle"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 40
+          },
+          "sprite_prompt": "A chaotic girl with long blue braids, carrying a rocket launcher and a zapper gun, manic expression, electric sparks and flames, pink and blue, Pokemon GBA style"
+        },
+        {
+          "name": "Jinxarcane",
+          "types": [
+            "Electric",
+            "Fire"
+          ],
+          "bst": 560,
+          "stats": {
+            "hp": 65,
+            "atk": 125,
+            "def": 50,
+            "spa": 125,
+            "spd": 55,
+            "spe": 140
+          },
+          "abilities": [
+            "Reckless",
+            "Sheer Force"
+          ],
+          "sprite_prompt": "Jinx from Arcane Season 1, wild long blue braids glowing with hextech energy, wielding Pow-Pow minigun in one hand and Fishbones rocket launcher on back, manic wide grin, neon pink eyes, electric and fire energy mixing, chaotic and unhinged, clearly recognizable Jinx with her iconic weapons, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "yasuo",
+      "status": "PLANNED",
+      "inspiration": "lol_yasuo",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Windling",
+          "types": [
+            "Flying",
+            "Fighting"
+          ],
+          "bst": 300,
+          "stats": {
+            "hp": 45,
+            "atk": 60,
+            "def": 40,
+            "spa": 30,
+            "spd": 40,
+            "spe": 85
+          },
+          "abilities": [
+            "Wind Rider",
+            "Inner Focus"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 24
+          },
+          "encounter": {
+            "route": "Route 118",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 18,
+            "max_level": 20
+          },
+          "sprite_prompt": "A small samurai apprentice with a tiny wooden sword, wind swirling around, Japanese ronin style, gray and blue clothing, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Yasuron",
+          "types": [
+            "Flying",
+            "Fighting"
+          ],
+          "bst": 480,
+          "stats": {
+            "hp": 65,
+            "atk": 110,
+            "def": 55,
+            "spa": 40,
+            "spd": 55,
+            "spe": 155
+          },
+          "abilities": [
+            "Wind Rider",
+            "Inner Focus"
+          ],
+          "evolution": {
+            "method": "EVO_MOVE",
+            "param": "MOVE_SWORDS_DANCE"
+          },
+          "sprite_prompt": "A ronin swordsman with a long katana, wind tornado around him, flowing hair and scarf, blue and gray robes, intense expression, Pokemon GBA style"
+        },
+        {
+          "name": "Yasunight",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 580,
+          "stats": {
+            "hp": 80,
+            "atk": 140,
+            "def": 65,
+            "spa": 50,
+            "spd": 65,
+            "spe": 180
+          },
+          "abilities": [
+            "Wind Rider",
+            "Sword of Ruin"
+          ],
+          "sprite_prompt": "Nightbringer Yasuo from League of Legends, demonic dark samurai warrior, blazing infernal katana sword, massive dark demon wings spread wide, black and crimson demonic armor, wind and hellfire tornado around him, fearsome ronin turned demon lord, recognizable Yasuo sword stance, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "darius",
+      "status": "PLANNED",
+      "inspiration": "lol_darius",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Axeling",
+          "types": [
+            "Fighting"
+          ],
+          "bst": 310,
+          "stats": {
+            "hp": 60,
+            "atk": 70,
+            "def": 50,
+            "spa": 20,
+            "spd": 40,
+            "spe": 70
+          },
+          "abilities": [
+            "Guts",
+            "Moxie"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 24
+          },
+          "encounter": {
+            "route": "Route 112",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 14,
+            "max_level": 16
+          },
+          "sprite_prompt": "A small warrior kid with a tiny axe, red armor, fierce expression, muscular build for a small creature, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Dariusk",
+          "types": [
+            "Fighting",
+            "Steel"
+          ],
+          "bst": 490,
+          "stats": {
+            "hp": 90,
+            "atk": 120,
+            "def": 80,
+            "spa": 30,
+            "spd": 55,
+            "spe": 115
+          },
+          "abilities": [
+            "Guts",
+            "Moxie"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 45
+          },
+          "sprite_prompt": "A massive armored warrior with a huge battleaxe, red and black armor, imposing figure, blood-red cape, menacing stance, Pokemon GBA style"
+        },
+        {
+          "name": "Dariuking",
+          "types": [
+            "Fighting",
+            "Steel"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 105,
+            "atk": 155,
+            "def": 95,
+            "spa": 35,
+            "spd": 65,
+            "spe": 145
+          },
+          "abilities": [
+            "Moxie",
+            "Dauntless Shield"
+          ],
+          "sprite_prompt": "God-King Darius from League of Legends, towering warrior emperor in divine golden and dark steel armor, wielding his iconic enormous battleaxe overhead, wolf-skull shoulder pads, blood-red imperial cape, iron crown, the Noxian conqueror in god form, recognizable Darius silhouette with massive axe, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "warwick",
+      "status": "PLANNED",
+      "inspiration": "lol_warwick",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Pupfang",
+          "types": [
+            "Dark"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 55,
+            "atk": 60,
+            "def": 40,
+            "spa": 25,
+            "spd": 35,
+            "spe": 75
+          },
+          "abilities": [
+            "Strong Jaw",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 22
+          },
+          "encounter": {
+            "route": "Route 120",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 22,
+            "max_level": 24
+          },
+          "sprite_prompt": "A small dark wolf pup with glowing red eyes, sharp teeth, gray and dark fur, menacing but small, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Warwolf",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 470,
+          "stats": {
+            "hp": 85,
+            "atk": 105,
+            "def": 65,
+            "spa": 35,
+            "spd": 55,
+            "spe": 125
+          },
+          "abilities": [
+            "Strong Jaw",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL_NIGHT",
+            "param": 42
+          },
+          "sprite_prompt": "A werewolf creature with metallic claws, dark gray fur, red chemical tubes on its back, feral stance, glowing red eyes, Pokemon GBA style"
+        },
+        {
+          "name": "Warwraith",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 560,
+          "stats": {
+            "hp": 100,
+            "atk": 140,
+            "def": 80,
+            "spa": 40,
+            "spd": 65,
+            "spe": 135
+          },
+          "abilities": [
+            "Strong Jaw",
+            "Regenerator"
+          ],
+          "sprite_prompt": "Warwick from League of Legends in full feral form, massive cybernetic werewolf chimera, glowing red chemical veins running across grey fur and metal augments, Zaun chemical tanks and pipes on back, razor claws dripping, feral bloodhunt stance, recognizable Warwick hunched wolf form, terrifying predator, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "lux",
+      "status": "PLANNED",
+      "inspiration": "lol_lux",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Luxini",
+          "types": [
+            "Fairy"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 40,
+            "atk": 25,
+            "def": 40,
+            "spa": 65,
+            "spd": 50,
+            "spe": 60
+          },
+          "abilities": [
+            "Illuminate",
+            "Magic Guard"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 20
+          },
+          "encounter": {
+            "route": "Route 117",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 13,
+            "max_level": 15
+          },
+          "sprite_prompt": "A small cute light mage girl with a tiny wand, blonde hair, white and gold dress, sparkles of light, cheerful expression, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Luxora",
+          "types": [
+            "Fairy",
+            "Electric"
+          ],
+          "bst": 450,
+          "stats": {
+            "hp": 60,
+            "atk": 35,
+            "def": 60,
+            "spa": 110,
+            "spd": 75,
+            "spe": 110
+          },
+          "abilities": [
+            "Illuminate",
+            "Magic Guard"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_SUN_STONE"
+          },
+          "sprite_prompt": "A light mage with a glowing staff, blonde hair with light aura, white and gold armor, beams of light energy, elegant pose, Pokemon GBA style"
+        },
+        {
+          "name": "Luxmental",
+          "types": [
+            "Fairy",
+            "Electric"
+          ],
+          "bst": 560,
+          "stats": {
+            "hp": 70,
+            "atk": 40,
+            "def": 70,
+            "spa": 145,
+            "spd": 90,
+            "spe": 145
+          },
+          "abilities": [
+            "Magic Guard",
+            "Pixilate"
+          ],
+          "sprite_prompt": "Elementalist Lux from League of Legends ultimate form, floating light mage channeling ALL elements simultaneously, rainbow prismatic energy vortex around her, majestic glowing staff held high, nature fire water light dark ice all swirling, divine multi-element sorceress, recognizable Lux with her staff and light magic, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "zed",
+      "status": "PLANNED",
+      "inspiration": "lol_zed",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Shadling",
+          "types": [
+            "Dark"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 40,
+            "atk": 65,
+            "def": 35,
+            "spa": 30,
+            "spd": 35,
+            "spe": 85
+          },
+          "abilities": [
+            "Shadow Tag",
+            "Technician"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 22
+          },
+          "encounter": {
+            "route": "Route 113",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 14,
+            "max_level": 16
+          },
+          "sprite_prompt": "A small shadow ninja creature, dark silhouette with red eyes, throwing star in hand, stealthy and agile, black and red, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Zedark",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 470,
+          "stats": {
+            "hp": 60,
+            "atk": 110,
+            "def": 55,
+            "spa": 40,
+            "spd": 55,
+            "spe": 150
+          },
+          "abilities": [
+            "Shadow Tag",
+            "Technician"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 42
+          },
+          "sprite_prompt": "A shadow ninja master with bladed arm gauntlets, shadow clones behind him, red eyes glowing through dark mask, black and crimson armor, Pokemon GBA style"
+        },
+        {
+          "name": "Zedalaxy",
+          "types": [
+            "Dark",
+            "Cosmic"
+          ],
+          "bst": 580,
+          "stats": {
+            "hp": 70,
+            "atk": 145,
+            "def": 65,
+            "spa": 50,
+            "spd": 65,
+            "spe": 185
+          },
+          "abilities": [
+            "Shadow Tag",
+            "Sword of Ruin"
+          ],
+          "sprite_prompt": "Galaxy Slayer Zed from League of Legends, cosmic void ninja in alien dark armor, galaxies and nebulae swirling within armor, twin arm-blade shurikens extended, shadow clones phasing behind him in cosmos, purple void energy trails, recognizable Zed stance with dual arm blades and mask, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "kayn",
+      "status": "PLANNED",
+      "inspiration": "lol_kayn",
+      "category": "2evo_branched",
+      "members": [
+        {
+          "name": "Scythling",
+          "types": [
+            "Dark"
+          ],
+          "bst": 300,
+          "stats": {
+            "hp": 50,
+            "atk": 65,
+            "def": 40,
+            "spa": 45,
+            "spd": 40,
+            "spe": 60
+          },
+          "abilities": [
+            "Adaptability"
+          ],
+          "evolution_note": "Evolves into Rhaastok (EVO_ITEM ITEM_DUSK_STONE) or Kaynshade (EVO_ITEM ITEM_MOON_STONE)",
+          "encounter": {
+            "route": "Route 123",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 24,
+            "max_level": 26
+          },
+          "sprite_prompt": "A small hooded reaper with a tiny red scythe, dark purple robes, one glowing red eye, mysterious, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Rhaastok",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 95,
+            "atk": 140,
+            "def": 85,
+            "spa": 45,
+            "spd": 70,
+            "spe": 105
+          },
+          "abilities": [
+            "Adaptability",
+            "Moxie"
+          ],
+          "sprite_prompt": "Rhaast the Darkin from League of Legends, fully corrupted darkin form with massive red living scythe, red and black darkin flesh-armor consuming host body, demonic horns curving upward, glowing red darkin eyes, brutal bloodthirsty stance, recognizable Rhaast with his signature curved scythe weapon, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        },
+        {
+          "name": "Kaynshade",
+          "types": [
+            "Dark",
+            "Ghost"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 65,
+            "atk": 120,
+            "def": 55,
+            "spa": 75,
+            "spd": 60,
+            "spe": 165
+          },
+          "abilities": [
+            "Adaptability",
+            "Infiltrator"
+          ],
+          "sprite_prompt": "Shadow Assassin Kayn from League of Legends, sleek ethereal shadow form wielding blue shadow scythe, body half-phasing through shadows, dark blue and purple ghostly trails behind, swift and lethal assassin silhouette, recognizable Kayn shadow form with scythe, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "aurelion",
+      "status": "PLANNED",
+      "inspiration": "lol_aurelion_sol",
+      "category": "4evo_godtier",
+      "members": [
+        {
+          "name": "Stellite",
+          "types": [
+            "Dragon"
+          ],
+          "bst": 250,
+          "stats": {
+            "hp": 40,
+            "atk": 25,
+            "def": 35,
+            "spa": 55,
+            "spd": 40,
+            "spe": 55
+          },
+          "abilities": [
+            "Levitate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 30
+          },
+          "encounter": {
+            "route": "METEOR FALLS 1F 1R",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 30,
+            "max_level": 35
+          },
+          "sprite_prompt": "A tiny baby cosmic dragon made of starlight, small orbiting stars around it, blue and gold, cute celestial creature, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Aurelisk",
+          "types": [
+            "Dragon",
+            "Cosmic"
+          ],
+          "bst": 400,
+          "stats": {
+            "hp": 65,
+            "atk": 35,
+            "def": 60,
+            "spa": 95,
+            "spd": 70,
+            "spe": 75
+          },
+          "abilities": [
+            "Levitate",
+            "Multiscale"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 44
+          },
+          "sprite_prompt": "Young Aurelion Sol from League of Legends, a growing cosmic dragon with orbiting stars forming around serpentine body, blue and gold scales with emerging nebula patterns, celestial horns growing, cosmic energy building, recognizable Aurelion Sol shape forming, detailed pixel art, 64x64 Pokemon GBA style"
+        },
+        {
+          "name": "Aurelion",
+          "types": [
+            "Dragon",
+            "Cosmic"
+          ],
+          "bst": 560,
+          "stats": {
+            "hp": 80,
+            "atk": 45,
+            "def": 80,
+            "spa": 140,
+            "spd": 90,
+            "spe": 125
+          },
+          "abilities": [
+            "Multiscale",
+            "Pressure"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 58
+          },
+          "sprite_prompt": "Aurelion Sol the Star Forger from League of Legends, majestic cosmic dragon with three iconic orbiting stars, long flowing celestial serpentine body, blue and gold scales with galaxy patterns, cosmic crown of starlight, creating stars with outstretched claws, clearly recognizable Aurelion Sol with orbiting stars, imposing stellar dragon, detailed pixel art, 64x64 Pokemon GBA sprite"
+        },
+        {
+          "name": "Aurelionstorm",
+          "types": [
+            "Dragon",
+            "Cosmic"
+          ],
+          "bst": 700,
+          "stats": {
+            "hp": 95,
+            "atk": 55,
+            "def": 95,
+            "spa": 170,
+            "spd": 105,
+            "spe": 180
+          },
+          "abilities": [
+            "Primordial Sea",
+            "Multiscale"
+          ],
+          "evolution_note": "Requires Comet Shard at night",
+          "sprite_prompt": "Storm Dragon Aurelion Sol skin from League of Legends, electrified cosmic dragon wreathed in storm clouds and lightning, dark purple and electric blue scales, crackling cosmic storm energy arcing from body, thundering roar pose, recognizable Aurelion Sol serpentine form but darker and storm-charged, fearsome dragon god of storms, dark detailed pixel art, 64x64 Pokemon GBA sprite",
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_COMET_SHARD"
+          }
+        },
+        {
+          "name": "Aurelioprimal",
+          "types": [
+            "Dragon",
+            "Cosmic"
+          ],
+          "bst": 900,
+          "stats": {
+            "hp": 120,
+            "atk": 65,
+            "def": 120,
+            "spa": 210,
+            "spd": 130,
+            "spe": 255
+          },
+          "abilities": [
+            "Primordial Sea",
+            "Multiscale"
+          ],
+          "evolution_note": "5th form — use Comet Shard on Aurelionstorm at lv75+ during night in Meteor Falls",
+          "sprite_prompt": "The primordial form of Aurelion Sol from League of Legends, an incomprehensibly vast cosmic dragon god, body made of dark matter and dying stars, black holes swirling as eyes, galaxies being born and crushed in its coils, reality fracturing around its presence, the Star Forger in its original god form before the universe existed, overwhelming cosmic deity beyond comprehension, intricate detailed dark pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "vi",
+      "status": "PLANNED",
+      "inspiration": "lol_vi",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Punchita",
+          "types": [
+            "Fighting"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 50,
+            "atk": 65,
+            "def": 50,
+            "spa": 25,
+            "spd": 40,
+            "spe": 60
+          },
+          "abilities": [
+            "Iron Fist",
+            "Guts"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 22
+          },
+          "encounter": {
+            "route": "Route 115",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 11,
+            "max_level": 13
+          },
+          "sprite_prompt": "A small tough girl with oversized boxing gloves, pink hair, determined expression, small but fierce, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Vistrike",
+          "types": [
+            "Fighting",
+            "Steel"
+          ],
+          "bst": 460,
+          "stats": {
+            "hp": 75,
+            "atk": 110,
+            "def": 80,
+            "spa": 35,
+            "spd": 55,
+            "spe": 105
+          },
+          "abilities": [
+            "Iron Fist",
+            "Guts"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 40
+          },
+          "sprite_prompt": "A tough brawler girl with massive hextech power gauntlets, pink hair, blue and gold armor, ready to punch, strong stance, Pokemon GBA style"
+        },
+        {
+          "name": "Viarcane",
+          "types": [
+            "Fighting",
+            "Steel"
+          ],
+          "bst": 560,
+          "stats": {
+            "hp": 90,
+            "atk": 140,
+            "def": 95,
+            "spa": 40,
+            "spd": 65,
+            "spe": 130
+          },
+          "abilities": [
+            "Iron Fist",
+            "Dauntless Shield"
+          ],
+          "sprite_prompt": "Arcane Vi from League of Legends, powerful Piltover enforcer with massive hextech Atlas Gauntlets glowing bright blue, short pink mohawk, determined fierce expression, cracked hextech energy radiating from giant mechanical fists, punching forward stance, recognizable Vi with her iconic giant power fists, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== LOL MONSTERS ==="
+    },
+    {
+      "id": "nashor",
+      "status": "PLANNED",
+      "inspiration": "lol_baron_nashor",
+      "category": "godtier_legendary",
+      "members": [
+        {
+          "name": "Nashor",
+          "types": [
+            "Void",
+            "Dragon"
+          ],
+          "bst": 920,
+          "stats": {
+            "hp": 150,
+            "atk": 130,
+            "def": 120,
+            "spa": 170,
+            "spd": 120,
+            "spe": 230
+          },
+          "abilities": [
+            "Pressure",
+            "Unaware"
+          ],
+          "encounter_note": "Static legendary in secret cave. Requires defeating 4 dragon guardians first.",
+          "sprite_prompt": "Baron Nashor from League of Legends, enormous eldritch void worm-serpent rising from its pit, covered with dozens of small malevolent glowing eyes, mass of writhing spiked tentacles, gaping maw filled with rows of jagged teeth, purple and magenta void corruption energy, the ultimate Rift boss monster, terrifying cosmic horror presence, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "elder_dragon",
+      "status": "PLANNED",
+      "inspiration": "lol_elder_dragon",
+      "category": "godtier_legendary",
+      "members": [
+        {
+          "name": "Eldrakos",
+          "types": [
+            "Dragon",
+            "Fire"
+          ],
+          "bst": 880,
+          "stats": {
+            "hp": 130,
+            "atk": 160,
+            "def": 110,
+            "spa": 160,
+            "spd": 110,
+            "spe": 210
+          },
+          "abilities": [
+            "Drought",
+            "Intimidate"
+          ],
+          "encounter_note": "Static legendary. Appears in Sky Pillar after defeating all gym leaders with fakemons only.",
+          "sprite_prompt": "Elder Dragon from League of Legends, ancient primordial dragon engulfed in burning soul-flames, massive tattered wings wreathed in ghostly fire, hollow burning eye sockets of ancient malice, dragon skull motifs and jagged bone spurs across body, the most ancient and deadly drake of the Rift, dark primal presence, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "poro",
+      "status": "PLANNED",
+      "inspiration": "lol_poro",
+      "category": "no_evo_troll",
+      "members": [
+        {
+          "name": "Poron",
+          "types": [
+            "Fairy",
+            "Ice"
+          ],
+          "bst": 480,
+          "stats": {
+            "hp": 100,
+            "atk": 30,
+            "def": 80,
+            "spa": 100,
+            "spd": 100,
+            "spe": 70
+          },
+          "abilities": [
+            "Fluffy",
+            "Ice Body"
+          ],
+          "encounter": {
+            "route": "SHOAL CAVE LOW TIDE ICE ROOM",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 30,
+            "max_level": 35
+          },
+          "sprite_prompt": "A cute fluffy white ball creature with tiny horns, tongue sticking out, adorable round body, rosy cheeks, small and round, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== LOL TROLLS ==="
+    },
+    {
+      "id": "scuttle",
+      "status": "PLANNED",
+      "inspiration": "lol_scuttle_crab",
+      "category": "no_evo_troll",
+      "members": [
+        {
+          "name": "Scuttlor",
+          "types": [
+            "Water",
+            "Bug"
+          ],
+          "bst": 350,
+          "stats": {
+            "hp": 120,
+            "atk": 20,
+            "def": 80,
+            "spa": 20,
+            "spd": 80,
+            "spe": 30
+          },
+          "abilities": [
+            "Sturdy",
+            "Magic Bounce"
+          ],
+          "encounter": {
+            "route": "Route 119",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 25,
+            "max_level": 28
+          },
+          "moves_special": [
+            "Counter",
+            "Mirror Coat",
+            "Destiny Bond",
+            "Toxic"
+          ],
+          "sprite_prompt": "A small pathetic-looking river crab, harmless appearance, green shell, tiny claws, looks very weak and scared, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== TROLLS / SLEEPERS ==="
+    },
+    {
+      "id": "poubellion",
+      "status": "PLANNED",
+      "inspiration": "troll",
+      "category": "no_evo_troll",
+      "members": [
+        {
+          "name": "Poubellion",
+          "types": [
+            "Steel",
+            "Poison"
+          ],
+          "bst": 420,
+          "stats": {
+            "hp": 80,
+            "atk": 70,
+            "def": 90,
+            "spa": 70,
+            "spd": 90,
+            "spe": 20
+          },
+          "abilities": [
+            "Wonder Guard"
+          ],
+          "encounter": {
+            "route": "Route 110",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 13,
+            "max_level": 15
+          },
+          "moves_special": [
+            "Toxic",
+            "Protect",
+            "Iron Head",
+            "Recover"
+          ],
+          "sprite_prompt": "A living garbage can with googly eyes, trash overflowing, looks absolutely pathetic and gross, funny and ugly, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "id": "caillossus",
+      "status": "PLANNED",
+      "inspiration": "troll",
+      "category": "1evo_troll",
+      "members": [
+        {
+          "name": "Cailloux",
+          "types": [
+            "Rock"
+          ],
+          "bst": 200,
+          "stats": {
+            "hp": 30,
+            "atk": 80,
+            "def": 40,
+            "spa": 10,
+            "spd": 20,
+            "spe": 20
+          },
+          "abilities": [
+            "Huge Power"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 35
+          },
+          "encounter": {
+            "route": "GRANITE CAVE 1F",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 10,
+            "max_level": 12
+          },
+          "sprite_prompt": "A tiny plain gray rock with two tiny googly eyes, the most boring and simple creature possible, just a pebble, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Caillossus",
+          "types": [
+            "Rock",
+            "Fighting"
+          ],
+          "bst": 520,
+          "stats": {
+            "hp": 90,
+            "atk": 150,
+            "def": 100,
+            "spa": 20,
+            "spd": 60,
+            "spe": 100
+          },
+          "abilities": [
+            "Huge Power"
+          ],
+          "sprite_prompt": "A massive boulder titan with tiny googly eyes still visible, enormous rock fists, cracks showing inner fire, deceptively powerful despite silly face, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== YU-GI-OH ==="
+    },
+    {
+      "id": "blueeyes",
+      "status": "PLANNED",
+      "inspiration": "yugioh_blue_eyes",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Dragonet",
+          "types": [
+            "Dragon"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 45,
+            "atk": 50,
+            "def": 40,
+            "spa": 55,
+            "spd": 40,
+            "spe": 50
+          },
+          "abilities": [
+            "Shed Skin",
+            "Marvel Scale"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 25
+          },
+          "encounter": {
+            "route": "METEOR FALLS 1F 1R",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 16,
+            "max_level": 20
+          },
+          "sprite_prompt": "A small white baby dragon with bright blue eyes, white scales, tiny wings, cute but majestic, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Blueyes",
+          "types": [
+            "Dragon",
+            "Electric"
+          ],
+          "bst": 480,
+          "stats": {
+            "hp": 75,
+            "atk": 85,
+            "def": 65,
+            "spa": 110,
+            "spd": 70,
+            "spe": 75
+          },
+          "abilities": [
+            "Shed Skin",
+            "Marvel Scale"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_DRAGON_SCALE"
+          },
+          "sprite_prompt": "A majestic white dragon with glowing blue eyes, white scales, powerful wings spread wide, lightning energy, iconic blue-eyes white dragon, Pokemon GBA style"
+        },
+        {
+          "name": "Bluyesult",
+          "types": [
+            "Dragon",
+            "Electric"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 95,
+            "atk": 110,
+            "def": 85,
+            "spa": 140,
+            "spd": 85,
+            "spe": 85
+          },
+          "abilities": [
+            "Marvel Scale",
+            "Multiscale"
+          ],
+          "sprite_prompt": "Blue-Eyes Ultimate Dragon from Yu-Gi-Oh, massive three-headed white dragon, three serpentine necks each ending in a blue-eyed dragon head, white glistening scales, all three heads roaring with lightning energy, recognizable three-headed Blue-Eyes design, iconic tri-headed white dragon, overwhelming power, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "darkmagi",
+      "status": "PLANNED",
+      "inspiration": "yugioh_dark_magician",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Appremage",
+          "types": [
+            "Psychic"
+          ],
+          "bst": 310,
+          "stats": {
+            "hp": 50,
+            "atk": 30,
+            "def": 45,
+            "spa": 75,
+            "spd": 55,
+            "spe": 55
+          },
+          "abilities": [
+            "Magic Guard",
+            "Synchronize"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 30
+          },
+          "encounter": {
+            "route": "Route 124",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 25,
+            "max_level": 28
+          },
+          "sprite_prompt": "A young apprentice wizard in purple robes with a small staff, mystical aura, purple hat, studying magic, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Darkmagi",
+          "types": [
+            "Psychic",
+            "Dark"
+          ],
+          "bst": 520,
+          "stats": {
+            "hp": 75,
+            "atk": 45,
+            "def": 70,
+            "spa": 135,
+            "spd": 85,
+            "spe": 110
+          },
+          "abilities": [
+            "Magic Guard",
+            "Magic Bounce"
+          ],
+          "sprite_prompt": "Dark Magician from Yu-Gi-Oh, tall mysterious sorcerer in iconic purple armor and tall pointed wizard hat, wielding long green-tipped magical staff, dark magical circles spinning, flowing purple cape, recognizable Dark Magician silhouette with pointed hat and staff, imposing arcane master, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "redeyes",
+      "status": "PLANNED",
+      "inspiration": "yugioh_red_eyes",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Redling",
+          "types": [
+            "Dragon",
+            "Dark"
+          ],
+          "bst": 300,
+          "stats": {
+            "hp": 55,
+            "atk": 65,
+            "def": 45,
+            "spa": 50,
+            "spd": 40,
+            "spe": 45
+          },
+          "abilities": [
+            "Intimidate",
+            "Anger Point"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 28
+          },
+          "encounter": {
+            "route": "FIERY PATH",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 14,
+            "max_level": 16
+          },
+          "sprite_prompt": "A small black baby dragon with glowing red eyes, dark scales, menacing but small, red glowing accents, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Redeyrak",
+          "types": [
+            "Dragon",
+            "Dark"
+          ],
+          "bst": 510,
+          "stats": {
+            "hp": 85,
+            "atk": 115,
+            "def": 70,
+            "spa": 85,
+            "spd": 65,
+            "spe": 90
+          },
+          "abilities": [
+            "Intimidate",
+            "Dark Aura"
+          ],
+          "sprite_prompt": "Red-Eyes Black Dragon from Yu-Gi-Oh, fearsome black dragon with signature blazing red glowing eyes, sleek dark scales, powerful dark wings spread aggressively, dark fire and red energy aura, recognizable Red-Eyes angular black dragon design with glowing red eyes, fierce dark dragon, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "kuriboh",
+      "status": "PLANNED",
+      "inspiration": "yugioh_kuriboh",
+      "category": "no_evo_troll",
+      "members": [
+        {
+          "name": "Kuribon",
+          "types": [
+            "Fairy",
+            "Dark"
+          ],
+          "bst": 350,
+          "stats": {
+            "hp": 80,
+            "atk": 30,
+            "def": 70,
+            "spa": 30,
+            "spd": 100,
+            "spe": 40
+          },
+          "abilities": [
+            "Disguise",
+            "Friend Guard"
+          ],
+          "encounter": {
+            "route": "Route 111",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 20,
+            "max_level": 22
+          },
+          "moves_special": [
+            "Protect",
+            "Destiny Bond",
+            "Counter",
+            "Mirror Coat"
+          ],
+          "sprite_prompt": "A small round fluffy brown furball with big green eyes, tiny clawed feet, looks silly and weak, cute puffball creature, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "id": "egyptian_gods",
+      "status": "PLANNED",
+      "inspiration": "yugioh_egyptian_gods",
+      "category": "legendary_trio",
+      "members": [
+        {
+          "name": "Sliferex",
+          "types": [
+            "Dragon",
+            "Divine"
+          ],
+          "bst": 780,
+          "stats": {
+            "hp": 130,
+            "atk": 100,
+            "def": 90,
+            "spa": 160,
+            "spd": 100,
+            "spe": 200
+          },
+          "abilities": [
+            "Pressure",
+            "Unnerve"
+          ],
+          "encounter_note": "Static legendary in Sky Pillar summit after collecting 3 sacred tablets",
+          "sprite_prompt": "Slifer the Sky Dragon from Yu-Gi-Oh, massive red serpentine dragon with its iconic TWO mouths stacked vertically on its head, long coiling crimson body stretching across the sky, golden Egyptian ornaments and crest on head, divine lightning crackling along body, recognizable Slifer with double-jaw head design, terrifying sky dragon god, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        },
+        {
+          "name": "Obelgor",
+          "types": [
+            "Fighting",
+            "Divine"
+          ],
+          "bst": 780,
+          "stats": {
+            "hp": 160,
+            "atk": 180,
+            "def": 150,
+            "spa": 50,
+            "spd": 100,
+            "spe": 140
+          },
+          "abilities": [
+            "Pressure",
+            "Unnerve"
+          ],
+          "encounter_note": "Static legendary in Sealed Chamber after collecting 3 sacred tablets",
+          "sprite_prompt": "Obelisk the Tormentor from Yu-Gi-Oh, towering muscular blue humanoid titan deity, enormous blue stone body with golden Egyptian hieroglyph accents, massive clenched fists raised to strike, imposing wide stance, recognizable Obelisk bulky blue body with golden trim, divine Egyptian war god of overwhelming force, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        },
+        {
+          "name": "Rasolex",
+          "types": [
+            "Fire",
+            "Divine"
+          ],
+          "bst": 780,
+          "stats": {
+            "hp": 120,
+            "atk": 120,
+            "def": 120,
+            "spa": 180,
+            "spd": 120,
+            "spe": 120
+          },
+          "abilities": [
+            "Drought",
+            "Unnerve"
+          ],
+          "encounter_note": "Static legendary in Ancient Tomb after collecting 3 sacred tablets",
+          "sprite_prompt": "The Winged Dragon of Ra from Yu-Gi-Oh in its iconic sphere-to-phoenix form, golden mechanical bird-dragon deity, blazing sun sphere on forehead, massive spread golden metallic wings, Egyptian sun god solar radiance, recognizable Ra golden bird-dragon with sun orb, divine solar fire deity, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "exodia",
+      "status": "PLANNED",
+      "inspiration": "yugioh_exodia",
+      "category": "godtier_legendary",
+      "members": [
+        {
+          "name": "Exodiark",
+          "types": [
+            "Dark",
+            "Divine"
+          ],
+          "bst": 900,
+          "stats": {
+            "hp": 140,
+            "atk": 170,
+            "def": 130,
+            "spa": 170,
+            "spd": 130,
+            "spe": 160
+          },
+          "abilities": [
+            "Pressure",
+            "Unaware"
+          ],
+          "encounter_note": "God-tier. Requires collecting 5 Exodia Pieces (hidden items across the game). Use all 5 in Sealed Chamber to trigger encounter.",
+          "sprite_prompt": "Exodia the Forbidden One from Yu-Gi-Oh, massive golden armored humanoid deity breaking free from binding chains, iconic star-pentacle symbol glowing on chest, Egyptian hieroglyphs burning across dark gold plated body, five body parts reunited into the ultimate forbidden being, recognizable Exodia muscular gold body with chains, overwhelming ancient power, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== DIGIMON ==="
+    },
+    {
+      "id": "agumon",
+      "status": "PLANNED",
+      "inspiration": "digimon_agumon",
+      "category": "3evo",
+      "members": [
+        {
+          "name": "Agubaby",
+          "types": [
+            "Fire"
+          ],
+          "bst": 220,
+          "stats": {
+            "hp": 40,
+            "atk": 50,
+            "def": 30,
+            "spa": 35,
+            "spd": 30,
+            "spe": 35
+          },
+          "abilities": [
+            "Blaze",
+            "Tough Claws"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 16
+          },
+          "encounter": {
+            "route": "Route 114",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 15,
+            "max_level": 17
+          },
+          "sprite_prompt": "A small orange dinosaur creature with a big head, short arms, baby dragon look, cute small reptile, orange with blue stripes, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Greylix",
+          "types": [
+            "Fire",
+            "Dragon"
+          ],
+          "bst": 380,
+          "stats": {
+            "hp": 65,
+            "atk": 85,
+            "def": 55,
+            "spa": 60,
+            "spd": 50,
+            "spe": 65
+          },
+          "abilities": [
+            "Blaze",
+            "Tough Claws"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 30
+          },
+          "sprite_prompt": "A large bipedal dinosaur with a brown skull helmet, blue stripes, fire breath, powerful stance, greymon-inspired dinosaur monster, Pokemon GBA style"
+        },
+        {
+          "name": "Metalgrex",
+          "types": [
+            "Fire",
+            "Steel"
+          ],
+          "bst": 520,
+          "stats": {
+            "hp": 85,
+            "atk": 120,
+            "def": 90,
+            "spa": 80,
+            "spd": 70,
+            "spe": 75
+          },
+          "abilities": [
+            "Tough Claws",
+            "Battle Armor"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_METAL_COAT"
+          },
+          "sprite_prompt": "A massive cybernetic dinosaur with metal armor, mechanical left arm cannon, steel plating over fire body, metal greymon cyborg dinosaur, Pokemon GBA style"
+        },
+        {
+          "name": "Wargrexon",
+          "types": [
+            "Fire",
+            "Dragon"
+          ],
+          "bst": 650,
+          "stats": {
+            "hp": 100,
+            "atk": 155,
+            "def": 110,
+            "spa": 90,
+            "spd": 85,
+            "spe": 110
+          },
+          "abilities": [
+            "Tough Claws",
+            "Multiscale"
+          ],
+          "sprite_prompt": "WarGreymon from Digimon, armored orange dragon warrior standing bipedal, iconic Dramon Killer chrome claw gauntlets on both arms, Brave Shield strapped on back showing Crest of Courage, chrome digizoid orange and gold armor, recognizable WarGreymon with signature gauntlet claws and back shield, imposing dragon knight, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "gabumon",
+      "status": "PLANNED",
+      "inspiration": "digimon_gabumon",
+      "category": "3evo",
+      "members": [
+        {
+          "name": "Gabupup",
+          "types": [
+            "Ice"
+          ],
+          "bst": 220,
+          "stats": {
+            "hp": 35,
+            "atk": 40,
+            "def": 35,
+            "spa": 50,
+            "spd": 35,
+            "spe": 25
+          },
+          "abilities": [
+            "Fur Coat",
+            "Ice Body"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 16
+          },
+          "encounter": {
+            "route": "Route 114",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 15,
+            "max_level": 17
+          },
+          "sprite_prompt": "A small blue and white creature wearing a fur pelt hood, shy expression, striped horn, cute reptile in wolf disguise, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Garulf",
+          "types": [
+            "Ice",
+            "Normal"
+          ],
+          "bst": 380,
+          "stats": {
+            "hp": 60,
+            "atk": 55,
+            "def": 55,
+            "spa": 80,
+            "spd": 55,
+            "spe": 75
+          },
+          "abilities": [
+            "Fur Coat",
+            "Ice Body"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 30
+          },
+          "sprite_prompt": "A large blue and white wolf with blue stripes, icy fur, powerful stance, garurumon-inspired ice wolf, Pokemon GBA style"
+        },
+        {
+          "name": "Werulf",
+          "types": [
+            "Ice",
+            "Fighting"
+          ],
+          "bst": 510,
+          "stats": {
+            "hp": 80,
+            "atk": 95,
+            "def": 70,
+            "spa": 95,
+            "spd": 70,
+            "spe": 100
+          },
+          "abilities": [
+            "Fur Coat",
+            "Justified"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL_NIGHT",
+            "param": 44
+          },
+          "sprite_prompt": "A bipedal werewolf with ice powers, blue and white fur, muscular body, ice claws, weregarurumon-inspired beast warrior, Pokemon GBA style"
+        },
+        {
+          "name": "Metalulf",
+          "types": [
+            "Ice",
+            "Steel"
+          ],
+          "bst": 650,
+          "stats": {
+            "hp": 95,
+            "atk": 80,
+            "def": 105,
+            "spa": 140,
+            "spd": 100,
+            "spe": 130
+          },
+          "abilities": [
+            "Fur Coat",
+            "Filter"
+          ],
+          "sprite_prompt": "MetalGarurumon from Digimon, fully cybernetic ice wolf, sleek metallic blue body with missile pod wings, ice beam cannon in chest, glowing blue optic visor, mechanical wolf quadruped form, recognizable MetalGarurumon with chrome blue wolf design and wing-missiles, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "patamon",
+      "status": "PLANNED",
+      "inspiration": "digimon_patamon",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Pataling",
+          "types": [
+            "Flying",
+            "Fairy"
+          ],
+          "bst": 260,
+          "stats": {
+            "hp": 40,
+            "atk": 30,
+            "def": 35,
+            "spa": 50,
+            "spd": 50,
+            "spe": 55
+          },
+          "abilities": [
+            "Serene Grace",
+            "Natural Cure"
+          ],
+          "evolution": {
+            "method": "EVO_FRIENDSHIP",
+            "param": 0
+          },
+          "encounter": {
+            "route": "Route 130",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 30,
+            "max_level": 35
+          },
+          "sprite_prompt": "A tiny cute winged hamster creature with wing-like ears, orange and cream colored, adorable bat-eared flying creature, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Angelon",
+          "types": [
+            "Flying",
+            "Fairy"
+          ],
+          "bst": 450,
+          "stats": {
+            "hp": 65,
+            "atk": 50,
+            "def": 60,
+            "spa": 110,
+            "spd": 90,
+            "spe": 75
+          },
+          "abilities": [
+            "Serene Grace",
+            "Triage"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_SHINY_STONE"
+          },
+          "sprite_prompt": "A tall angelic warrior with golden staff and helmet, six white wings, holy aura, divine angel warrior, angemon inspired, Pokemon GBA style"
+        },
+        {
+          "name": "Seraphon",
+          "types": [
+            "Flying",
+            "Divine"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 80,
+            "atk": 60,
+            "def": 80,
+            "spa": 150,
+            "spd": 110,
+            "spe": 120
+          },
+          "abilities": [
+            "Serene Grace",
+            "Magic Bounce"
+          ],
+          "sprite_prompt": "Seraphimon from Digimon, divine angelic knight in holy golden armor, ten radiant white wings spread, sacred lance and shield, blue and gold holy armor, divine halo of light, recognizable Seraphimon with golden armored angel design and multiple wings, imposing celestial warrior, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "omnimon",
+      "status": "PLANNED",
+      "inspiration": "digimon_omnimon",
+      "category": "godtier_legendary",
+      "members": [
+        {
+          "name": "Omnidrake",
+          "types": [
+            "Dragon",
+            "Steel"
+          ],
+          "bst": 850,
+          "stats": {
+            "hp": 120,
+            "atk": 160,
+            "def": 110,
+            "spa": 160,
+            "spd": 110,
+            "spe": 190
+          },
+          "abilities": [
+            "Download",
+            "Adaptability"
+          ],
+          "encounter_note": "God-tier. Appears when Wargrexon and Metalulf are both in party at Victory Road secret room.",
+          "sprite_prompt": "Omnimon from Digimon, divine royal knight, right arm is WarGreymon head forming Grey Sword, left arm is MetalGarurumon head forming Garuru Cannon, white flowing cape, white and gold holy knight armor, recognizable Omnimon with dual monster-arm weapons and cape, legendary fusion warrior, detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== MARIO ==="
+    },
+    {
+      "id": "goomba",
+      "status": "PLANNED",
+      "inspiration": "mario_goomba",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Goombini",
+          "types": [
+            "Normal"
+          ],
+          "bst": 250,
+          "stats": {
+            "hp": 45,
+            "atk": 50,
+            "def": 35,
+            "spa": 30,
+            "spd": 30,
+            "spe": 60
+          },
+          "abilities": [
+            "Run Away",
+            "Hustle"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 28
+          },
+          "encounter": {
+            "route": "Route 102",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 4,
+            "max_level": 6
+          },
+          "sprite_prompt": "A small angry brown mushroom creature with a frowning face, tiny feet, classic goomba style, brown and tan, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Goomboss",
+          "types": [
+            "Normal",
+            "Poison"
+          ],
+          "bst": 440,
+          "stats": {
+            "hp": 90,
+            "atk": 95,
+            "def": 75,
+            "spa": 50,
+            "spd": 55,
+            "spe": 75
+          },
+          "abilities": [
+            "Hustle",
+            "Intimidate"
+          ],
+          "sprite_prompt": "A massive king mushroom monster with a crown, angry face, huge brown mushroom body, royal mushroom boss, goomboss inspired, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "boo",
+      "status": "PLANNED",
+      "inspiration": "mario_boo",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Booling",
+          "types": [
+            "Ghost"
+          ],
+          "bst": 270,
+          "stats": {
+            "hp": 40,
+            "atk": 30,
+            "def": 30,
+            "spa": 55,
+            "spd": 55,
+            "spe": 60
+          },
+          "abilities": [
+            "Levitate",
+            "Prankster"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL_NIGHT",
+            "param": 32
+          },
+          "encounter": {
+            "route": "MT PYRE 3F",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 24,
+            "max_level": 26
+          },
+          "sprite_prompt": "A small round white ghost with a cute shy face, fangs showing, translucent white, classic boo ghost, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Kingboo",
+          "types": [
+            "Ghost",
+            "Dark"
+          ],
+          "bst": 500,
+          "stats": {
+            "hp": 70,
+            "atk": 50,
+            "def": 60,
+            "spa": 120,
+            "spd": 100,
+            "spe": 100
+          },
+          "abilities": [
+            "Levitate",
+            "Prankster"
+          ],
+          "sprite_prompt": "A massive royal ghost with a golden crown, jeweled crown, menacing grin, glowing purple aura, king of ghosts, intimidating ghost king, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "piranha",
+      "status": "PLANNED",
+      "inspiration": "mario_piranha_plant",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Piranini",
+          "types": [
+            "Grass",
+            "Dark"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 45,
+            "atk": 65,
+            "def": 45,
+            "spa": 50,
+            "spd": 35,
+            "spe": 40
+          },
+          "abilities": [
+            "Strong Jaw",
+            "Sap Sipper"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 30
+          },
+          "encounter": {
+            "route": "Route 119",
+            "slots": [
+              2,
+              3
+            ],
+            "min_level": 20,
+            "max_level": 24
+          },
+          "sprite_prompt": "A small red and green carnivorous plant in a pipe, sharp teeth, spotted pattern, baby piranha plant, green pipe, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Peteyra",
+          "types": [
+            "Grass",
+            "Dark"
+          ],
+          "bst": 490,
+          "stats": {
+            "hp": 80,
+            "atk": 110,
+            "def": 70,
+            "spa": 80,
+            "spd": 55,
+            "spe": 95
+          },
+          "abilities": [
+            "Strong Jaw",
+            "Chlorophyll"
+          ],
+          "sprite_prompt": "A massive bipedal carnivorous plant boss with spotted lips, leaf wings, vine arms, petey piranha inspired, huge and monstrous plant, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "chomp",
+      "status": "PLANNED",
+      "inspiration": "mario_chain_chomp",
+      "category": "no_evo",
+      "members": [
+        {
+          "name": "Chainchom",
+          "types": [
+            "Steel",
+            "Dark"
+          ],
+          "bst": 470,
+          "stats": {
+            "hp": 70,
+            "atk": 130,
+            "def": 100,
+            "spa": 30,
+            "spd": 50,
+            "spe": 90
+          },
+          "abilities": [
+            "Strong Jaw",
+            "Rock Head"
+          ],
+          "encounter": {
+            "route": "MAGMA HIDEOUT 1F",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 30,
+            "max_level": 33
+          },
+          "sprite_prompt": "A large black iron ball creature with huge sharp teeth, chain attached, angry eyes, chomping, bouncing metal ball beast, chain chomp inspired, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== NARUTO ==="
+    },
+    {
+      "id": "kyubi",
+      "status": "PLANNED",
+      "inspiration": "naruto_kyubi",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Foxkit",
+          "types": [
+            "Fire"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 50,
+            "atk": 40,
+            "def": 35,
+            "spa": 55,
+            "spd": 45,
+            "spe": 55
+          },
+          "abilities": [
+            "Flash Fire",
+            "Anger Point"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 24
+          },
+          "encounter": {
+            "route": "Route 121",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 25,
+            "max_level": 28
+          },
+          "sprite_prompt": "A small orange fox kit with three fluffy tails, cute baby fox with red markings, mischievous expression, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Kitsuron",
+          "types": [
+            "Fire",
+            "Dark"
+          ],
+          "bst": 460,
+          "stats": {
+            "hp": 80,
+            "atk": 70,
+            "def": 55,
+            "spa": 100,
+            "spd": 70,
+            "spe": 85
+          },
+          "abilities": [
+            "Flash Fire",
+            "Anger Point"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 45
+          },
+          "sprite_prompt": "A fierce five-tailed fox demon, orange and red fur, glowing red eyes, fire aura, growing demonic power, medium-sized kitsune, Pokemon GBA style"
+        },
+        {
+          "name": "Kyubion",
+          "types": [
+            "Fire",
+            "Dark"
+          ],
+          "bst": 620,
+          "stats": {
+            "hp": 110,
+            "atk": 95,
+            "def": 75,
+            "spa": 140,
+            "spd": 85,
+            "spe": 115
+          },
+          "abilities": [
+            "Beast Boost",
+            "Anger Point"
+          ],
+          "sprite_prompt": "Kurama the Nine-Tailed Fox from Naruto, massive orange-red demon fox with NINE enormous flowing tails spreading behind, red slitted demonic eyes, destructive orange chakra flames engulfing body, enormous fangs bared in rage, recognizable Kurama/Kyubi with nine distinct tails and fox face, overwhelming bijuu power, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "sharingan",
+      "status": "PLANNED",
+      "inspiration": "naruto_uchiha",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Crowkin",
+          "types": [
+            "Dark",
+            "Flying"
+          ],
+          "bst": 270,
+          "stats": {
+            "hp": 40,
+            "atk": 35,
+            "def": 30,
+            "spa": 60,
+            "spd": 45,
+            "spe": 60
+          },
+          "abilities": [
+            "Illusion",
+            "Super Luck"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 26
+          },
+          "encounter": {
+            "route": "Route 120",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 25,
+            "max_level": 28
+          },
+          "sprite_prompt": "A small black crow with one red glowing eye, dark feathers, mysterious bird, sharingan-like red eye, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Sharigon",
+          "types": [
+            "Dark",
+            "Psychic"
+          ],
+          "bst": 460,
+          "stats": {
+            "hp": 65,
+            "atk": 55,
+            "def": 55,
+            "spa": 110,
+            "spd": 70,
+            "spe": 105
+          },
+          "abilities": [
+            "Illusion",
+            "Keen Eye"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL_NIGHT",
+            "param": 44
+          },
+          "sprite_prompt": "A dark humanoid crow warrior with glowing red sharingan eyes, black cloak, genjutsu aura, illusion master, itachi-inspired dark warrior, Pokemon GBA style"
+        },
+        {
+          "name": "Susanox",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 85,
+            "atk": 75,
+            "def": 85,
+            "spa": 145,
+            "spd": 85,
+            "spe": 125
+          },
+          "abilities": [
+            "Illusion",
+            "Pressure"
+          ],
+          "sprite_prompt": "Susanoo from Naruto, colossal spectral purple samurai armor manifestation, towering ethereal warrior made of chakra, glowing Sharingan red eyes behind the visor, wielding massive ethereal sword, dark purple and red translucent spectral armor, recognizable Susanoo giant samurai form, imposing ghostly titan, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "akatsuki",
+      "status": "PLANNED",
+      "inspiration": "naruto_akatsuki",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Shadogin",
+          "types": [
+            "Dark",
+            "Psychic"
+          ],
+          "bst": 330,
+          "stats": {
+            "hp": 55,
+            "atk": 60,
+            "def": 45,
+            "spa": 65,
+            "spd": 50,
+            "spe": 55
+          },
+          "abilities": [
+            "Inner Focus",
+            "Pressure"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 40
+          },
+          "encounter": {
+            "route": "MT PYRE SUMMIT",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 35,
+            "max_level": 38
+          },
+          "sprite_prompt": "A dark hooded ninja figure in black cloak with red cloud patterns, mysterious masked figure, red glowing eyes under hood, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Madarex",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 580,
+          "stats": {
+            "hp": 90,
+            "atk": 130,
+            "def": 80,
+            "spa": 100,
+            "spd": 70,
+            "spe": 110
+          },
+          "abilities": [
+            "Inner Focus",
+            "No Guard"
+          ],
+          "sprite_prompt": "Madara Uchiha inspired dark warlord ninja, long spiky dark hair flowing, iconic Rinnegan purple ringed eyes and red Sharingan, red samurai war armor with Uchiha crest fan, gunbai war fan weapon, overwhelming warrior god presence, recognizable Madara with his eyes and flowing hair, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "bijuu",
+      "status": "PLANNED",
+      "inspiration": "naruto_bijuu",
+      "category": "legendary_duo",
+      "members": [
+        {
+          "name": "Ichibitail",
+          "types": [
+            "Ground",
+            "Dark"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 110,
+            "atk": 90,
+            "def": 120,
+            "spa": 80,
+            "spd": 100,
+            "spe": 100
+          },
+          "abilities": [
+            "Sand Stream",
+            "Sheer Force"
+          ],
+          "encounter_note": "Static legendary in Desert Underpass secret room",
+          "sprite_prompt": "A massive one-tailed sand tanuki beast, sandy colored with dark markings, huge sandy tail, demonic sand raccoon, shukaku inspired, Pokemon GBA sprite"
+        },
+        {
+          "name": "Hachibeast",
+          "types": [
+            "Water",
+            "Dark"
+          ],
+          "bst": 620,
+          "stats": {
+            "hp": 120,
+            "atk": 110,
+            "def": 100,
+            "spa": 90,
+            "spd": 90,
+            "spe": 110
+          },
+          "abilities": [
+            "Swift Swim",
+            "Sheer Force"
+          ],
+          "encounter_note": "Static legendary in Seafloor Cavern secret room",
+          "sprite_prompt": "A massive eight-tailed ox-octopus hybrid, dark blue and black, eight writhing tails, powerful horned beast, gyuki hachibi inspired, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== DISNEY ==="
+    },
+    {
+      "id": "simba",
+      "status": "PLANNED",
+      "inspiration": "disney_lion_king",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Lioncub",
+          "types": [
+            "Normal",
+            "Fighting"
+          ],
+          "bst": 310,
+          "stats": {
+            "hp": 50,
+            "atk": 65,
+            "def": 45,
+            "spa": 30,
+            "spd": 40,
+            "spe": 80
+          },
+          "abilities": [
+            "Intimidate",
+            "Justified"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 32
+          },
+          "encounter": {
+            "route": "SAFARI ZONE SOUTH",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 25,
+            "max_level": 28
+          },
+          "sprite_prompt": "A small playful lion cub with big eyes, golden fur, small mane starting to grow, curious and brave expression, simba-inspired baby lion, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Mufaking",
+          "types": [
+            "Normal",
+            "Fighting"
+          ],
+          "bst": 530,
+          "stats": {
+            "hp": 90,
+            "atk": 120,
+            "def": 80,
+            "spa": 50,
+            "spd": 70,
+            "spe": 120
+          },
+          "abilities": [
+            "Intimidate",
+            "Dauntless Shield"
+          ],
+          "sprite_prompt": "A majestic golden lion king with a massive flowing mane, regal and powerful stance, wise eyes, muscular and noble, mufasa-inspired lion king, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "stitch",
+      "status": "PLANNED",
+      "inspiration": "disney_stitch",
+      "category": "no_evo",
+      "members": [
+        {
+          "name": "Stitchoid",
+          "types": [
+            "Electric",
+            "Dark"
+          ],
+          "bst": 500,
+          "stats": {
+            "hp": 80,
+            "atk": 100,
+            "def": 75,
+            "spa": 65,
+            "spd": 65,
+            "spe": 115
+          },
+          "abilities": [
+            "Prankster",
+            "Scrappy"
+          ],
+          "encounter": {
+            "route": "ABANDONED SHIP HIDDEN FLOOR ROOMS",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 30,
+            "max_level": 33
+          },
+          "sprite_prompt": "A small blue alien creature with big ears, four arms, chaotic grin, experiment 626 style, blue furry alien with antennas, mischievous and destructive, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "id": "genie",
+      "status": "PLANNED",
+      "inspiration": "disney_aladdin",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Lampini",
+          "types": [
+            "Psychic"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 50,
+            "atk": 25,
+            "def": 45,
+            "spa": 70,
+            "spd": 55,
+            "spe": 45
+          },
+          "abilities": [
+            "Magic Guard",
+            "Prankster"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_SHINY_STONE"
+          },
+          "encounter": {
+            "route": "DESERT UNDERPASS",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 35,
+            "max_level": 38
+          },
+          "sprite_prompt": "A small magical golden lamp with a tiny smoke wisp forming a face, mysterious glowing lamp, magic aura, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Geenix",
+          "types": [
+            "Psychic",
+            "Fairy"
+          ],
+          "bst": 530,
+          "stats": {
+            "hp": 80,
+            "atk": 50,
+            "def": 65,
+            "spa": 130,
+            "spd": 90,
+            "spe": 115
+          },
+          "abilities": [
+            "Magic Guard",
+            "Protean"
+          ],
+          "sprite_prompt": "A large blue magical genie emerging from a golden lamp, muscular blue body, wide grin, magical cosmic powers, wishing genie, gold bracelets, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "maleficent",
+      "status": "PLANNED",
+      "inspiration": "disney_maleficent",
+      "category": "boss_legendary",
+      "members": [
+        {
+          "name": "Maleficor",
+          "types": [
+            "Dragon",
+            "Dark"
+          ],
+          "bst": 700,
+          "stats": {
+            "hp": 110,
+            "atk": 140,
+            "def": 100,
+            "spa": 130,
+            "spd": 80,
+            "spe": 140
+          },
+          "abilities": [
+            "Dark Aura",
+            "Intimidate"
+          ],
+          "encounter_note": "Boss legendary. Appears in hidden room of Mt Pyre after solving 3 puzzles.",
+          "sprite_prompt": "Maleficent dragon form from Disney Sleeping Beauty, massive black and purple dragon, iconic curved horns from fairy form visible on dragon head, breathing bright green hellfire, dark purple and black scales, tattered bat-like wings, recognizable Maleficent dragon with horns and green fire breath, terrifying dark dragon, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "scar",
+      "status": "PLANNED",
+      "inspiration": "disney_lion_king_scar",
+      "category": "no_evo_boss",
+      "members": [
+        {
+          "name": "Scarion",
+          "types": [
+            "Dark",
+            "Fire"
+          ],
+          "bst": 530,
+          "stats": {
+            "hp": 80,
+            "atk": 110,
+            "def": 70,
+            "spa": 95,
+            "spd": 65,
+            "spe": 110
+          },
+          "abilities": [
+            "Intimidate",
+            "Unnerve"
+          ],
+          "encounter_note": "Rare encounter in Safari Zone after having Mufaking in party.",
+          "sprite_prompt": "A scarred dark lion with a sinister grin, dark mane, scar over left eye, lean and treacherous looking, villainous lion, scar-inspired evil lion, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — EARLY GAME ==="
+    },
+    {
+      "id": "mosskit",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Mosskit",
+          "types": [
+            "Grass"
+          ],
+          "bst": 270,
+          "stats": {
+            "hp": 45,
+            "atk": 35,
+            "def": 50,
+            "spa": 55,
+            "spd": 45,
+            "spe": 40
+          },
+          "abilities": [
+            "Overgrow",
+            "Leaf Guard"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 22
+          },
+          "encounter": {
+            "route": "Route 101",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 3,
+            "max_level": 5
+          },
+          "sprite_prompt": "A tiny mossy kitten creature covered in green moss, leaf ears, small vine tail, cute forest cat, green and brown, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Mossguard",
+          "types": [
+            "Grass",
+            "Rock"
+          ],
+          "bst": 480,
+          "stats": {
+            "hp": 80,
+            "atk": 60,
+            "def": 100,
+            "spa": 90,
+            "spd": 80,
+            "spe": 70
+          },
+          "abilities": [
+            "Overgrow",
+            "Solid Rock"
+          ],
+          "sprite_prompt": "A large mossy lion guardian with stone armor covered in thick moss, vine mane, rocky claws, powerful forest protector, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "zaplet",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Zaplet",
+          "types": [
+            "Electric"
+          ],
+          "bst": 260,
+          "stats": {
+            "hp": 35,
+            "atk": 40,
+            "def": 30,
+            "spa": 55,
+            "spd": 35,
+            "spe": 65
+          },
+          "abilities": [
+            "Static",
+            "Lightning Rod"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 24
+          },
+          "encounter": {
+            "route": "Route 102",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 4,
+            "max_level": 6
+          },
+          "sprite_prompt": "A tiny yellow electric mouse-squirrel hybrid, electric cheeks, zigzag tail sparking, energetic and fast, yellow and blue, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Voltiger",
+          "types": [
+            "Electric",
+            "Fighting"
+          ],
+          "bst": 470,
+          "stats": {
+            "hp": 65,
+            "atk": 85,
+            "def": 55,
+            "spa": 95,
+            "spd": 60,
+            "spe": 110
+          },
+          "abilities": [
+            "Static",
+            "Motor Drive"
+          ],
+          "sprite_prompt": "A muscular electric tiger creature, lightning stripes, powerful stance, crackling yellow and black fur, electric fists, fierce predator, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "bublit",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Bublit",
+          "types": [
+            "Water"
+          ],
+          "bst": 270,
+          "stats": {
+            "hp": 50,
+            "atk": 30,
+            "def": 40,
+            "spa": 55,
+            "spd": 50,
+            "spe": 45
+          },
+          "abilities": [
+            "Torrent",
+            "Rain Dish"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 20
+          },
+          "encounter": {
+            "route": "Route 103",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 4,
+            "max_level": 6
+          },
+          "sprite_prompt": "A tiny blue bubble frog creature, round body made of water bubbles, big cute eyes, translucent blue, bubbly and cheerful, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Tidalore",
+          "types": [
+            "Water",
+            "Ground"
+          ],
+          "bst": 480,
+          "stats": {
+            "hp": 90,
+            "atk": 70,
+            "def": 80,
+            "spa": 85,
+            "spd": 75,
+            "spe": 80
+          },
+          "abilities": [
+            "Torrent",
+            "Water Absorb"
+          ],
+          "sprite_prompt": "A large toad warrior with tidal wave patterns on its skin, powerful legs, mud and water armor, aquatic ground toad, deep blue and brown, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "buglet",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Buglet",
+          "types": [
+            "Bug"
+          ],
+          "bst": 230,
+          "stats": {
+            "hp": 35,
+            "atk": 40,
+            "def": 35,
+            "spa": 25,
+            "spd": 25,
+            "spe": 70
+          },
+          "abilities": [
+            "Swarm",
+            "Compound Eyes"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 12
+          },
+          "encounter": {
+            "route": "Route 104",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 4,
+            "max_level": 6
+          },
+          "sprite_prompt": "A tiny green caterpillar bug with big compound eyes, small mandibles, cute larva creature, green and yellow stripes, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Chrysalor",
+          "types": [
+            "Bug",
+            "Steel"
+          ],
+          "bst": 350,
+          "stats": {
+            "hp": 55,
+            "atk": 40,
+            "def": 90,
+            "spa": 40,
+            "spd": 80,
+            "spe": 45
+          },
+          "abilities": [
+            "Shed Skin",
+            "Battle Armor"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 24
+          },
+          "sprite_prompt": "A metallic chrysalis cocoon with steel plating, glowing red eyes through armor slits, fortified bug cocoon, silver and green, Pokemon GBA style"
+        },
+        {
+          "name": "Mantikor",
+          "types": [
+            "Bug",
+            "Steel"
+          ],
+          "bst": 500,
+          "stats": {
+            "hp": 70,
+            "atk": 110,
+            "def": 85,
+            "spa": 55,
+            "spd": 65,
+            "spe": 115
+          },
+          "abilities": [
+            "Swarm",
+            "Technician"
+          ],
+          "sprite_prompt": "A fierce armored praying mantis with steel blade arms, chrome exoskeleton, sharp predator stance, green and metallic silver, deadly insect warrior, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "normouse",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Normouse",
+          "types": [
+            "Normal"
+          ],
+          "bst": 230,
+          "stats": {
+            "hp": 40,
+            "atk": 40,
+            "def": 30,
+            "spa": 25,
+            "spd": 30,
+            "spe": 65
+          },
+          "abilities": [
+            "Pickup",
+            "Run Away"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 20
+          },
+          "encounter": {
+            "route": "Route 101",
+            "slots": [
+              0,
+              1
+            ],
+            "min_level": 2,
+            "max_level": 4
+          },
+          "sprite_prompt": "A tiny plain brown field mouse, simple and common looking, big round ears, long tail, the most basic creature, brown and cream, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Ratempest",
+          "types": [
+            "Normal",
+            "Dark"
+          ],
+          "bst": 420,
+          "stats": {
+            "hp": 70,
+            "atk": 85,
+            "def": 55,
+            "spa": 45,
+            "spd": 50,
+            "spe": 115
+          },
+          "abilities": [
+            "Guts",
+            "Hustle"
+          ],
+          "sprite_prompt": "A large fierce rat with dark fur, sharp fangs, intimidating stance, city rat evolved into powerful beast, dark brown and black, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — MID GAME ==="
+    },
+    {
+      "id": "toxipod",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Toxipod",
+          "types": [
+            "Poison",
+            "Bug"
+          ],
+          "bst": 300,
+          "stats": {
+            "hp": 55,
+            "atk": 45,
+            "def": 50,
+            "spa": 60,
+            "spd": 45,
+            "spe": 45
+          },
+          "abilities": [
+            "Poison Point",
+            "Corrosion"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 28
+          },
+          "encounter": {
+            "route": "Route 110",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 12,
+            "max_level": 14
+          },
+          "sprite_prompt": "A small purple poisonous centipede with glowing green toxic spots, many legs, venomous mandibles, purple and toxic green, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Venomaw",
+          "types": [
+            "Poison",
+            "Bug"
+          ],
+          "bst": 510,
+          "stats": {
+            "hp": 80,
+            "atk": 75,
+            "def": 80,
+            "spa": 110,
+            "spd": 75,
+            "spe": 90
+          },
+          "abilities": [
+            "Poison Point",
+            "Corrosion"
+          ],
+          "sprite_prompt": "A massive toxic centipede monster with dripping venom, glowing toxic green segments, huge venomous fangs, horrifying poisonous beast, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "spectrine",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Spectrine",
+          "types": [
+            "Ghost",
+            "Poison"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 40,
+            "atk": 30,
+            "def": 35,
+            "spa": 65,
+            "spd": 55,
+            "spe": 55
+          },
+          "abilities": [
+            "Levitate",
+            "Cursed Body"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 30
+          },
+          "encounter": {
+            "route": "Route 113",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 14,
+            "max_level": 16
+          },
+          "sprite_prompt": "A small ghostly wisp made of volcanic ash and smoke, glowing purple eyes in dark smoke, eerie ash spirit, gray and purple, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Phantomere",
+          "types": [
+            "Ghost",
+            "Poison"
+          ],
+          "bst": 490,
+          "stats": {
+            "hp": 65,
+            "atk": 45,
+            "def": 60,
+            "spa": 115,
+            "spd": 90,
+            "spe": 115
+          },
+          "abilities": [
+            "Levitate",
+            "Cursed Body"
+          ],
+          "sprite_prompt": "A large spectral phantom made of toxic smoke and ash, flowing ethereal body, glowing toxic eyes, terrifying ash ghost, dark gray and neon purple, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "sandimp",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Sandimp",
+          "types": [
+            "Ground"
+          ],
+          "bst": 250,
+          "stats": {
+            "hp": 40,
+            "atk": 50,
+            "def": 45,
+            "spa": 35,
+            "spd": 35,
+            "spe": 45
+          },
+          "abilities": [
+            "Sand Veil",
+            "Sand Force"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 22
+          },
+          "encounter": {
+            "route": "Route 111",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 20,
+            "max_level": 22
+          },
+          "sprite_prompt": "A tiny sand imp creature made of compacted sand, small horns, playful desert spirit, sandy brown with gold flecks, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Dunerak",
+          "types": [
+            "Ground",
+            "Dragon"
+          ],
+          "bst": 400,
+          "stats": {
+            "hp": 65,
+            "atk": 80,
+            "def": 70,
+            "spa": 55,
+            "spd": 55,
+            "spe": 75
+          },
+          "abilities": [
+            "Sand Veil",
+            "Sand Force"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 40
+          },
+          "sprite_prompt": "A medium desert drake with sandy scales, dune-shaped ridges on back, sand swirling around, desert dragon lizard, sandy gold and brown, Pokemon GBA style"
+        },
+        {
+          "name": "Desertwyrm",
+          "types": [
+            "Ground",
+            "Dragon"
+          ],
+          "bst": 560,
+          "stats": {
+            "hp": 90,
+            "atk": 120,
+            "def": 95,
+            "spa": 75,
+            "spd": 70,
+            "spe": 110
+          },
+          "abilities": [
+            "Sand Stream",
+            "Sand Force"
+          ],
+          "sprite_prompt": "A massive desert sand dragon wyrm, coiling body made of golden sand, enormous jaws, sandstorm aura, ancient desert serpent dragon, gold and deep brown, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "coralink",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Coralink",
+          "types": [
+            "Water",
+            "Fairy"
+          ],
+          "bst": 260,
+          "stats": {
+            "hp": 45,
+            "atk": 25,
+            "def": 40,
+            "spa": 55,
+            "spd": 50,
+            "spe": 45
+          },
+          "abilities": [
+            "Natural Cure",
+            "Regenerator"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 24
+          },
+          "encounter": {
+            "route": "Route 124",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 25,
+            "max_level": 28
+          },
+          "sprite_prompt": "A tiny pink coral fairy creature, shaped like a sea star with glowing tips, underwater fairy, pink and teal, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Maristella",
+          "types": [
+            "Water",
+            "Fairy"
+          ],
+          "bst": 410,
+          "stats": {
+            "hp": 70,
+            "atk": 35,
+            "def": 65,
+            "spa": 95,
+            "spd": 80,
+            "spe": 65
+          },
+          "abilities": [
+            "Natural Cure",
+            "Regenerator"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_WATER_STONE"
+          },
+          "sprite_prompt": "A beautiful sea star maiden with coral crown, flowing water dress, bioluminescent glow, graceful ocean fairy, pink and deep blue, Pokemon GBA style"
+        },
+        {
+          "name": "Abyssalon",
+          "types": [
+            "Water",
+            "Fairy"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 90,
+            "atk": 40,
+            "def": 80,
+            "spa": 130,
+            "spd": 100,
+            "spe": 100
+          },
+          "abilities": [
+            "Regenerator",
+            "Magic Guard"
+          ],
+          "sprite_prompt": "A majestic deep sea queen with bioluminescent coral crown, flowing abyssal dress, commanding ocean power, divine sea fairy empress, deep blue and glowing pink, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "thundercub",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Thundercub",
+          "types": [
+            "Electric"
+          ],
+          "bst": 270,
+          "stats": {
+            "hp": 45,
+            "atk": 50,
+            "def": 35,
+            "spa": 50,
+            "spd": 35,
+            "spe": 55
+          },
+          "abilities": [
+            "Rivalry",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 22
+          },
+          "encounter": {
+            "route": "Route 118",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 18,
+            "max_level": 20
+          },
+          "sprite_prompt": "A small thunder lion cub with a sparking mane, yellow and blue fur, playful but fierce baby, electric sparks from fur, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Stormlion",
+          "types": [
+            "Electric",
+            "Normal"
+          ],
+          "bst": 430,
+          "stats": {
+            "hp": 70,
+            "atk": 90,
+            "def": 60,
+            "spa": 70,
+            "spd": 55,
+            "spe": 85
+          },
+          "abilities": [
+            "Rivalry",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 40
+          },
+          "sprite_prompt": "A proud storm lion with crackling electric mane, muscular body, lightning bolt patterns, powerful mid-evolution, yellow gold and storm blue, Pokemon GBA style"
+        },
+        {
+          "name": "Tempestking",
+          "types": [
+            "Electric",
+            "Normal"
+          ],
+          "bst": 580,
+          "stats": {
+            "hp": 90,
+            "atk": 125,
+            "def": 80,
+            "spa": 95,
+            "spd": 70,
+            "spe": 120
+          },
+          "abilities": [
+            "Intimidate",
+            "Electric Surge"
+          ],
+          "sprite_prompt": "A massive king of storms lion, flowing electric mane crackling with lightning, regal stance, thunderclouds around, golden electric emperor beast, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "florabud",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Florabud",
+          "types": [
+            "Grass",
+            "Fairy"
+          ],
+          "bst": 250,
+          "stats": {
+            "hp": 40,
+            "atk": 25,
+            "def": 35,
+            "spa": 55,
+            "spd": 50,
+            "spe": 45
+          },
+          "abilities": [
+            "Flower Veil",
+            "Natural Cure"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 20
+          },
+          "encounter": {
+            "route": "Route 117",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 13,
+            "max_level": 15
+          },
+          "sprite_prompt": "A tiny flower bud fairy creature, round body with petals as hair, dew drops on leaves, cute plant fairy, green and soft pink, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Petalux",
+          "types": [
+            "Grass",
+            "Fairy"
+          ],
+          "bst": 400,
+          "stats": {
+            "hp": 60,
+            "atk": 35,
+            "def": 55,
+            "spa": 95,
+            "spd": 80,
+            "spe": 75
+          },
+          "abilities": [
+            "Flower Veil",
+            "Natural Cure"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_SUN_STONE"
+          },
+          "sprite_prompt": "A blooming flower fairy with petal wings, graceful dancer with floral dress, sparkling pollen dust, beautiful plant spirit, pink and green, Pokemon GBA style"
+        },
+        {
+          "name": "Bloomqueen",
+          "types": [
+            "Grass",
+            "Fairy"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 75,
+            "atk": 40,
+            "def": 70,
+            "spa": 135,
+            "spd": 100,
+            "spe": 120
+          },
+          "abilities": [
+            "Flower Veil",
+            "Grassy Surge"
+          ],
+          "sprite_prompt": "A magnificent flower queen with massive petal crown, vine scepter, commanding field of flowers, radiant plant empress, vibrant pink and emerald green, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "ironpup",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Ironpup",
+          "types": [
+            "Steel"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 45,
+            "atk": 55,
+            "def": 60,
+            "spa": 25,
+            "spd": 40,
+            "spe": 55
+          },
+          "abilities": [
+            "Clear Body",
+            "Sturdy"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 24
+          },
+          "encounter": {
+            "route": "Route 112",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 14,
+            "max_level": 16
+          },
+          "sprite_prompt": "A small iron dog puppy with metallic fur, chrome body, loyal expression, tiny steel tail wagging, silver and gray, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Steelhound",
+          "types": [
+            "Steel",
+            "Dark"
+          ],
+          "bst": 440,
+          "stats": {
+            "hp": 70,
+            "atk": 90,
+            "def": 85,
+            "spa": 35,
+            "spd": 60,
+            "spe": 100
+          },
+          "abilities": [
+            "Clear Body",
+            "Tough Claws"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 42
+          },
+          "sprite_prompt": "A fierce steel hunting dog, dark metallic armor plating, sharp fangs, powerful and agile, dark steel hound, chrome and dark gray, Pokemon GBA style"
+        },
+        {
+          "name": "Titanwolf",
+          "types": [
+            "Steel",
+            "Dark"
+          ],
+          "bst": 570,
+          "stats": {
+            "hp": 85,
+            "atk": 125,
+            "def": 100,
+            "spa": 45,
+            "spd": 70,
+            "spe": 145
+          },
+          "abilities": [
+            "Tough Claws",
+            "Intimidate"
+          ],
+          "sprite_prompt": "A massive titanium alpha wolf, dark chrome armor, glowing red eyes, razor blade tail and claws, terrifying metal apex predator, chrome black and crimson, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — LATE GAME ==="
+    },
+    {
+      "id": "shadowmite",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Shadowmite",
+          "types": [
+            "Bug",
+            "Dark"
+          ],
+          "bst": 270,
+          "stats": {
+            "hp": 40,
+            "atk": 50,
+            "def": 35,
+            "spa": 40,
+            "spd": 30,
+            "spe": 75
+          },
+          "abilities": [
+            "Compound Eyes",
+            "Tinted Lens"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 26
+          },
+          "encounter": {
+            "route": "Route 120",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 24,
+            "max_level": 26
+          },
+          "sprite_prompt": "A small dark spider creature with glowing red eyes, shadow web patterns, stealthy arachnid, black and dark purple, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Nightspider",
+          "types": [
+            "Bug",
+            "Dark"
+          ],
+          "bst": 420,
+          "stats": {
+            "hp": 60,
+            "atk": 85,
+            "def": 55,
+            "spa": 65,
+            "spd": 50,
+            "spe": 105
+          },
+          "abilities": [
+            "Compound Eyes",
+            "Tinted Lens"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL_NIGHT",
+            "param": 40
+          },
+          "sprite_prompt": "A large shadow spider with dark web cape, multiple glowing red eyes, venomous fangs, nocturnal hunter, black and crimson, Pokemon GBA style"
+        },
+        {
+          "name": "Arachnoir",
+          "types": [
+            "Bug",
+            "Dark"
+          ],
+          "bst": 550,
+          "stats": {
+            "hp": 75,
+            "atk": 120,
+            "def": 70,
+            "spa": 85,
+            "spd": 65,
+            "spe": 135
+          },
+          "abilities": [
+            "Tinted Lens",
+            "Shadow Tag"
+          ],
+          "sprite_prompt": "A terrifying giant shadow arachnid, web of darkness, massive shadowy legs, glowing crimson eyes in darkness, master of shadow webs, ultimate dark spider, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "crystalin",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Crystalin",
+          "types": [
+            "Rock",
+            "Psychic"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 40,
+            "atk": 30,
+            "def": 55,
+            "spa": 60,
+            "spd": 55,
+            "spe": 40
+          },
+          "abilities": [
+            "Levitate",
+            "Magic Guard"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 28
+          },
+          "encounter": {
+            "route": "CAVE OF ORIGIN 1F",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 30,
+            "max_level": 33
+          },
+          "sprite_prompt": "A small floating crystal creature, glowing prismatic gem body, psychic energy inside crystal, tiny and mystical, rainbow crystal, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Prismera",
+          "types": [
+            "Rock",
+            "Psychic"
+          ],
+          "bst": 440,
+          "stats": {
+            "hp": 60,
+            "atk": 40,
+            "def": 80,
+            "spa": 100,
+            "spd": 80,
+            "spe": 80
+          },
+          "abilities": [
+            "Levitate",
+            "Magic Guard"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_DAWN_STONE"
+          },
+          "sprite_prompt": "A medium crystalline prism entity, multi-faceted gem body refracting light, psychic aura, floating crystal being, prismatic rainbow colors, Pokemon GBA style"
+        },
+        {
+          "name": "Diamondra",
+          "types": [
+            "Rock",
+            "Psychic"
+          ],
+          "bst": 580,
+          "stats": {
+            "hp": 75,
+            "atk": 50,
+            "def": 105,
+            "spa": 140,
+            "spd": 105,
+            "spe": 105
+          },
+          "abilities": [
+            "Magic Guard",
+            "Prism Armor"
+          ],
+          "sprite_prompt": "A massive diamond entity radiating psychic power, perfect gem body, light refracting into rainbow beams, cosmic crystal being, brilliant diamond and rainbow, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "cosmite",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Cosmite",
+          "types": [
+            "Psychic"
+          ],
+          "bst": 260,
+          "stats": {
+            "hp": 40,
+            "atk": 20,
+            "def": 35,
+            "spa": 65,
+            "spd": 50,
+            "spe": 50
+          },
+          "abilities": [
+            "Levitate",
+            "Magic Guard"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 30
+          },
+          "encounter": {
+            "route": "METEOR FALLS B1F 1R",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 30,
+            "max_level": 33
+          },
+          "sprite_prompt": "A tiny glowing star creature, cosmic nebula body, twinkling starlight, small celestial being, deep purple and starry white, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Nebulon",
+          "types": [
+            "Psychic",
+            "Cosmic"
+          ],
+          "bst": 420,
+          "stats": {
+            "hp": 60,
+            "atk": 30,
+            "def": 55,
+            "spa": 110,
+            "spd": 75,
+            "spe": 90
+          },
+          "abilities": [
+            "Levitate",
+            "Magic Guard"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 48
+          },
+          "sprite_prompt": "A swirling nebula entity, cosmic cloud body with stars forming inside, galaxies orbiting, beautiful space creature, deep purple and cosmic blue, Pokemon GBA style"
+        },
+        {
+          "name": "Galaxior",
+          "types": [
+            "Psychic",
+            "Cosmic"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 80,
+            "atk": 40,
+            "def": 75,
+            "spa": 155,
+            "spd": 100,
+            "spe": 150
+          },
+          "abilities": [
+            "Magic Guard",
+            "Psychic Surge"
+          ],
+          "sprite_prompt": "A magnificent galaxy being, body made of swirling galaxies and stars, cosmic power radiating, master of the cosmos, deep space purple and golden starlight, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "frostfang",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "2evo",
+      "members": [
+        {
+          "name": "Frostfang",
+          "types": [
+            "Ice",
+            "Dark"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 45,
+            "atk": 55,
+            "def": 40,
+            "spa": 35,
+            "spd": 35,
+            "spe": 70
+          },
+          "abilities": [
+            "Ice Body",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 26
+          },
+          "encounter": {
+            "route": "SHOAL CAVE LOW TIDE INNER ROOM",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 28,
+            "max_level": 30
+          },
+          "sprite_prompt": "A small ice wolf pup with frost-covered dark fur, icy blue eyes, sharp ice fangs, cold dark creature, icy blue and black, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Glacierwolf",
+          "types": [
+            "Ice",
+            "Dark"
+          ],
+          "bst": 440,
+          "stats": {
+            "hp": 70,
+            "atk": 90,
+            "def": 60,
+            "spa": 50,
+            "spd": 55,
+            "spe": 115
+          },
+          "abilities": [
+            "Ice Body",
+            "Intimidate"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL_NIGHT",
+            "param": 44
+          },
+          "sprite_prompt": "A fierce glacier wolf, ice crystal armor, dark frozen fur, piercing blue eyes, frost breath, powerful ice predator, blue ice and dark gray, Pokemon GBA style"
+        },
+        {
+          "name": "Blizzardon",
+          "types": [
+            "Ice",
+            "Dark"
+          ],
+          "bst": 580,
+          "stats": {
+            "hp": 85,
+            "atk": 130,
+            "def": 75,
+            "spa": 65,
+            "spd": 70,
+            "spe": 155
+          },
+          "abilities": [
+            "Slush Rush",
+            "Intimidate"
+          ],
+          "sprite_prompt": "A massive blizzard wolf lord, body wreathed in frozen darkness, ice storm swirling, giant dark ice beast, piercing glacial eyes, ultimate ice predator, icy blue and pitch black, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — WATER/OCEAN ==="
+    },
+    {
+      "id": "krilling",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Krilling",
+          "types": [
+            "Water",
+            "Dark"
+          ],
+          "bst": 310,
+          "stats": {
+            "hp": 55,
+            "atk": 65,
+            "def": 45,
+            "spa": 50,
+            "spd": 40,
+            "spe": 55
+          },
+          "abilities": [
+            "Swift Swim",
+            "Strong Jaw"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 36
+          },
+          "encounter": {
+            "route": "Route 126",
+            "slots": [
+              4,
+              5
+            ],
+            "min_level": 28,
+            "max_level": 32
+          },
+          "sprite_prompt": "A small dark sea creature like a squid with sharp beak, tentacles with dark tips, deep sea predator baby, dark blue and purple, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Krakenos",
+          "types": [
+            "Water",
+            "Dark"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 90,
+            "atk": 120,
+            "def": 70,
+            "spa": 85,
+            "spd": 65,
+            "spe": 110
+          },
+          "abilities": [
+            "Swift Swim",
+            "Strong Jaw"
+          ],
+          "sprite_prompt": "A massive dark kraken sea monster, huge tentacles, deep sea terror, bioluminescent spots, crushing grip, abyssal horror, dark purple and deep blue, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "seafin",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "1evo",
+      "members": [
+        {
+          "name": "Seafin",
+          "types": [
+            "Water",
+            "Dragon"
+          ],
+          "bst": 290,
+          "stats": {
+            "hp": 50,
+            "atk": 55,
+            "def": 45,
+            "spa": 50,
+            "spd": 40,
+            "spe": 50
+          },
+          "abilities": [
+            "Swift Swim",
+            "Marvel Scale"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 38
+          },
+          "encounter": {
+            "route": "Route 128",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 30,
+            "max_level": 34
+          },
+          "sprite_prompt": "A small sea serpent fish with fin-like wings, dragon scales, aquatic baby drake, teal and silver, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Leviaton",
+          "types": [
+            "Water",
+            "Dragon"
+          ],
+          "bst": 550,
+          "stats": {
+            "hp": 95,
+            "atk": 110,
+            "def": 80,
+            "spa": 90,
+            "spd": 70,
+            "spe": 105
+          },
+          "abilities": [
+            "Swift Swim",
+            "Multiscale"
+          ],
+          "sprite_prompt": "A massive sea leviathan dragon, coiling ocean serpent with fin crests, water dragon with scales, tidal wave power, majestic sea dragon, teal and deep blue, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — NO-EVO SPECIALS ==="
+    },
+    {
+      "id": "minotank",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "no_evo",
+      "members": [
+        {
+          "name": "Minotank",
+          "types": [
+            "Fighting",
+            "Steel"
+          ],
+          "bst": 490,
+          "stats": {
+            "hp": 90,
+            "atk": 120,
+            "def": 95,
+            "spa": 30,
+            "spd": 60,
+            "spe": 95
+          },
+          "abilities": [
+            "Iron Fist",
+            "Reckless"
+          ],
+          "encounter": {
+            "route": "VICTORY ROAD 1F",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 40,
+            "max_level": 44
+          },
+          "sprite_prompt": "A massive minotaur warrior with steel horns and armor, bull-like stance, iron fists, muscular humanoid bull beast, steel gray and bronze, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "id": "phoenixia",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "no_evo",
+      "members": [
+        {
+          "name": "Phoenixia",
+          "types": [
+            "Fire",
+            "Flying"
+          ],
+          "bst": 510,
+          "stats": {
+            "hp": 75,
+            "atk": 60,
+            "def": 55,
+            "spa": 125,
+            "spd": 80,
+            "spe": 115
+          },
+          "abilities": [
+            "Flame Body",
+            "Regenerator"
+          ],
+          "encounter": {
+            "route": "JAGGED PASS",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 28,
+            "max_level": 32
+          },
+          "sprite_prompt": "A majestic phoenix bird engulfed in flames, fiery wings spread, burning tail feathers, rebirth fire, beautiful fire bird, orange red and golden, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "id": "grifhorn",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "no_evo",
+      "members": [
+        {
+          "name": "Grifhorn",
+          "types": [
+            "Flying",
+            "Dragon"
+          ],
+          "bst": 500,
+          "stats": {
+            "hp": 80,
+            "atk": 105,
+            "def": 75,
+            "spa": 70,
+            "spd": 65,
+            "spe": 105
+          },
+          "abilities": [
+            "Intimidate",
+            "Moxie"
+          ],
+          "encounter": {
+            "route": "SKY PILLAR 3F",
+            "slots": [
+              6,
+              7
+            ],
+            "min_level": 40,
+            "max_level": 44
+          },
+          "sprite_prompt": "A griffin-dragon hybrid with eagle head and dragon wings, powerful claws, horn on forehead, majestic aerial predator, gold and deep green, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — MORE TROLLS ==="
+    },
+    {
+      "id": "vermicel",
+      "status": "PLANNED",
+      "inspiration": "troll",
+      "category": "1evo_troll",
+      "members": [
+        {
+          "name": "Vermicel",
+          "types": [
+            "Bug"
+          ],
+          "bst": 250,
+          "stats": {
+            "hp": 100,
+            "atk": 20,
+            "def": 50,
+            "spa": 20,
+            "spd": 40,
+            "spe": 20
+          },
+          "abilities": [
+            "Regenerator"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 40
+          },
+          "encounter": {
+            "route": "Route 103",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 4,
+            "max_level": 6
+          },
+          "moves_special": [
+            "Toxic",
+            "Recover",
+            "Stealth Rock",
+            "Infestation"
+          ],
+          "sprite_prompt": "A pathetic tiny earthworm with a dumb face, the most useless looking creature, pink slimy worm, looks completely worthless, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Vermitank",
+          "types": [
+            "Bug",
+            "Ground"
+          ],
+          "bst": 520,
+          "stats": {
+            "hp": 200,
+            "atk": 40,
+            "def": 100,
+            "spa": 40,
+            "spd": 80,
+            "spe": 60
+          },
+          "abilities": [
+            "Regenerator"
+          ],
+          "moves_special": [
+            "Toxic",
+            "Recover",
+            "Stealth Rock",
+            "Earthquake"
+          ],
+          "sprite_prompt": "A massive armored sandworm, huge segmented body, armored plates, still has that dumb face from baby form, enormous but goofy, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "id": "champignul",
+      "status": "PLANNED",
+      "inspiration": "troll",
+      "category": "no_evo_troll",
+      "members": [
+        {
+          "name": "Champignul",
+          "types": [
+            "Grass",
+            "Fighting"
+          ],
+          "bst": 410,
+          "stats": {
+            "hp": 60,
+            "atk": 100,
+            "def": 60,
+            "spa": 70,
+            "spd": 50,
+            "spe": 70
+          },
+          "abilities": [
+            "Technician",
+            "Effect Spore"
+          ],
+          "encounter": {
+            "route": "PETALBURG WOODS",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 6,
+            "max_level": 8
+          },
+          "moves_special": [
+            "Spore",
+            "Mach Punch",
+            "Bullet Seed",
+            "Rock Tomb"
+          ],
+          "sprite_prompt": "An ugly brown mushroom with boxing gloves, stupid looking face, crooked cap, the ugliest mushroom fighter, brown and dirty green, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "id": "bloboss",
+      "status": "PLANNED",
+      "inspiration": "troll",
+      "category": "no_evo_troll",
+      "members": [
+        {
+          "name": "Bloboss",
+          "types": [
+            "Normal",
+            "Psychic"
+          ],
+          "bst": 430,
+          "stats": {
+            "hp": 110,
+            "atk": 30,
+            "def": 80,
+            "spa": 80,
+            "spd": 80,
+            "spe": 50
+          },
+          "abilities": [
+            "Unaware",
+            "Simple"
+          ],
+          "encounter": {
+            "route": "Route 115",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 12,
+            "max_level": 14
+          },
+          "moves_special": [
+            "Cosmic Power",
+            "Stored Power",
+            "Recover",
+            "Calm Mind"
+          ],
+          "sprite_prompt": "A pink amorphous blob with a dopey smile, jelly-like body, completely ridiculous looking, simple blob creature, bubblegum pink, Pokemon GBA battle sprite"
+        }
+      ]
+    },
+    {
+      "id": "poisskaille",
+      "status": "PLANNED",
+      "inspiration": "troll",
+      "category": "1evo_troll",
+      "members": [
+        {
+          "name": "Poisskaille",
+          "types": [
+            "Water"
+          ],
+          "bst": 200,
+          "stats": {
+            "hp": 20,
+            "atk": 10,
+            "def": 50,
+            "spa": 10,
+            "spd": 50,
+            "spe": 60
+          },
+          "abilities": [
+            "Swift Swim",
+            "Rattled"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 25
+          },
+          "encounter": {
+            "route": "Route 102",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 4,
+            "max_level": 6
+          },
+          "moves_special": [
+            "Splash",
+            "Tackle",
+            "Flail"
+          ],
+          "sprite_prompt": "A pathetic flopping fish with a dumb expression, the most useless looking fish, floppy and sad, silver and dull, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Abysserpe",
+          "types": [
+            "Water",
+            "Dragon"
+          ],
+          "bst": 540,
+          "stats": {
+            "hp": 80,
+            "atk": 120,
+            "def": 70,
+            "spa": 80,
+            "spd": 60,
+            "spe": 130
+          },
+          "abilities": [
+            "Moxie",
+            "Intimidate"
+          ],
+          "moves_special": [
+            "Dragon Dance",
+            "Waterfall",
+            "Crunch",
+            "Earthquake"
+          ],
+          "sprite_prompt": "A terrifying sea serpent dragon with massive jaws, evolved from a pathetic fish, dark blue scales, fearsome ocean predator, complete transformation, Pokemon GBA style"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — PSEUDO-LEGENDARIES ==="
+    },
+    {
+      "id": "dracoline",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "pseudo_legendary",
+      "members": [
+        {
+          "name": "Dracolet",
+          "types": [
+            "Dragon"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 45,
+            "atk": 55,
+            "def": 40,
+            "spa": 50,
+            "spd": 40,
+            "spe": 50
+          },
+          "abilities": [
+            "Shed Skin",
+            "Marvel Scale"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 35
+          },
+          "encounter": {
+            "route": "METEOR FALLS B1F 2R",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 35,
+            "max_level": 38
+          },
+          "sprite_prompt": "A baby dragon whelp with tiny wings, blue and silver scales, innocent but powerful potential, dragon hatchling, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Dracolisk",
+          "types": [
+            "Dragon",
+            "Fighting"
+          ],
+          "bst": 440,
+          "stats": {
+            "hp": 70,
+            "atk": 85,
+            "def": 65,
+            "spa": 75,
+            "spd": 60,
+            "spe": 85
+          },
+          "abilities": [
+            "Shed Skin",
+            "Marvel Scale"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 55
+          },
+          "sprite_prompt": "A teenage dragon warrior, bipedal dragon with fists, growing wings, blue and silver scales, martial dragon, Pokemon GBA style"
+        },
+        {
+          "name": "Dracoking",
+          "types": [
+            "Dragon",
+            "Fighting"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 90,
+            "atk": 120,
+            "def": 80,
+            "spa": 100,
+            "spd": 80,
+            "spe": 130
+          },
+          "abilities": [
+            "Marvel Scale",
+            "Multiscale"
+          ],
+          "sprite_prompt": "A magnificent dragon king warrior, majestic wings, powerful martial stance, blue and silver armor scales, regal dragon emperor, crown of horns, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "voidpup",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "pseudo_legendary",
+      "members": [
+        {
+          "name": "Voidpup",
+          "types": [
+            "Dark",
+            "Ghost"
+          ],
+          "bst": 280,
+          "stats": {
+            "hp": 50,
+            "atk": 40,
+            "def": 40,
+            "spa": 55,
+            "spd": 45,
+            "spe": 50
+          },
+          "abilities": [
+            "Pressure",
+            "Shadow Tag"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 35
+          },
+          "encounter": {
+            "route": "SKY PILLAR 5F",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 40,
+            "max_level": 44
+          },
+          "sprite_prompt": "A small void creature, dark wispy body with glowing purple eyes, tiny shadow being, ominous but small, black and deep purple, Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Voidhound",
+          "types": [
+            "Dark",
+            "Ghost"
+          ],
+          "bst": 440,
+          "stats": {
+            "hp": 75,
+            "atk": 65,
+            "def": 60,
+            "spa": 85,
+            "spd": 70,
+            "spe": 85
+          },
+          "abilities": [
+            "Pressure",
+            "Shadow Tag"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 55
+          },
+          "sprite_prompt": "A shadow hound of the void, ethereal dark body, trailing void energy, purple glowing markings, spectral predator, black and neon purple, Pokemon GBA style"
+        },
+        {
+          "name": "Voidbeast",
+          "types": [
+            "Dark",
+            "Ghost"
+          ],
+          "bst": 600,
+          "stats": {
+            "hp": 100,
+            "atk": 85,
+            "def": 75,
+            "spa": 130,
+            "spd": 85,
+            "spe": 125
+          },
+          "abilities": [
+            "Shadow Tag",
+            "Pressure"
+          ],
+          "sprite_prompt": "A massive void beast from between dimensions, reality warping around it, enormous shadow creature, void energy pouring from its body, terrifying interdimensional horror, black and cosmic purple, Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ORIGINAL — LEGENDARIES ==="
+    },
+    {
+      "id": "chronodon",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "legendary",
+      "members": [
+        {
+          "name": "Chronodon",
+          "types": [
+            "Dragon",
+            "Psychic"
+          ],
+          "bst": 720,
+          "stats": {
+            "hp": 100,
+            "atk": 90,
+            "def": 100,
+            "spa": 150,
+            "spd": 100,
+            "spe": 180
+          },
+          "abilities": [
+            "Pressure",
+            "Speed Boost"
+          ],
+          "encounter_note": "Legendary. Static encounter in Sealed Chamber after solving time-based puzzle (interact with 4 sundials in correct order).",
+          "sprite_prompt": "A dragon deity of time, body interwoven with clockwork gears and flowing temporal energy, hourglass embedded in chest with sand flowing upward, wings made of clock hands and frozen moments, ancient and wise golden eyes, gold and deep blue mechanical dragon, imposing time god, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "terravolt",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "legendary",
+      "members": [
+        {
+          "name": "Terravolt",
+          "types": [
+            "Ground",
+            "Electric"
+          ],
+          "bst": 680,
+          "stats": {
+            "hp": 120,
+            "atk": 140,
+            "def": 110,
+            "spa": 90,
+            "spd": 80,
+            "spe": 140
+          },
+          "abilities": [
+            "Electric Surge",
+            "Mold Breaker"
+          ],
+          "encounter_note": "Legendary. Static encounter deep in New Mauville after powering all generators.",
+          "sprite_prompt": "A massive earth titan crackling with tectonic electric power, rocky volcanic body with lightning bolts running through cracks like veins, magma core visible in chest, enormous stone fists charged with electricity, earthquake incarnate, imposing earth-thunder god beast, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "abyssqueen",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "legendary",
+      "members": [
+        {
+          "name": "Abyssqueen",
+          "types": [
+            "Water",
+            "Ghost"
+          ],
+          "bst": 680,
+          "stats": {
+            "hp": 110,
+            "atk": 70,
+            "def": 90,
+            "spa": 150,
+            "spd": 110,
+            "spe": 150
+          },
+          "abilities": [
+            "Drizzle",
+            "Cursed Body"
+          ],
+          "encounter_note": "Legendary. Static encounter in deepest room of Seafloor Cavern after defeating Kyogre storyline.",
+          "sprite_prompt": "A ghostly deep sea queen deity, bioluminescent jellyfish-like ethereal body, flowing translucent ghostly tentacles trailing light, haunting beautiful hollow eyes, crown of deep sea coral and anglerfish lures, the haunted empress of the abyss, imposing ocean ghost goddess, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "solaridon",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "boss_legendary",
+      "members": [
+        {
+          "name": "Solaridon",
+          "types": [
+            "Fire",
+            "Cosmic"
+          ],
+          "bst": 760,
+          "stats": {
+            "hp": 110,
+            "atk": 100,
+            "def": 90,
+            "spa": 170,
+            "spd": 100,
+            "spe": 190
+          },
+          "abilities": [
+            "Drought",
+            "Orichalcum Pulse"
+          ],
+          "encounter_note": "Boss legendary. Appears at top of Mt. Chimney during solar event (daytime, clear weather).",
+          "sprite_prompt": "A celestial solar dragon deity, body of molten stellar plasma and golden fire, corona of blazing solar flares forming a mane, wings made of pure sunlight and solar wind, eyes of white-hot stellar cores, star-forged scales radiating heat waves, the living incarnation of a star, imposing cosmic fire god, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "lunaraith",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "boss_legendary",
+      "members": [
+        {
+          "name": "Lunaraith",
+          "types": [
+            "Dark",
+            "Cosmic"
+          ],
+          "bst": 760,
+          "stats": {
+            "hp": 110,
+            "atk": 170,
+            "def": 100,
+            "spa": 100,
+            "spd": 90,
+            "spe": 190
+          },
+          "abilities": [
+            "Dark Aura",
+            "Hadron Engine"
+          ],
+          "encounter_note": "Boss legendary. Appears at top of Mt. Pyre during lunar event (nighttime). Counterpart to Solaridon.",
+          "sprite_prompt": "A dark cosmic lunar dragon deity, body of void-black scales dotted with stars like a night sky, crescent moon horns glowing pale silver, wings of dark matter blocking out light, eclipse halo behind head, silver and cosmic black, the bringer of eternal night, imposing lunar shadow god, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== 5-STAGE EVOLUTION LINES ==="
+    },
+    {
+      "id": "emberon",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "4evo_godtier",
+      "members": [
+        {
+          "name": "Emblet",
+          "types": [
+            "Fire"
+          ],
+          "bst": 200,
+          "stats": {
+            "hp": 35,
+            "atk": 30,
+            "def": 25,
+            "spa": 45,
+            "spd": 30,
+            "spe": 35
+          },
+          "abilities": [
+            "Flame Body",
+            "Flash Fire"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 16
+          },
+          "encounter": {
+            "route": "FIERY PATH",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 14,
+            "max_level": 16
+          },
+          "sprite_prompt": "A tiny flickering flame spirit with small ember eyes peering from a wispy fire body, innocent newborn fire elemental, warm orange and yellow glow, fragile but alive, 64x64 Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Pyrobane",
+          "types": [
+            "Fire",
+            "Dark"
+          ],
+          "bst": 320,
+          "stats": {
+            "hp": 55,
+            "atk": 50,
+            "def": 40,
+            "spa": 70,
+            "spd": 45,
+            "spe": 60
+          },
+          "abilities": [
+            "Flame Body",
+            "Flash Fire"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 32
+          },
+          "sprite_prompt": "A dark fire beast with black flame mane, smoldering ember eyes in a shadowy fire body, dark red and black flames licking upward, young fire demon growing in power, menacing, 64x64 Pokemon GBA style"
+        },
+        {
+          "name": "Infernash",
+          "types": [
+            "Fire",
+            "Dark"
+          ],
+          "bst": 460,
+          "stats": {
+            "hp": 75,
+            "atk": 70,
+            "def": 60,
+            "spa": 105,
+            "spd": 65,
+            "spe": 85
+          },
+          "abilities": [
+            "Flash Fire",
+            "Dark Aura"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 48
+          },
+          "sprite_prompt": "A burning shadow demon wreathed in hellfire, dark horns of black flame curving upward, body of smoldering darkness and crimson fire, fierce demonic fire beast with molten cracks, imposing infernal creature, dark detailed pixel art, 64x64 Pokemon GBA style"
+        },
+        {
+          "name": "Volcaron",
+          "types": [
+            "Fire",
+            "Dragon"
+          ],
+          "bst": 620,
+          "stats": {
+            "hp": 95,
+            "atk": 90,
+            "def": 80,
+            "spa": 140,
+            "spd": 85,
+            "spe": 130
+          },
+          "abilities": [
+            "Drought",
+            "Dark Aura"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_FIRE_STONE"
+          },
+          "evolution_note": "Requires Fire Stone at level 55+",
+          "sprite_prompt": "A massive volcanic dragon lord, body of flowing molten lava and obsidian scales, magma bleeding through cracks in dark rock armor, volcanic eruption forming crest on back, blazing dragon wings of fire and smoke, imposing volcanic wyrm ruler, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        },
+        {
+          "name": "Pyrocosmos",
+          "types": [
+            "Fire",
+            "Cosmic"
+          ],
+          "bst": 880,
+          "stats": {
+            "hp": 115,
+            "atk": 100,
+            "def": 100,
+            "spa": 200,
+            "spd": 110,
+            "spe": 255
+          },
+          "abilities": [
+            "Drought",
+            "Orichalcum Pulse"
+          ],
+          "evolution_note": "5th form — use Comet Shard on Volcaron during daytime at Mt. Chimney summit",
+          "sprite_prompt": "A cosmic fire god dragon transcending reality, body of stellar plasma and cosmic flame, supernovae orbiting its form, wings of solar flares spanning galaxies, eyes of imploding stars, the living embodiment of cosmic fire that birthed the universe, overwhelming god-like solar entity, intricate dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "shadowlet",
+      "status": "PLANNED",
+      "inspiration": "original",
+      "category": "4evo_godtier",
+      "members": [
+        {
+          "name": "Shadowlet",
+          "types": [
+            "Dark"
+          ],
+          "bst": 200,
+          "stats": {
+            "hp": 30,
+            "atk": 35,
+            "def": 25,
+            "spa": 40,
+            "spd": 30,
+            "spe": 40
+          },
+          "abilities": [
+            "Pressure",
+            "Cursed Body"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 18
+          },
+          "encounter": {
+            "route": "MT PYRE 4F",
+            "slots": [
+              10,
+              11
+            ],
+            "min_level": 24,
+            "max_level": 26
+          },
+          "sprite_prompt": "A tiny dark shadow wisp barely visible, two small glowing red eyes peering from formless dark smoke, ominous but small shadow spirit, 64x64 Pokemon GBA battle sprite"
+        },
+        {
+          "name": "Nightshade",
+          "types": [
+            "Dark",
+            "Ghost"
+          ],
+          "bst": 320,
+          "stats": {
+            "hp": 50,
+            "atk": 55,
+            "def": 40,
+            "spa": 60,
+            "spd": 50,
+            "spe": 65
+          },
+          "abilities": [
+            "Pressure",
+            "Cursed Body"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL",
+            "param": 34
+          },
+          "sprite_prompt": "A shadowy phantom creature wrapped in a dark tattered cloak, glowing crimson eyes under hood, spectral claws emerging from darkness, dark purple and black ghostly form, growing menace, 64x64 Pokemon GBA style"
+        },
+        {
+          "name": "Darkblade",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 460,
+          "stats": {
+            "hp": 70,
+            "atk": 95,
+            "def": 65,
+            "spa": 70,
+            "spd": 60,
+            "spe": 100
+          },
+          "abilities": [
+            "Pressure",
+            "Sword of Ruin"
+          ],
+          "evolution": {
+            "method": "EVO_LEVEL_NIGHT",
+            "param": 48
+          },
+          "sprite_prompt": "A dark armored knight wielding a cursed shadow sword, dark steel full plate armor with crimson rune accents, glowing red visor slit, flowing tattered dark cape, menacing dark knight warrior, imposing swordfighter stance, detailed pixel art, 64x64 Pokemon GBA style"
+        },
+        {
+          "name": "Grimreapor",
+          "types": [
+            "Dark",
+            "Fighting"
+          ],
+          "bst": 620,
+          "stats": {
+            "hp": 90,
+            "atk": 135,
+            "def": 80,
+            "spa": 85,
+            "spd": 75,
+            "spe": 155
+          },
+          "abilities": [
+            "Sword of Ruin",
+            "Shadow Tag"
+          ],
+          "evolution": {
+            "method": "EVO_ITEM",
+            "param": "ITEM_DUSK_STONE"
+          },
+          "evolution_note": "Requires Dusk Stone at level 55+ at night",
+          "sprite_prompt": "A fearsome death knight reaper, skull-faced helm with blazing red eyes, massive shadow scythe dripping with dark energy, dark plate armor with death motifs, tattered death shroud and cape flowing, dark energy consuming light around it, terrifying grim reaper lord, imposing dark executioner, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        },
+        {
+          "name": "Nocturnion",
+          "types": [
+            "Dark",
+            "Divine"
+          ],
+          "bst": 870,
+          "stats": {
+            "hp": 115,
+            "atk": 195,
+            "def": 105,
+            "spa": 100,
+            "spd": 100,
+            "spe": 255
+          },
+          "abilities": [
+            "Shadow Tag",
+            "Dark Aura"
+          ],
+          "evolution_note": "5th form — use Dusk Stone on Grimreapor at lv75+ during night at Mt. Pyre summit",
+          "sprite_prompt": "An ascended god of eternal night, dark divine being with massive wings of shadow and dying starlight, transcendent dark armor forged from the void between stars, scythe of oblivion that cuts through reality itself, eclipse halo of dark energy behind head, the ultimate dark deity that brings the final night, overwhelming divine shadow god, intricate dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "_comment": "=== ULTIMATE ENDGAME BOSSES ==="
+    },
+    {
+      "id": "paradoxius",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "Born from the collision of an ancient glacier and a primordial volcano. Fire and ice eternally at war within one body. Appears only where elemental balance is shattered.",
+      "members": [
+        {
+          "name": "Paradoxius",
+          "types": [
+            "Ice",
+            "Fire"
+          ],
+          "bst": 820,
+          "stats": {
+            "hp": 110,
+            "atk": 90,
+            "def": 95,
+            "spa": 175,
+            "spd": 100,
+            "spe": 250
+          },
+          "abilities": [
+            "Turboblaze",
+            "Teravolt"
+          ],
+          "moves_special": [
+            "Ice Burn",
+            "Blue Flare",
+            "Dragon Pulse",
+            "Recover",
+            "Freeze-Dry",
+            "Flamethrower"
+          ],
+          "encounter_note": "Ultimate boss. Seafloor Cavern back room when party has both a Fire and Ice type at lv60+.",
+          "sprite_prompt": "A massive dragon split vertically in two halves, left half made of blazing fire and flowing magma with a red glowing eye, right half made of crystalline blue ice and frost with a blue glowing eye, imposing duality dragon body, endgame legendary boss creature, clean bold silhouette, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "venomystic",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "Once the purest fairy queen, she drank from a poisoned wellspring to save her realm. The toxin corrupted her beauty into something far more dangerous.",
+      "members": [
+        {
+          "name": "Venomystic",
+          "types": [
+            "Poison",
+            "Fairy"
+          ],
+          "bst": 780,
+          "stats": {
+            "hp": 100,
+            "atk": 60,
+            "def": 90,
+            "spa": 170,
+            "spd": 120,
+            "spe": 240
+          },
+          "abilities": [
+            "Poison Heal",
+            "Magic Guard"
+          ],
+          "moves_special": [
+            "Moonblast",
+            "Sludge Wave",
+            "Nasty Plot",
+            "Recover",
+            "Toxic Spikes",
+            "Draining Kiss"
+          ],
+          "encounter_note": "Ultimate boss. Petalburg Woods deepest grove at night with a Fairy-type holding Poison Barb.",
+          "sprite_prompt": "A corrupted dark fairy queen with large tattered butterfly wings dripping toxic purple venom droplets, elegant crown of poisonous black thorns, flowing dark purple royal dress dissolving into poison mist, beautiful but deadly enchantress, glowing toxic green eyes, one hand raised casting dark magic, imposing endgame boss, clean design, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "entomoth",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "The Primordial Moth existed before the first Pokemon. It feeds on starlight and its wing patterns contain the blueprints of creation. Seeing its wings fully open drives lesser beings to madness.",
+      "members": [
+        {
+          "name": "Entomoth",
+          "types": [
+            "Bug",
+            "Dragon"
+          ],
+          "bst": 800,
+          "stats": {
+            "hp": 95,
+            "atk": 75,
+            "def": 85,
+            "spa": 195,
+            "spd": 95,
+            "spe": 255
+          },
+          "abilities": [
+            "Compound Eyes",
+            "Tinted Lens"
+          ],
+          "moves_special": [
+            "Bug Buzz",
+            "Draco Meteor",
+            "Quiver Dance",
+            "Moonlight",
+            "Hurricane",
+            "Fiery Dance"
+          ],
+          "encounter_note": "Ultimate boss. Sky Pillar rooftop at nighttime. Must have a Bug-type in party.",
+          "sprite_prompt": "A colossal primordial moth dragon emperor, massive ornate dark wings with hypnotic glowing cosmic eye patterns, draconic serpentine body covered in dark insectoid segmented armor, moth antennae curving into sharp dragon horns, ancient alien insect god radiating eerie light from wing eyes, imposing endgame moth dragon boss, clean bold silhouette, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "limborion",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "Exists simultaneously alive and dead, trapped between planes. Neither the living nor the dead can escape its grasp. It guards the threshold between worlds.",
+      "members": [
+        {
+          "name": "Limborion",
+          "types": [
+            "Normal",
+            "Ghost"
+          ],
+          "bst": 790,
+          "stats": {
+            "hp": 130,
+            "atk": 150,
+            "def": 100,
+            "spa": 60,
+            "spd": 100,
+            "spe": 250
+          },
+          "abilities": [
+            "Scrappy",
+            "Shadow Tag"
+          ],
+          "moves_special": [
+            "Extreme Speed",
+            "Shadow Claw",
+            "Swords Dance",
+            "Recover",
+            "Phantom Force",
+            "Body Slam"
+          ],
+          "encounter_note": "Ultimate boss. Mt. Pyre summit at midnight. Impossible to flee from (Shadow Tag). The only Normal/Ghost.",
+          "sprite_prompt": "A spectral humanoid entity split vertically between life and death, left half is solid muscular living flesh with a golden eye and warm skin, right half is transparent ghostly skeleton with a hollow dark eye socket and spectral wisps, ethereal glowing chains binding both halves together, floating between two planes, eerie threshold guardian, imposing endgame boss, clean design, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "yggdrathon",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "The World Tree is the source of all life energy. Its roots span continents and channel lightning from the sky into the earth. Cutting one root causes earthquakes across the world.",
+      "members": [
+        {
+          "name": "Yggdrathon",
+          "types": [
+            "Grass",
+            "Electric"
+          ],
+          "bst": 830,
+          "stats": {
+            "hp": 140,
+            "atk": 60,
+            "def": 110,
+            "spa": 180,
+            "spd": 120,
+            "spe": 220
+          },
+          "abilities": [
+            "Electric Surge",
+            "Grassy Surge"
+          ],
+          "moves_special": [
+            "Leaf Storm",
+            "Thunder",
+            "Giga Drain",
+            "Recover",
+            "Spore",
+            "Volt Switch"
+          ],
+          "encounter_note": "Ultimate boss. Secret room behind the Fortree giant tree. Requires all 8 badges and a Grass-type at lv50+.",
+          "sprite_prompt": "A massive sentient world-tree titan, thick ancient dark bark trunk forming a towering humanoid body, massive branch arms with lightning bolts crackling between them, deep root legs anchored to the ground, leaves glowing bright electric yellow with bio-electric energy, ancient tree of life channeling storms, dark green and electric yellow, imposing nature titan endgame boss, clean bold silhouette, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "gargoliath",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "An ancient stone judge that awakens once per millennium. Its fairy crystal heart grants the power to judge souls. Those deemed unworthy are petrified eternally.",
+      "members": [
+        {
+          "name": "Gargoliath",
+          "types": [
+            "Rock",
+            "Fairy"
+          ],
+          "bst": 780,
+          "stats": {
+            "hp": 120,
+            "atk": 140,
+            "def": 150,
+            "spa": 80,
+            "spd": 120,
+            "spe": 170
+          },
+          "abilities": [
+            "Solid Rock",
+            "Magic Bounce"
+          ],
+          "moves_special": [
+            "Diamond Storm",
+            "Play Rough",
+            "Stealth Rock",
+            "Recover",
+            "Stone Edge",
+            "Moonblast"
+          ],
+          "encounter_note": "Ultimate boss. Statue in Granite Cave deepest room. Interact after defeating Elite Four — it awakens.",
+          "sprite_prompt": "A massive ancient stone gargoyle guardian with crystalline fairy wings, muscular grey stone body with glowing pink fairy gems embedded in chest and shoulders, large curving stone horns, sharp stone fangs, wings of carved stone shimmering with prismatic fairy dust, crouched powerful guardian pose ready to strike, imposing stone titan endgame boss, clean design, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "abyssaldon",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "Born from the deepest underwater volcanic vent. Superheated water given form. Creates obsidian pillars wherever it walks and boils the ocean around it.",
+      "members": [
+        {
+          "name": "Abyssaldon",
+          "types": [
+            "Water",
+            "Fire"
+          ],
+          "bst": 850,
+          "stats": {
+            "hp": 120,
+            "atk": 100,
+            "def": 100,
+            "spa": 190,
+            "spd": 100,
+            "spe": 240
+          },
+          "abilities": [
+            "Steam Engine",
+            "Primordial Sea"
+          ],
+          "moves_special": [
+            "Steam Eruption",
+            "Hydro Pump",
+            "Lava Plume",
+            "Recover",
+            "Scald",
+            "Fire Blast"
+          ],
+          "encounter_note": "Ultimate boss. Deepest chamber of Seafloor Cavern after Kyogre storyline. The water boils as you enter.",
+          "sprite_prompt": "A deep-sea volcanic deity, body of black obsidian rock with bright orange magma cracks glowing throughout, superheated steam venting from fissures in its armor, aquatic fins and tail made of churning boiling water, molten orange core blazing in chest, primal fusion of deep ocean and volcanic fire, massive and ancient, imposing endgame boss, clean bold silhouette, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "spectraguard",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "An ornate suit of divine armor possessed by the undying spirit of an ancient warrior-king. He swore to guard the world for eternity, and death could not break his oath.",
+      "members": [
+        {
+          "name": "Spectraguard",
+          "types": [
+            "Steel",
+            "Ghost"
+          ],
+          "bst": 800,
+          "stats": {
+            "hp": 110,
+            "atk": 80,
+            "def": 160,
+            "spa": 130,
+            "spd": 160,
+            "spe": 160
+          },
+          "abilities": [
+            "Heatproof",
+            "Filter"
+          ],
+          "moves_special": [
+            "Flash Cannon",
+            "Shadow Ball",
+            "Kings Shield",
+            "Recover",
+            "Iron Defense",
+            "Hex"
+          ],
+          "encounter_note": "Ultimate boss. Sealed Chamber secret room. The armor stands motionless until you read the ancient inscription.",
+          "sprite_prompt": "A massive haunted suit of ornate divine full plate armor, empty glowing spectral blue eyes behind decorated great helm visor, ghostly blue flames burning inside the hollow armor visible through the joints, wielding a massive spectral greatsword in right hand and a tower shield with ancient glowing crest in left hand, floating slightly off ground, eternal undead knight sentinel, imposing endgame boss, clean design, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    },
+    {
+      "id": "terracelest",
+      "status": "PLANNED",
+      "inspiration": "original_boss",
+      "category": "ultimate_boss",
+      "lore": "When the earth cracked open and the sky fell inward, Terracelest was born. It commands earthquakes with its legs and hurricanes with its wings. Where it walks, the landscape is forever changed.",
+      "members": [
+        {
+          "name": "Terracelest",
+          "types": [
+            "Ground",
+            "Flying"
+          ],
+          "bst": 840,
+          "stats": {
+            "hp": 115,
+            "atk": 185,
+            "def": 105,
+            "spa": 80,
+            "spd": 100,
+            "spe": 255
+          },
+          "abilities": [
+            "Delta Stream",
+            "Mold Breaker"
+          ],
+          "moves_special": [
+            "Earthquake",
+            "Hurricane",
+            "Dragon Dance",
+            "Roost",
+            "Brave Bird",
+            "Stone Edge"
+          ],
+          "encounter_note": "Ultimate boss. Top of Sky Pillar after Rayquaza storyline. The sky darkens and the ground shakes as it descends.",
+          "sprite_prompt": "A colossal elemental titan, lower body and powerful legs made of cracked brown rocky earth with orange magma veins, upper body chest and massive spread wings formed from dark storm clouds with lightning bolts arcing through them, where solid earth meets raging sky in one titanic bipedal being, earthquake below and hurricane above, elemental god of earth and atmosphere, imposing endgame boss, clean bold silhouette, dark detailed pixel art, 64x64 Pokemon GBA sprite"
+        }
+      ]
+    }
+  ]
+}
