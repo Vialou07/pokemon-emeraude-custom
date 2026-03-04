@@ -264,6 +264,43 @@
         .arena-stats { display: flex; gap: 10px; margin-top: 8px; font-size: 0.75rem; color: var(--text-dim); }
         .arena-intro { color: var(--text-dim); margin-bottom: 16px; font-size: 0.9rem; }
 
+        /* Arena leaderboard & stats */
+        .arena-leaderboard {
+            background: var(--bg-card); border: 1px solid #333; border-radius: 12px;
+            padding: 20px; margin-bottom: 24px;
+        }
+        .arena-leaderboard h3 { color: var(--gold); font-size: 1rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .arena-lb-table { width: 100%; border-collapse: collapse; }
+        .arena-lb-table th {
+            text-align: left; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;
+            padding: 6px 8px; border-bottom: 1px solid #333;
+        }
+        .arena-lb-table td { padding: 8px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .arena-lb-table tr:last-child td { border-bottom: none; }
+        .arena-lb-rank { color: var(--gold); font-weight: bold; width: 30px; }
+        .arena-lb-pseudo { font-weight: 600; }
+        .arena-lb-badges { display: flex; gap: 3px; flex-wrap: wrap; }
+        .arena-lb-badge {
+            font-size: 0.6rem; padding: 1px 5px; border-radius: 4px; font-weight: 600;
+            color: white; opacity: 0.9;
+        }
+        .arena-lb-stat { text-align: center; color: var(--text-dim); font-size: 0.8rem; }
+        .arena-lb-stat strong { color: white; }
+        .arena-summary {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px; margin-bottom: 24px;
+        }
+        .arena-summary-card {
+            background: var(--bg-card); border: 1px solid #333; border-radius: 10px;
+            padding: 14px; text-align: center;
+        }
+        .arena-summary-card .value { font-size: 1.5rem; font-weight: bold; color: var(--gold); }
+        .arena-summary-card .label { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+        .arena-win-bar {
+            height: 6px; background: #333; border-radius: 3px; margin-top: 6px; overflow: hidden;
+        }
+        .arena-win-bar .fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.3s; }
+
         /* ROUTES / DISTRIBUTION */
         .route-card { background: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--accent2); }
         .route-card.has-fakemons { border-left-color: var(--gold); }
@@ -774,7 +811,12 @@
     <div id="arena" class="section">
         <h2>Arena Multi-Champions</h2>
         <p class="arena-intro">Le premier joueur a battre un champion d'arene peut deposer son equipe et devenir le Maitre. Les autres doivent le detroner pour prendre sa place !</p>
-        <p class="arena-intro" style="font-size:0.8rem;">Pour deposer ton equipe : ouvre le jeu, sauvegarde, puis clique sur le bouton <strong style="color:var(--accent)">Arena</strong> en haut a droite de l'ecran de jeu.</p>
+        <p class="arena-intro" style="font-size:0.8rem;">Pour deposer ton equipe : ouvre le jeu, sauvegarde, puis clique sur le bouton <strong style="color:var(--accent)">Arena</strong> dans le menu en haut a gauche de l'ecran de jeu.</p>
+
+        <div id="arena-summary" class="arena-summary"></div>
+        <div id="arena-leaderboard"></div>
+
+        <h3 style="color:var(--accent);margin-bottom:8px;">Arenes</h3>
         <div id="arena-grid" class="arena-grid">
             <div style="text-align:center;padding:40px;color:var(--text-dim);">Chargement des arenes...</div>
         </div>
@@ -2430,6 +2472,8 @@
 
     async function loadArenaData() {
         const grid = document.getElementById('arena-grid');
+        const summaryEl = document.getElementById('arena-summary');
+        const lbEl = document.getElementById('arena-leaderboard');
         if (!grid) return;
 
         let masters = [];
@@ -2443,6 +2487,88 @@
         const masterMap = {};
         masters.forEach(m => masterMap[m.gym_id] = m);
 
+        // === SUMMARY STATS ===
+        const activeMasters = masters.filter(m => m.team && m.team.length > 0);
+        const totalWins = activeMasters.reduce((s, m) => s + (m.wins || 0), 0);
+        const totalLosses = activeMasters.reduce((s, m) => s + (m.losses || 0), 0);
+        const totalBattles = totalWins + totalLosses;
+        const occupiedCount = activeMasters.length;
+
+        if (summaryEl) {
+            summaryEl.innerHTML = `
+                <div class="arena-summary-card"><div class="value">${occupiedCount}/8</div><div class="label">Arenes occupees</div></div>
+                <div class="arena-summary-card"><div class="value">${totalBattles}</div><div class="label">Combats totaux</div></div>
+                <div class="arena-summary-card"><div class="value">${totalWins}</div><div class="label">Defenses reussies</div></div>
+                <div class="arena-summary-card"><div class="value">${totalLosses}</div><div class="label">Arenes conquises</div></div>
+            `;
+        }
+
+        // === LEADERBOARD ===
+        // Aggregate stats per player
+        const playerStats = {};
+        activeMasters.forEach(m => {
+            const pseudo = m.master_pseudo;
+            if (!playerStats[pseudo]) {
+                playerStats[pseudo] = { pseudo, arenas: [], wins: 0, losses: 0 };
+            }
+            playerStats[pseudo].arenas.push(m.gym_id);
+            playerStats[pseudo].wins += (m.wins || 0);
+            playerStats[pseudo].losses += (m.losses || 0);
+        });
+
+        // Sort: most arenas first, then most wins, then fewest losses
+        const leaderboard = Object.values(playerStats).sort((a, b) => {
+            if (b.arenas.length !== a.arenas.length) return b.arenas.length - a.arenas.length;
+            if (b.wins !== a.wins) return b.wins - a.wins;
+            return a.losses - b.losses;
+        });
+
+        // Type-to-color mapping for badges
+        const typeColors = {
+            'Roche':'#b8a038','Combat':'#c03028','Electrik':'#f8d030','Feu':'#f08030',
+            'Normal':'#a8a878','Vol':'#a890f0','Psy':'#f85888','Eau':'#6890f0'
+        };
+
+        if (lbEl && leaderboard.length > 0) {
+            let lbHtml = `<div class="arena-leaderboard"><h3>&#127942; Classement des Maitres</h3>`;
+            lbHtml += `<table class="arena-lb-table"><thead><tr>
+                <th>#</th><th>Joueur</th><th>Arenes</th><th style="text-align:center">Defenses</th><th style="text-align:center">Ratio</th>
+            </tr></thead><tbody>`;
+
+            const medals = ['&#129351;', '&#129352;', '&#129353;']; // gold, silver, bronze
+            leaderboard.forEach((p, i) => {
+                const rank = i < 3 ? medals[i] : (i + 1);
+                const total = p.wins + p.losses;
+                const winRate = total > 0 ? Math.round(p.wins / total * 100) : 0;
+
+                // Arena badges with gym type colors
+                let badgesHtml = '';
+                p.arenas.forEach(gymId => {
+                    const gym = ARENA_GYMS.find(g => g.id === gymId);
+                    if (gym) {
+                        const color = typeColors[gym.typeFr] || '#666';
+                        badgesHtml += `<span class="arena-lb-badge" style="background:${color}">${gym.typeFr}</span>`;
+                    }
+                });
+
+                lbHtml += `<tr>
+                    <td class="arena-lb-rank">${rank}</td>
+                    <td class="arena-lb-pseudo">${p.pseudo}</td>
+                    <td><div class="arena-lb-badges">${badgesHtml}</div></td>
+                    <td class="arena-lb-stat"><strong>${p.wins}</strong>V / ${p.losses}D</td>
+                    <td class="arena-lb-stat"><strong>${winRate}%</strong>
+                        <div class="arena-win-bar"><div class="fill" style="width:${winRate}%"></div></div>
+                    </td>
+                </tr>`;
+            });
+
+            lbHtml += `</tbody></table></div>`;
+            lbEl.innerHTML = lbHtml;
+        } else if (lbEl) {
+            lbEl.innerHTML = '';
+        }
+
+        // === GYM CARDS ===
         let html = '';
         ARENA_GYMS.forEach(gym => {
             const master = masterMap[gym.id];
@@ -2457,6 +2583,11 @@
             html += `<div style="color:var(--text-dim);font-size:0.75rem;margin-bottom:8px;">${gym.city}</div>`;
 
             if (hasMaster) {
+                const wins = master.wins || 0;
+                const losses = master.losses || 0;
+                const total = wins + losses;
+                const winRate = total > 0 ? Math.round(wins / total * 100) : 0;
+
                 html += `<div class="arena-master-name">Maitre : ${master.master_pseudo}</div>`;
                 html += `<div class="arena-team-list">`;
                 master.team.forEach(p => {
@@ -2473,9 +2604,13 @@
                 });
                 html += `</div>`;
                 html += `<div class="arena-stats">`;
-                html += `<span>V: ${master.wins || 0}</span>`;
-                html += `<span>D: ${master.losses || 0}</span>`;
+                html += `<span style="color:var(--green)">${wins}V</span>`;
+                html += `<span style="color:var(--accent)">${losses}D</span>`;
+                if (total > 0) {
+                    html += `<span>Ratio: ${winRate}%</span>`;
+                }
                 html += `</div>`;
+                html += `<div class="arena-win-bar"><div class="fill" style="width:${winRate}%"></div></div>`;
             } else {
                 html += `<div class="arena-no-master">Aucun maitre — Battez le champion et devenez le premier !</div>`;
             }

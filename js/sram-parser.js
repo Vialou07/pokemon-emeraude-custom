@@ -186,6 +186,7 @@ const SRAMParser = (function () {
             species: w0 & 0x7FF,
             heldItem: w1 & 0x3FF,
             experience: readU32(dec, off + 4) & 0x1FFFFF,
+            ppBonuses: dec[off + 8],
             friendship: dec[off + 9],
         };
     }
@@ -250,12 +251,16 @@ const SRAMParser = (function () {
         if (growth.species === 0) return null;
 
         return {
+            personality: personality,
+            otId: otId,
             species: growth.species,
             heldItem: growth.heldItem,
             nickname: nickname || 'Pokemon',
             level: readU8(sb1, offset + BATTLE_LEVEL),
             moves: attacks.moves.filter(m => m > 0),
+            movesRaw: attacks.moves, // all 4 slots including zeros
             pp: attacks.pp,
+            ppBonuses: growth.ppBonuses,
             hp: readU16(sb1, offset + BATTLE_HP),
             maxHP: readU16(sb1, offset + BATTLE_MAX_HP),
             attack: readU16(sb1, offset + BATTLE_ATTACK),
@@ -321,7 +326,170 @@ const SRAMParser = (function () {
         return extractParty(sram);
     }
 
-    return { extractParty, extractPartyFromBase64 };
+    // ===================== ARENA MAILBOX =====================
+
+    const ARENA_FLASH_SECTOR = 30;
+    const ARENA_SECTOR_OFFSET = ARENA_FLASH_SECTOR * SECTOR_SIZE; // 122880
+    const ARENA_MAGIC = 0x4152454E; // "AREN"
+    const BTP_SIZE = 44; // sizeof(BattleTowerPokemon)
+
+    // Reverse GBA charset: Unicode char → GBA byte
+    const GBA_REVERSE_CHARSET = {};
+    for (const [byte, char] of Object.entries(GBA_CHARSET)) {
+        GBA_REVERSE_CHARSET[char] = parseInt(byte);
+    }
+
+    function writeU16(data, offset, value) {
+        data[offset] = value & 0xFF;
+        data[offset + 1] = (value >> 8) & 0xFF;
+    }
+
+    function writeU32(data, offset, value) {
+        data[offset] = value & 0xFF;
+        data[offset + 1] = (value >> 8) & 0xFF;
+        data[offset + 2] = (value >> 16) & 0xFF;
+        data[offset + 3] = (value >> 24) & 0xFF;
+    }
+
+    function encodeGBAString(str, maxLen) {
+        const result = new Uint8Array(maxLen);
+        result.fill(0xFF); // EOS
+        for (let i = 0; i < str.length && i < maxLen; i++) {
+            const gbaB = GBA_REVERSE_CHARSET[str[i]];
+            if (gbaB !== undefined) {
+                result[i] = gbaB;
+            }
+        }
+        return result;
+    }
+
+    // Serialize one Pokemon into BattleTowerPokemon format (44 bytes)
+    function serializeBTP(mon) {
+        const buf = new Uint8Array(BTP_SIZE);
+        writeU16(buf, 0, mon.species || 0);
+        writeU16(buf, 2, mon.heldItem || 0);
+
+        // moves[4] as u16 — handle both raw IDs and {id, name} objects
+        const rawMoves = mon.movesRaw || mon.moves || [];
+        for (let i = 0; i < 4; i++) {
+            var m = rawMoves[i];
+            var moveId = (typeof m === 'object' && m !== null) ? (m.id || 0) : (m || 0);
+            writeU16(buf, 4 + i * 2, moveId);
+        }
+
+        buf[12] = mon.level || 1;
+        buf[13] = mon.ppBonuses || 0;
+
+        // EVs
+        const evs = mon.evs || {};
+        buf[14] = evs.hp || 0;
+        buf[15] = evs.attack || 0;
+        buf[16] = evs.defense || 0;
+        buf[17] = evs.speed || 0;
+        buf[18] = evs.spAttack || 0;
+        buf[19] = evs.spDefense || 0;
+
+        // otId
+        writeU32(buf, 20, mon.otId || (Math.random() * 0xFFFFFFFF >>> 0));
+
+        // IV bitfield: hp:5, atk:5, def:5, spd:5, spa:5, spd:5, gap:1, abilityNum:1
+        const ivs = mon.ivs || {};
+        let ivWord = (ivs.hp || 0) & 0x1F;
+        ivWord |= ((ivs.attack || 0) & 0x1F) << 5;
+        ivWord |= ((ivs.defense || 0) & 0x1F) << 10;
+        ivWord |= ((ivs.speed || 0) & 0x1F) << 15;
+        ivWord |= ((ivs.spAttack || 0) & 0x1F) << 20;
+        ivWord |= ((ivs.spDefense || 0) & 0x1F) << 25;
+        // gap bit = 0
+        ivWord |= ((mon.abilityNum || 0) & 1) << 31;
+        writeU32(buf, 24, ivWord >>> 0);
+
+        // personality
+        writeU32(buf, 28, mon.personality || (Math.random() * 0xFFFFFFFF >>> 0));
+
+        // nickname (11 bytes, GBA encoded)
+        const nick = encodeGBAString(mon.nickname || '', 11);
+        for (let i = 0; i < 11; i++) buf[32 + i] = nick[i];
+
+        // friendship
+        buf[43] = mon.friendship || 0;
+
+        return buf;
+    }
+
+    /**
+     * Write an ArenaMailbox into SRAM sector 30.
+     * @param {Uint8Array} sram - The full SRAM data (will be modified in place)
+     * @param {object} mailboxData - { gymId, party: [{species, level, moves, ...}] }
+     * @returns {Uint8Array} The modified SRAM
+     */
+    function writeArenaMailbox(sram, mailboxData) {
+        if (ARENA_SECTOR_OFFSET + SECTOR_SIZE > sram.length) {
+            throw new Error('SRAM trop petit pour le secteur Arena');
+        }
+
+        // Clear the sector
+        for (let i = 0; i < SECTOR_SIZE; i++) {
+            sram[ARENA_SECTOR_OFFSET + i] = 0;
+        }
+
+        const base = ARENA_SECTOR_OFFSET;
+        const party = mailboxData.party || [];
+        const count = Math.min(party.length, 6);
+
+        // Write ArenaMailbox header
+        writeU32(sram, base + 0, ARENA_MAGIC);
+        sram[base + 4] = 1; // active
+        sram[base + 5] = mailboxData.gymId || 0;
+        sram[base + 6] = count;
+        sram[base + 7] = 0; // result = pending
+
+        // Write party (BattleTowerPokemon × 6, starting at offset 8)
+        for (let i = 0; i < count; i++) {
+            const btp = serializeBTP(party[i]);
+            sram.set(btp, base + 8 + i * BTP_SIZE);
+        }
+
+        return sram;
+    }
+
+    /**
+     * Read the arena battle result from SRAM sector 30.
+     * @param {Uint8Array} sram - The full SRAM data
+     * @returns {object} { valid, active, gymId, result }
+     */
+    function readArenaResult(sram) {
+        if (ARENA_SECTOR_OFFSET + 8 > sram.length) {
+            return { valid: false, active: false, result: 0 };
+        }
+
+        const base = ARENA_SECTOR_OFFSET;
+        const magic = readU32(sram, base);
+
+        return {
+            valid: magic === ARENA_MAGIC,
+            active: sram[base + 4] === 1,
+            gymId: sram[base + 5],
+            result: sram[base + 7], // 0=pending, 1=win, 2=loss
+        };
+    }
+
+    /**
+     * Clear the arena mailbox in SRAM (set active=0).
+     * @param {Uint8Array} sram - The full SRAM data (modified in place)
+     */
+    function clearArenaMailbox(sram) {
+        if (ARENA_SECTOR_OFFSET + 8 > sram.length) return;
+        sram[ARENA_SECTOR_OFFSET + 4] = 0; // active = 0
+    }
+
+    return {
+        extractParty,
+        extractPartyFromBase64,
+        writeArenaMailbox,
+        readArenaResult,
+        clearArenaMailbox
+    };
 })();
 
 if (typeof window !== 'undefined') window.SRAMParser = SRAMParser;

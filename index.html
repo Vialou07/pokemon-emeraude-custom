@@ -27,22 +27,35 @@
             h1 { display: none; }
         }
 
-        /* Top bar */
+        /* Top bar — burger menu */
         #top-bar {
-            position: fixed; top: 6px; right: 6px; z-index: 10001;
-            display: flex; gap: 5px; align-items: center;
+            position: fixed; top: 6px; left: 6px; z-index: 10001;
         }
-        #top-bar .user-info {
-            color: #0f8; font-size: 0.75rem; padding: 8px 10px;
-            background: rgba(0,180,80,0.15); border-radius: 8px;
+        #menu-toggle {
+            background: rgba(0,180,80,0.2); color: #0f8; border: 1px solid rgba(0,180,80,0.4);
+            border-radius: 10px; padding: 7px 14px; font-size: 0.8rem; font-weight: bold;
+            cursor: pointer; touch-action: manipulation; display: flex; align-items: center; gap: 6px;
         }
-        #top-bar button {
-            background: rgba(100,100,100,0.6); color: white; border: none;
-            border-radius: 8px; padding: 8px 10px; font-size: 0.7rem; font-weight: bold;
-            cursor: pointer; touch-action: manipulation;
+        #menu-toggle:active { opacity: 0.7; }
+        #menu-toggle .arrow { font-size: 0.5rem; transition: transform 0.2s; }
+        #menu-toggle.open .arrow { transform: rotate(180deg); }
+        #menu-dropdown {
+            display: none; position: absolute; top: 100%; left: 0; margin-top: 4px;
+            background: #16213e; border: 1px solid #333; border-radius: 10px;
+            min-width: 160px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
-        #top-bar button:active { opacity: 0.6; }
-        #arena-btn { background: rgba(233,69,96,0.6) !important; }
+        #menu-dropdown.open { display: block; }
+        #menu-dropdown button {
+            display: flex; align-items: center; gap: 8px; width: 100%;
+            background: none; color: white; border: none; padding: 12px 16px;
+            font-size: 0.85rem; cursor: pointer; text-align: left;
+        }
+        #menu-dropdown button:hover { background: rgba(255,255,255,0.05); }
+        #menu-dropdown button:active { background: rgba(255,255,255,0.1); }
+        #menu-dropdown button .icon { width: 16px; text-align: center; }
+        #menu-dropdown .sep { height: 1px; background: #333; margin: 2px 8px; }
+        #menu-dropdown .btn-arena { color: #e94560; }
+        #menu-dropdown .btn-deco { color: #888; }
 
         /* Arena modal */
         #arena-overlay {
@@ -151,10 +164,16 @@
     <div id="game-container"></div>
 
     <div id="top-bar" style="display:none">
-        <span class="user-info" id="user-display"></span>
-        <button onclick="window.open('portal.html','_blank')">Portail</button>
-        <button id="arena-btn" onclick="openArenaModal()">Arena</button>
-        <button onclick="doLogout()">Deco</button>
+        <button id="menu-toggle" onclick="toggleMenu()">
+            <span id="user-display"></span>
+            <span class="arrow">&#9660;</span>
+        </button>
+        <div id="menu-dropdown">
+            <button onclick="window.open('portal.html','_blank');toggleMenu()"><span class="icon">&#127760;</span> Portail</button>
+            <button class="btn-arena" onclick="openArenaModal();toggleMenu()"><span class="icon">&#9876;</span> Arena</button>
+            <div class="sep"></div>
+            <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
+        </div>
     </div>
 
     <div id="toast"></div>
@@ -162,7 +181,7 @@
     <!-- Arena modal -->
     <div id="arena-overlay">
         <div class="arena-card">
-            <h3>Devenir Maitre d'Arene</h3>
+            <h3>Arene Multi-Champions</h3>
             <select id="arena-gym" onchange="onGymSelect()">
                 <option value="">Choisis une arene...</option>
                 <option value="roxanne">Roxanne (Roche)</option>
@@ -175,9 +194,11 @@
                 <option value="juan">Juan (Eau)</option>
             </select>
             <div id="arena-team" class="arena-team-preview"></div>
+            <div id="arena-master-info" style="display:none;margin:8px 0;padding:8px;background:#2a2a3e;border-radius:6px;"></div>
             <div id="arena-status"></div>
             <div class="arena-btns">
-                <button class="btn-submit" id="arena-submit" onclick="submitArenaTeam()" disabled>Deposer mon equipe</button>
+                <button class="btn-submit" id="arena-submit" onclick="submitArenaTeam()" disabled style="display:none;">Deposer mon equipe</button>
+                <button class="btn-submit" id="arena-challenge" onclick="challengeArenaMaster()" disabled style="display:none;background:#e74c3c;">Defier le Maitre</button>
                 <button class="btn-close" onclick="closeArenaModal()">Fermer</button>
             </div>
         </div>
@@ -185,7 +206,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 36 - Arena Multi-Champions MVP');
+        console.log('[Pokemon] Version 38 - Burger Menu + Arena Stats');
 
         // ============================================================
         // SUPABASE
@@ -286,6 +307,22 @@
             }
         }
 
+        // Menu burger toggle
+        function toggleMenu() {
+            var btn = document.getElementById('menu-toggle');
+            var dd = document.getElementById('menu-dropdown');
+            btn.classList.toggle('open');
+            dd.classList.toggle('open');
+        }
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            var bar = document.getElementById('top-bar');
+            if (bar && !bar.contains(e.target)) {
+                document.getElementById('menu-toggle').classList.remove('open');
+                document.getElementById('menu-dropdown').classList.remove('open');
+            }
+        });
+
         // Per-user SRAM localStorage key
         function sramKey() {
             return _currentUser ? 'pokeemerald_sram_' + _currentUser.id : null;
@@ -342,7 +379,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=36';
+        EJS_gameUrl = 'rom/pokemon.gba?v=37';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
@@ -543,6 +580,8 @@
         var _arenaParty = null;    // full party from SRAM
         var _arenaFiltered = null; // filtered by gym type
         var _arenaBadges = null;   // [bool x8]
+        var _arenaMaster = null;   // current master data from Supabase
+        var _arenaPollingId = null; // polling interval for battle result
 
         // Gym definitions with badge index (0-based) and type IDs
         var ARENA_GYMS = {
@@ -582,9 +621,14 @@
             document.getElementById('arena-team').innerHTML = '';
             document.getElementById('arena-status').textContent = '';
             document.getElementById('arena-submit').disabled = true;
+            document.getElementById('arena-submit').style.display = 'none';
+            document.getElementById('arena-challenge').disabled = true;
+            document.getElementById('arena-challenge').style.display = 'none';
+            document.getElementById('arena-master-info').style.display = 'none';
             _arenaParty = null;
             _arenaFiltered = null;
             _arenaBadges = null;
+            _arenaMaster = null;
             loadLookupTables();
             extractCurrentParty();
         }
@@ -652,8 +696,15 @@
         async function onGymSelect() {
             var gymId = document.getElementById('arena-gym').value;
             var submitBtn = document.getElementById('arena-submit');
+            var challengeBtn = document.getElementById('arena-challenge');
+            var masterInfo = document.getElementById('arena-master-info');
             submitBtn.disabled = true;
+            submitBtn.style.display = 'none';
+            challengeBtn.disabled = true;
+            challengeBtn.style.display = 'none';
+            masterInfo.style.display = 'none';
             _arenaFiltered = null;
+            _arenaMaster = null;
 
             if (!gymId || !_arenaParty) {
                 if (_arenaParty) renderPartyPreview(_arenaParty, null);
@@ -682,21 +733,53 @@
                 return;
             }
 
-            // Check if already a master
+            // Fetch current master from Supabase
             try {
                 var res = await _sb.from('arena_masters')
-                    .select('master_pseudo')
+                    .select('*')
                     .eq('gym_id', gymId)
                     .single();
+
                 if (res.data) {
-                    setArenaStatus('Maitre actuel : ' + res.data.master_pseudo + ' — ' + _arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' seront deposes', false);
+                    _arenaMaster = res.data;
+                    var isMe = _currentUser && res.data.master_user_id === _currentUser.id;
+
+                    // Show master info
+                    var masterTeam = res.data.team || [];
+                    var teamHtml = masterTeam.map(function(p) {
+                        return '<span style="margin-right:6px;">' + (p.speciesName || 'Pokemon') + ' Nv.' + p.level + '</span>';
+                    }).join('');
+                    masterInfo.innerHTML = '<div style="font-weight:bold;color:#ffd700;">Maitre actuel : ' + res.data.master_pseudo + '</div>' +
+                        '<div style="font-size:0.85rem;margin-top:4px;">' + teamHtml + '</div>' +
+                        '<div style="font-size:0.8rem;color:#aaa;margin-top:2px;">Victoires : ' + (res.data.wins || 0) + '</div>';
+                    masterInfo.style.display = 'block';
+
+                    if (isMe) {
+                        setArenaStatus('Tu es deja le Maitre de cette arene !', false);
+                        // Still allow re-deposit
+                        submitBtn.style.display = '';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Mettre a jour mon equipe';
+                    } else {
+                        setArenaStatus(_arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' prets au combat !', false);
+                        challengeBtn.style.display = '';
+                        challengeBtn.disabled = false;
+                        challengeBtn.textContent = 'Defier ' + res.data.master_pseudo;
+                    }
                 } else {
+                    // No master — deposit mode
                     setArenaStatus('Aucun maitre — ' + _arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' seront deposes', false);
+                    submitBtn.style.display = '';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Deposer mon equipe';
                 }
             } catch(e) {
-                setArenaStatus(_arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' seront deposes', false);
+                // No master found (404 from .single())
+                setArenaStatus('Aucun maitre — ' + _arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' seront deposes', false);
+                submitBtn.style.display = '';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Deposer mon equipe';
             }
-            submitBtn.disabled = false;
         }
 
         async function submitArenaTeam() {
@@ -706,7 +789,6 @@
             var gym = ARENA_GYMS[gymId];
             if (!gym) return;
 
-            // Double-check badge
             if (_arenaBadges && !_arenaBadges[gym.badge]) {
                 setArenaStatus('Badge manquant !', true);
                 return;
@@ -719,7 +801,6 @@
                 ? _currentUser.user_metadata.pseudo
                 : _currentUser.email.split('@')[0];
 
-            // Build team JSON from FILTERED party only
             var team = _arenaFiltered.map(function(p) {
                 return {
                     species: p.species,
@@ -730,8 +811,17 @@
                     moves: p.moves.map(function(m) {
                         return { id: m, name: _movesNames ? (_movesNames[m] || '???') : '???' };
                     }),
+                    movesRaw: p.movesRaw || p.moves.concat([0,0,0,0]).slice(0,4),
                     hp: p.maxHP, attack: p.attack, defense: p.defense,
                     speed: p.speed, spAttack: p.spAttack, spDefense: p.spDefense,
+                    evs: p.evs,
+                    ivs: p.ivs,
+                    personality: p.personality,
+                    otId: p.otId,
+                    ppBonuses: p.ppBonuses || 0,
+                    abilityNum: p.abilityNum || 0,
+                    friendship: p.friendship || 0,
+                    nickname: p.nickname || '',
                 };
             });
 
@@ -741,6 +831,8 @@
                     master_pseudo: pseudo,
                     master_user_id: _currentUser.id,
                     team: team,
+                    wins: 0,
+                    losses: 0,
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'gym_id' });
 
@@ -755,6 +847,205 @@
             } catch(e) {
                 setArenaStatus('Erreur reseau', true);
                 document.getElementById('arena-submit').disabled = false;
+            }
+        }
+
+        // ========= ARENA CHALLENGE (IN-GAME BATTLE) =========
+
+        async function challengeArenaMaster() {
+            var gymId = document.getElementById('arena-gym').value;
+            if (!gymId || !_arenaMaster || !_currentUser) return;
+
+            var gym = ARENA_GYMS[gymId];
+            if (!gym) return;
+
+            document.getElementById('arena-challenge').disabled = true;
+            setArenaStatus('Preparation du combat...', false);
+
+            try {
+                // Step 1: Save current game state
+                var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+                if (!gm) {
+                    setArenaStatus('Emulateur non pret', true);
+                    return;
+                }
+                gm.saveSaveFiles();
+                var sram = gm.getSaveFile();
+                if (!sram || sram.length < 131072) {
+                    setArenaStatus('Sauvegarde introuvable', true);
+                    return;
+                }
+
+                // Step 2: Build the master's team for BattleTowerPokemon format
+                var masterTeam = _arenaMaster.team || [];
+                if (masterTeam.length === 0) {
+                    setArenaStatus('L\'equipe du maitre est vide !', true);
+                    return;
+                }
+
+                // Step 3: Write arena mailbox to SRAM sector 30
+                var sramCopy = new Uint8Array(sram);
+                SRAMParser.writeArenaMailbox(sramCopy, {
+                    gymId: gym.badge, // gym index 0-7 matches badge index
+                    party: masterTeam,
+                });
+
+                // Step 4: Inject modified SRAM and restart
+                var b64 = '';
+                var CHUNK = 8192;
+                for (var i = 0; i < sramCopy.length; i += CHUNK) {
+                    var slice = sramCopy.subarray(i, Math.min(i + CHUNK, sramCopy.length));
+                    for (var j = 0; j < slice.length; j++) b64 += String.fromCharCode(slice[j]);
+                }
+                b64 = btoa(b64);
+
+                setArenaStatus('Lancement du combat... Appuie sur Continuer dans le jeu !', false);
+                closeArenaModal();
+                toast('Combat Arena lance ! Appuie sur Continuer');
+
+                injectSRAM(b64);
+
+                // Step 5: Start polling for result
+                startArenaPolling(gymId);
+
+            } catch(e) {
+                console.error('[Arena] Challenge error:', e);
+                setArenaStatus('Erreur: ' + e.message, true);
+                document.getElementById('arena-challenge').disabled = false;
+            }
+        }
+
+        function startArenaPolling(gymId) {
+            if (_arenaPollingId) clearInterval(_arenaPollingId);
+
+            var pollCount = 0;
+            var maxPolls = 200; // ~10 min at 3s interval
+
+            _arenaPollingId = setInterval(function() {
+                pollCount++;
+                if (pollCount > maxPolls) {
+                    clearInterval(_arenaPollingId);
+                    _arenaPollingId = null;
+                    console.log('[Arena] Polling timeout');
+                    return;
+                }
+
+                try {
+                    var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+                    if (!gm) return;
+                    gm.saveSaveFiles();
+                    var sram = gm.getSaveFile();
+                    if (!sram || sram.length < 131072) return;
+
+                    var result = SRAMParser.readArenaResult(sram);
+                    if (!result.valid) return;
+
+                    // Still active = battle not finished yet
+                    if (result.active) return;
+
+                    // Battle is done! Check result
+                    if (result.result === 1) {
+                        // WIN
+                        handleArenaWin(gymId);
+                    } else if (result.result === 2) {
+                        // LOSS
+                        handleArenaLoss(gymId);
+                    }
+
+                    // Clear polling
+                    clearInterval(_arenaPollingId);
+                    _arenaPollingId = null;
+
+                    // Clear the mailbox in SRAM
+                    SRAMParser.clearArenaMailbox(sram);
+
+                } catch(e) {
+                    console.warn('[Arena] Poll error:', e);
+                }
+            }, 3000);
+        }
+
+        async function handleArenaWin(gymId) {
+            toast('Victoire ! Tu es le nouveau Maitre !');
+            console.log('[Arena] Player won the challenge for', gymId);
+
+            try {
+                // Extract current party for deposit
+                var gm = window.EJS_emulator.gameManager;
+                gm.saveSaveFiles();
+                var sram = gm.getSaveFile();
+                var partyResult = SRAMParser.extractParty(sram);
+
+                var gym = ARENA_GYMS[gymId];
+                var filtered = partyResult.party.filter(function(p) {
+                    return pokemonHasType(p.species, gym.typeId);
+                });
+
+                if (filtered.length === 0) filtered = partyResult.party;
+
+                var pseudo = _currentUser.user_metadata && _currentUser.user_metadata.pseudo
+                    ? _currentUser.user_metadata.pseudo
+                    : _currentUser.email.split('@')[0];
+
+                var team = filtered.map(function(p) {
+                    return {
+                        species: p.species,
+                        speciesName: (_speciesNames && _speciesNames[p.species]) || p.nickname,
+                        heldItem: p.heldItem,
+                        itemName: p.heldItem > 0 && _itemsNames ? (_itemsNames[p.heldItem] || null) : null,
+                        level: p.level,
+                        moves: p.moves.map(function(m) {
+                            return { id: m, name: _movesNames ? (_movesNames[m] || '???') : '???' };
+                        }),
+                        movesRaw: p.movesRaw || p.moves.concat([0,0,0,0]).slice(0,4),
+                        hp: p.maxHP, attack: p.attack, defense: p.defense,
+                        speed: p.speed, spAttack: p.spAttack, spDefense: p.spDefense,
+                        evs: p.evs,
+                        ivs: p.ivs,
+                        personality: p.personality,
+                        otId: p.otId,
+                        ppBonuses: p.ppBonuses || 0,
+                        abilityNum: p.abilityNum || 0,
+                        friendship: p.friendship || 0,
+                        nickname: p.nickname || '',
+                    };
+                });
+
+                // Increment old master's losses
+                await _sb.from('arena_masters')
+                    .update({ losses: (_arenaMaster && _arenaMaster.losses || 0) + 1 })
+                    .eq('gym_id', gymId);
+
+                // Replace with new master
+                await _sb.from('arena_masters').upsert({
+                    gym_id: gymId,
+                    master_pseudo: pseudo,
+                    master_user_id: _currentUser.id,
+                    team: team,
+                    wins: 0,
+                    losses: 0,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'gym_id' });
+
+            } catch(e) {
+                console.error('[Arena] Win handling error:', e);
+            }
+        }
+
+        async function handleArenaLoss(gymId) {
+            toast('Defaite... Le Maitre conserve son titre');
+            console.log('[Arena] Player lost the challenge for', gymId);
+
+            try {
+                // Increment master's wins
+                await _sb.from('arena_masters')
+                    .update({
+                        wins: (_arenaMaster && _arenaMaster.wins || 0) + 1,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('gym_id', gymId);
+            } catch(e) {
+                console.error('[Arena] Loss handling error:', e);
             }
         }
 
