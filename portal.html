@@ -301,6 +301,75 @@
         }
         .arena-win-bar .fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.3s; }
 
+        /* Stats Joueurs */
+        .stats-records {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px; margin-bottom: 28px;
+        }
+        .stats-record-card {
+            background: var(--bg-card); border: 1px solid #333; border-radius: 10px;
+            padding: 14px; text-align: center; position: relative; overflow: hidden;
+        }
+        .stats-record-card .trophy { font-size: 1.2rem; margin-bottom: 4px; }
+        .stats-record-card .record-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .stats-record-card .record-value { font-size: 1.3rem; font-weight: bold; color: var(--gold); margin: 4px 0; }
+        .stats-record-card .record-holder { font-size: 0.8rem; color: var(--green); }
+
+        .stats-player-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        .stats-player-card {
+            background: var(--bg-card); border: 1px solid #333; border-radius: 12px;
+            padding: 20px; position: relative;
+        }
+        .stats-player-card.rank-1 { border-color: var(--gold); }
+        .stats-player-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+        }
+        .stats-player-avatar {
+            width: 48px; height: 48px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 1.5rem;
+            background: rgba(255,255,255,0.05); border: 2px solid #444;
+        }
+        .stats-player-card.rank-1 .stats-player-avatar { border-color: var(--gold); }
+        .stats-player-name { font-size: 1.1rem; font-weight: bold; }
+        .stats-player-meta { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+        .stats-player-badges {
+            display: flex; gap: 4px; margin-top: 4px;
+        }
+        .stats-badge {
+            width: 18px; height: 18px; border-radius: 50%; display: inline-block;
+        }
+        .stats-badge.earned { background: var(--gold); }
+        .stats-badge.missing { background: #333; }
+
+        .stats-party {
+            display: flex; gap: 6px; margin: 12px 0; flex-wrap: wrap;
+        }
+        .stats-party-mon {
+            display: flex; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        .stats-party-mon img {
+            width: 32px; height: 32px; image-rendering: pixelated;
+        }
+        .stats-party-mon .mon-info { display: flex; flex-direction: column; }
+        .stats-party-mon .mon-name { font-weight: 600; color: var(--green); font-size: 0.75rem; }
+        .stats-party-mon .mon-level { color: var(--text-dim); font-size: 0.65rem; }
+
+        .stats-numbers {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 6px; margin-top: 10px;
+        }
+        .stats-num {
+            text-align: center; padding: 6px; background: rgba(255,255,255,0.02);
+            border-radius: 6px;
+        }
+        .stats-num .num-val { font-weight: bold; font-size: 0.95rem; color: white; }
+        .stats-num .num-label { font-size: 0.6rem; color: var(--text-dim); }
+
         /* ROUTES / DISTRIBUTION */
         .route-card { background: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--accent2); }
         .route-card.has-fakemons { border-left-color: var(--gold); }
@@ -531,6 +600,7 @@
             <button class="tab" data-tab="trainers">Dresseurs</button>
             <button class="tab" data-tab="types">Types</button>
             <button class="tab" data-tab="play">Jouer</button>
+            <button class="tab" data-tab="stats">Joueurs</button>
             <button class="tab" data-tab="roadmap">Roadmap</button>
             <button class="tab" data-tab="arena">Arena</button>
         </div>
@@ -758,6 +828,18 @@
     </div>
 
     <!-- ROADMAP -->
+    <!-- STATS JOUEURS -->
+    <div id="stats" class="section">
+        <h2>Stats Joueurs</h2>
+        <p style="color:var(--text-dim);margin-bottom:20px;">Compare-toi a tes amis ! Les stats se mettent a jour automatiquement a chaque sauvegarde en jeu.</p>
+        <div id="stats-records" class="stats-records">
+            <div style="text-align:center;padding:20px;color:var(--text-dim);grid-column:1/-1;">Chargement des stats...</div>
+        </div>
+        <h3 style="color:var(--accent);margin-bottom:12px;">Tous les joueurs</h3>
+        <div id="stats-players" class="stats-player-grid">
+        </div>
+    </div>
+
     <div id="roadmap" class="section">
         <h2 style="color:var(--accent);margin-bottom:8px;">Ameliorations et Roadmap</h2>
         <p style="color:var(--text-dim);margin-bottom:24px;font-size:0.9rem;">Tout ce qui a ete modifie par rapport au jeu d'origine, et ce qui est prevu.</p>
@@ -2627,11 +2709,203 @@
     }
 
     // ============================================================
+    // STATS JOUEURS
+    // ============================================================
+
+    function getSpriteUrl(species) {
+        // Standard Pokemon: use PokeAPI sprites
+        if (species > 0 && species <= 1025) {
+            return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + species + '.png';
+        }
+        // Fakemons: no sprite available
+        return null;
+    }
+
+    function formatTime(hours, minutes) {
+        return hours + 'h' + String(minutes).padStart(2, '0');
+    }
+
+    function formatNumber(n) {
+        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+        if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+        return String(n);
+    }
+
+    async function loadPlayerStats() {
+        const recordsEl = document.getElementById('stats-records');
+        const playersEl = document.getElementById('stats-players');
+        if (!recordsEl || !playersEl) return;
+
+        let profiles = [];
+        try {
+            const res = await _sbPortal.from('player_profiles').select('*');
+            if (res.data) profiles = res.data;
+        } catch(e) {
+            console.warn('[Stats] Supabase error:', e);
+            recordsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);grid-column:1/-1;">Impossible de charger les stats. La table player_profiles n\'existe peut-etre pas encore.</div>';
+            return;
+        }
+
+        if (profiles.length === 0) {
+            recordsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);grid-column:1/-1;">Aucun joueur n\'a encore sauvegarde. Sauvegarde en jeu pour apparaitre ici !</div>';
+            return;
+        }
+
+        // Parse profiles
+        const players = profiles.map(p => {
+            const pr = p.profile || {};
+            const st = pr.stats || {};
+            return {
+                pseudo: p.pseudo || 'Inconnu',
+                playerName: pr.playerName || p.pseudo || '???',
+                gender: pr.gender || 0,
+                playTimeHours: pr.playTimeHours || 0,
+                playTimeMinutes: pr.playTimeMinutes || 0,
+                money: pr.money || 0,
+                badges: pr.badges || [],
+                badgeCount: pr.badgeCount || 0,
+                party: pr.party || [],
+                maxLevel: pr.maxLevel || 0,
+                steps: st.steps || 0,
+                totalBattles: st.totalBattles || 0,
+                wildBattles: st.wildBattles || 0,
+                trainerBattles: st.trainerBattles || 0,
+                pokemonCaught: st.pokemonCaught || 0,
+                eggsHatched: st.eggsHatched || 0,
+                pokemonEvolved: st.pokemonEvolved || 0,
+                pokecenterVisits: st.pokecenterVisits || 0,
+                saves: st.saves || 0,
+                fishingEncounters: st.fishingEncounters || 0,
+                usedSplash: st.usedSplash || 0,
+                usedStruggle: st.usedStruggle || 0,
+                ledgesJumped: st.ledgesJumped || 0,
+                updatedAt: p.updated_at,
+            };
+        }).filter(p => p.maxLevel > 0); // Filter out empty/new saves
+
+        if (players.length === 0) {
+            recordsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);grid-column:1/-1;">Aucun joueur actif pour le moment.</div>';
+            return;
+        }
+
+        // ====== RECORDS ======
+        const records = [
+            { label: 'Plus haut niveau', icon: '&#11088;', key: 'maxLevel', format: v => 'Nv.' + v },
+            { label: 'Plus riche', icon: '&#128176;', key: 'money', format: v => formatNumber(v) + '$' },
+            { label: 'Marcheur infatigable', icon: '&#128694;', key: 'steps', format: v => formatNumber(v) + ' pas' },
+            { label: 'Plus de combats', icon: '&#9876;', key: 'totalBattles', format: v => formatNumber(v) },
+            { label: 'Chasseur de Pokemon', icon: '&#127903;', key: 'pokemonCaught', format: v => String(v) },
+            { label: 'Plus de badges', icon: '&#127942;', key: 'badgeCount', format: v => v + '/8' },
+            { label: 'Temps de jeu', icon: '&#9200;', key: '_playtime', format: v => formatTime(v.h, v.m), sort: p => p.playTimeHours * 60 + p.playTimeMinutes },
+            { label: 'Fan de Trempette', icon: '&#128167;', key: 'usedSplash', format: v => v + ' fois' },
+        ];
+
+        let recHtml = '';
+        records.forEach(rec => {
+            let sorted;
+            if (rec.sort) {
+                sorted = [...players].sort((a, b) => rec.sort(b) - rec.sort(a));
+            } else {
+                sorted = [...players].sort((a, b) => (b[rec.key] || 0) - (a[rec.key] || 0));
+            }
+            const winner = sorted[0];
+            let val;
+            if (rec.key === '_playtime') {
+                val = rec.format({ h: winner.playTimeHours, m: winner.playTimeMinutes });
+            } else {
+                val = rec.format(winner[rec.key] || 0);
+            }
+
+            recHtml += `<div class="stats-record-card">
+                <div class="trophy">${rec.icon}</div>
+                <div class="record-label">${rec.label}</div>
+                <div class="record-value">${val}</div>
+                <div class="record-holder">${winner.pseudo}</div>
+            </div>`;
+        });
+        recordsEl.innerHTML = recHtml;
+
+        // ====== PLAYER CARDS ======
+        // Sort by badge count desc, then max level desc
+        players.sort((a, b) => {
+            if (b.badgeCount !== a.badgeCount) return b.badgeCount - a.badgeCount;
+            return b.maxLevel - a.maxLevel;
+        });
+
+        // Load species names for display
+        let speciesNames = {};
+        try {
+            const resp = await fetch('data/species_names.json');
+            if (resp.ok) speciesNames = await resp.json();
+        } catch(e) {}
+
+        let movesNames = {};
+        try {
+            const resp = await fetch('data/moves_names.json');
+            if (resp.ok) movesNames = await resp.json();
+        } catch(e) {}
+
+        let plHtml = '';
+        players.forEach((p, idx) => {
+            const avatar = p.gender === 1 ? '&#128119;' : '&#128102;';
+            const rankClass = idx === 0 ? ' rank-1' : '';
+
+            // Badges dots
+            let badgesHtml = '';
+            for (let b = 0; b < 8; b++) {
+                badgesHtml += `<span class="stats-badge ${p.badges[b] ? 'earned' : 'missing'}"></span>`;
+            }
+
+            // Party Pokemon with sprites
+            let partyHtml = '';
+            p.party.forEach(mon => {
+                const name = speciesNames[mon.species] || mon.nickname || 'Pokemon #' + mon.species;
+                const spriteUrl = getSpriteUrl(mon.species);
+                const img = spriteUrl
+                    ? `<img src="${spriteUrl}" alt="${name}" onerror="this.style.display='none'">`
+                    : `<span style="font-size:1.2rem">&#10068;</span>`;
+                partyHtml += `<div class="stats-party-mon">
+                    ${img}
+                    <div class="mon-info">
+                        <span class="mon-name">${name}</span>
+                        <span class="mon-level">Nv.${mon.level}</span>
+                    </div>
+                </div>`;
+            });
+
+            // Stats grid
+            const statsHtml = `
+                <div class="stats-num"><div class="num-val">${formatNumber(p.steps)}</div><div class="num-label">Pas</div></div>
+                <div class="stats-num"><div class="num-val">${p.totalBattles}</div><div class="num-label">Combats</div></div>
+                <div class="stats-num"><div class="num-val">${p.pokemonCaught}</div><div class="num-label">Captures</div></div>
+                <div class="stats-num"><div class="num-val">${formatNumber(p.money)}$</div><div class="num-label">Argent</div></div>
+                <div class="stats-num"><div class="num-val">${p.trainerBattles}</div><div class="num-label">Dresseurs</div></div>
+                <div class="stats-num"><div class="num-val">${p.pokemonEvolved}</div><div class="num-label">Evolutions</div></div>
+            `;
+
+            plHtml += `<div class="stats-player-card${rankClass}">
+                <div class="stats-player-header">
+                    <div class="stats-player-avatar">${avatar}</div>
+                    <div>
+                        <div class="stats-player-name">${p.pseudo}</div>
+                        <div class="stats-player-meta">${formatTime(p.playTimeHours, p.playTimeMinutes)} de jeu &middot; ${p.saves} sauvegardes</div>
+                        <div class="stats-player-badges">${badgesHtml}</div>
+                    </div>
+                </div>
+                <div class="stats-party">${partyHtml}</div>
+                <div class="stats-numbers">${statsHtml}</div>
+            </div>`;
+        });
+        playersEl.innerHTML = plHtml;
+    }
+
+    // ============================================================
     // INIT
     // ============================================================
     loadCatalogue();
     loadGameData();
     loadArenaData();
+    loadPlayerStats();
     initModalSwipe();
     </script>
 </body>

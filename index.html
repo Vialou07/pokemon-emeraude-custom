@@ -206,7 +206,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 38 - Burger Menu + Arena Stats');
+        console.log('[Pokemon] Version 39 - Stats Joueurs');
 
         // ============================================================
         // SUPABASE
@@ -506,7 +506,15 @@
 
                 console.log('[SRAM] Backup OK (' + sav.length + 'B, ' + nonEmpty + ' sectors)');
 
-                // Upload to Supabase (only source of truth)
+                // Extract player profile for stats
+                var profile = null;
+                try {
+                    profile = SRAMParser.extractProfile(sav);
+                } catch(pe) {
+                    console.warn('[SRAM] Profile extraction failed:', pe.message);
+                }
+
+                // Upload save to Supabase
                 _sb.from('saves').upsert({
                     user_id: _currentUser.id,
                     slot_name: '__sram__',
@@ -522,6 +530,21 @@
                         toast('Sauvegarde reussie !');
                     }
                 });
+
+                // Upload profile to Supabase (non-blocking)
+                if (profile) {
+                    var pseudo = _currentUser.user_metadata && _currentUser.user_metadata.pseudo
+                        ? _currentUser.user_metadata.pseudo
+                        : _currentUser.email.split('@')[0];
+                    _sb.from('player_profiles').upsert({
+                        user_id: _currentUser.id,
+                        pseudo: pseudo,
+                        profile: profile,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'user_id' }).then(function(res) {
+                        if (res.error) console.warn('[Profile] Update failed:', res.error.message);
+                    });
+                }
             } catch(e) {}
         }
 

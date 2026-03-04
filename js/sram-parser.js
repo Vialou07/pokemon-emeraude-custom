@@ -483,9 +483,190 @@ const SRAMParser = (function () {
         sram[ARENA_SECTOR_OFFSET + 4] = 0; // active = 0
     }
 
+    // ===================== SAVEBLOCK2 PARSING =====================
+
+    function findActiveSaveSlot(sram) {
+        var slots = [
+            { startSector: 0, counter: 0, sectors: {}, validCount: 0 },
+            { startSector: 14, counter: 0, sectors: {}, validCount: 0 }
+        ];
+
+        for (var slotIdx = 0; slotIdx < 2; slotIdx++) {
+            var slot = slots[slotIdx];
+            for (var i = 0; i < NUM_SECTORS_PER_SLOT; i++) {
+                var physAddr = (slot.startSector + i) * SECTOR_SIZE;
+                if (physAddr + SECTOR_SIZE > sram.length) continue;
+                var sig = readU32(sram, physAddr + FOOTER_SIGNATURE_OFFSET);
+                if (sig !== SECTOR_SIGNATURE) continue;
+                var id = readU16(sram, physAddr + FOOTER_ID_OFFSET);
+                var counter = readU32(sram, physAddr + FOOTER_COUNTER_OFFSET);
+                if (id < NUM_SECTORS_PER_SLOT) {
+                    slot.sectors[id] = physAddr;
+                    if (counter > slot.counter) slot.counter = counter;
+                    slot.validCount++;
+                }
+            }
+        }
+
+        return (slots[1].counter > slots[0].counter && slots[1].validCount > 0)
+            ? slots[1] : slots[0];
+    }
+
+    function reconstructSaveBlock2(sram) {
+        var active = findActiveSaveSlot(sram);
+        var physAddr = active.sectors[0]; // sector ID 0 = SaveBlock2
+        if (physAddr === undefined) return null;
+        return sram.subarray(physAddr, physAddr + SECTOR_DATA_SIZE);
+    }
+
+    // ===================== PROFILE EXTRACTION =====================
+
+    // SaveBlock2 offsets
+    var SB2_PLAYER_NAME = 0x00;
+    var SB2_PLAYER_GENDER = 0x08;
+    var SB2_PLAY_TIME_HOURS = 0x0E;
+    var SB2_PLAY_TIME_MINUTES = 0x10;
+    var SB2_PLAY_TIME_SECONDS = 0x11;
+    var SB2_ENCRYPTION_KEY = 0xAC;
+
+    // SaveBlock1 offsets
+    var SB1_MONEY = 0x490;
+
+    // Game stats: SaveBlock1 offset 0x159C, each stat is u32 (4 bytes)
+    var GAME_STATS_OFFSET = 0x159C;
+    var STAT_SAVED_GAME = 0;
+    var STAT_STEPS = 5;
+    var STAT_TOTAL_BATTLES = 7;
+    var STAT_WILD_BATTLES = 8;
+    var STAT_TRAINER_BATTLES = 9;
+    var STAT_ENTERED_HOF = 10;
+    var STAT_POKEMON_CAPTURES = 11;
+    var STAT_FISHING_ENCOUNTERS = 12;
+    var STAT_HATCHED_EGGS = 13;
+    var STAT_EVOLVED_POKEMON = 14;
+    var STAT_USED_POKECENTER = 15;
+    var STAT_POKEMON_TRADES = 21;
+    var STAT_USED_SPLASH = 26;
+    var STAT_USED_STRUGGLE = 27;
+    var STAT_JUMPED_LEDGES = 43;
+
+    function readGameStat(sb1, statIndex, encryptionKey) {
+        var raw = readU32(sb1, GAME_STATS_OFFSET + statIndex * 4);
+        return (raw ^ encryptionKey) >>> 0;
+    }
+
+    function extractProfile(sram) {
+        if (!(sram instanceof Uint8Array)) {
+            throw new Error('Les donnees SRAM doivent etre un Uint8Array');
+        }
+
+        var sb1 = reconstructSaveBlock1(sram);
+        var sb2 = reconstructSaveBlock2(sram);
+        if (!sb2) throw new Error('SaveBlock2 introuvable');
+
+        var encryptionKey = readU32(sb2, SB2_ENCRYPTION_KEY);
+
+        // Player info from SaveBlock2
+        var playerName = decodeGBAString(sb2, SB2_PLAYER_NAME, 8);
+        var gender = readU8(sb2, SB2_PLAYER_GENDER);
+        var playTimeHours = readU16(sb2, SB2_PLAY_TIME_HOURS);
+        var playTimeMinutes = readU8(sb2, SB2_PLAY_TIME_MINUTES);
+        var playTimeSeconds = readU8(sb2, SB2_PLAY_TIME_SECONDS);
+
+        // Money (XORed with encryption key)
+        var moneyRaw = readU32(sb1, SB1_MONEY);
+        var money = (moneyRaw ^ encryptionKey) >>> 0;
+        // Sanity check: money should be < 1M in Pokemon
+        if (money > 9999999) money = moneyRaw; // fallback if not encrypted
+
+        // Badges
+        var badges = extractBadgesFromSB1(sb1);
+        var badgeCount = badges.filter(function(b) { return b; }).length;
+
+        // Party
+        var partyCount = Math.min(readU8(sb1, PARTY_COUNT_OFFSET), PARTY_SIZE);
+        var party = [];
+        for (var i = 0; i < partyCount; i++) {
+            var offset = PARTY_ARRAY_OFFSET + (i * POKEMON_SIZE);
+            var pokemon = parsePokemon(sb1, offset);
+            if (pokemon && !pokemon.isEgg) {
+                party.push({
+                    species: pokemon.species,
+                    nickname: pokemon.nickname,
+                    level: pokemon.level,
+                    heldItem: pokemon.heldItem,
+                    hp: pokemon.hp,
+                    maxHP: pokemon.maxHP,
+                    moves: pokemon.moves,
+                });
+            }
+        }
+
+        // Game stats (each XORed with encryption key)
+        var stats = {
+            saves: readGameStat(sb1, STAT_SAVED_GAME, encryptionKey),
+            steps: readGameStat(sb1, STAT_STEPS, encryptionKey),
+            totalBattles: readGameStat(sb1, STAT_TOTAL_BATTLES, encryptionKey),
+            wildBattles: readGameStat(sb1, STAT_WILD_BATTLES, encryptionKey),
+            trainerBattles: readGameStat(sb1, STAT_TRAINER_BATTLES, encryptionKey),
+            hallOfFame: readGameStat(sb1, STAT_ENTERED_HOF, encryptionKey),
+            pokemonCaught: readGameStat(sb1, STAT_POKEMON_CAPTURES, encryptionKey),
+            fishingEncounters: readGameStat(sb1, STAT_FISHING_ENCOUNTERS, encryptionKey),
+            eggsHatched: readGameStat(sb1, STAT_HATCHED_EGGS, encryptionKey),
+            pokemonEvolved: readGameStat(sb1, STAT_EVOLVED_POKEMON, encryptionKey),
+            pokecenterVisits: readGameStat(sb1, STAT_USED_POKECENTER, encryptionKey),
+            pokemonTraded: readGameStat(sb1, STAT_POKEMON_TRADES, encryptionKey),
+            usedSplash: readGameStat(sb1, STAT_USED_SPLASH, encryptionKey),
+            usedStruggle: readGameStat(sb1, STAT_USED_STRUGGLE, encryptionKey),
+            ledgesJumped: readGameStat(sb1, STAT_JUMPED_LEDGES, encryptionKey),
+        };
+
+        // Sanity check on stats — if all look absurdly high, encryptionKey might not apply
+        if (stats.steps > 99999999 || stats.totalBattles > 99999) {
+            // Try without encryption
+            stats = {
+                saves: readU32(sb1, GAME_STATS_OFFSET + STAT_SAVED_GAME * 4),
+                steps: readU32(sb1, GAME_STATS_OFFSET + STAT_STEPS * 4),
+                totalBattles: readU32(sb1, GAME_STATS_OFFSET + STAT_TOTAL_BATTLES * 4),
+                wildBattles: readU32(sb1, GAME_STATS_OFFSET + STAT_WILD_BATTLES * 4),
+                trainerBattles: readU32(sb1, GAME_STATS_OFFSET + STAT_TRAINER_BATTLES * 4),
+                hallOfFame: readU32(sb1, GAME_STATS_OFFSET + STAT_ENTERED_HOF * 4),
+                pokemonCaught: readU32(sb1, GAME_STATS_OFFSET + STAT_POKEMON_CAPTURES * 4),
+                fishingEncounters: readU32(sb1, GAME_STATS_OFFSET + STAT_FISHING_ENCOUNTERS * 4),
+                eggsHatched: readU32(sb1, GAME_STATS_OFFSET + STAT_HATCHED_EGGS * 4),
+                pokemonEvolved: readU32(sb1, GAME_STATS_OFFSET + STAT_EVOLVED_POKEMON * 4),
+                pokecenterVisits: readU32(sb1, GAME_STATS_OFFSET + STAT_USED_POKECENTER * 4),
+                pokemonTraded: readU32(sb1, GAME_STATS_OFFSET + STAT_POKEMON_TRADES * 4),
+                usedSplash: readU32(sb1, GAME_STATS_OFFSET + STAT_USED_SPLASH * 4),
+                usedStruggle: readU32(sb1, GAME_STATS_OFFSET + STAT_USED_STRUGGLE * 4),
+                ledgesJumped: readU32(sb1, GAME_STATS_OFFSET + STAT_JUMPED_LEDGES * 4),
+            };
+        }
+
+        // Highest level Pokemon
+        var maxLevel = 0;
+        party.forEach(function(p) { if (p.level > maxLevel) maxLevel = p.level; });
+
+        return {
+            playerName: playerName,
+            gender: gender,
+            playTimeHours: playTimeHours,
+            playTimeMinutes: playTimeMinutes,
+            playTimeSeconds: playTimeSeconds,
+            money: money,
+            badges: badges,
+            badgeCount: badgeCount,
+            party: party,
+            partyCount: party.length,
+            maxLevel: maxLevel,
+            stats: stats,
+        };
+    }
+
     return {
         extractParty,
         extractPartyFromBase64,
+        extractProfile,
         writeArenaMailbox,
         readArenaResult,
         clearArenaMailbox
