@@ -2798,6 +2798,8 @@
             { label: 'Plus de badges', icon: '&#127942;', key: 'badgeCount', format: v => v + '/8' },
             { label: 'Temps de jeu', icon: '&#9200;', key: '_playtime', format: v => formatTime(v.h, v.m), sort: p => p.playTimeHours * 60 + p.playTimeMinutes },
             { label: 'Fan de Trempette', icon: '&#128167;', key: 'usedSplash', format: v => v + ' fois' },
+            { label: 'Visites Centre Pokemon', icon: '&#127973;', key: 'pokecenterVisits', format: v => v + ' fois' },
+            { label: 'Eleveur de Pokemon', icon: '&#129442;', key: 'eggsHatched', format: v => v + ' oeufs' },
         ];
 
         let recHtml = '';
