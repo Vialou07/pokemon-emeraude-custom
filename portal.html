@@ -352,6 +352,24 @@
             <div class="feature-card"><h3>Sauvegardes cloud</h3><p>Connectez-vous avec votre pseudo. Sauvegardez en jeu (menu > Sauvegarder). <strong style="color:#ff6b6b">Attendez le message vert avant de fermer !</strong></p></div>
         </div>
         <div class="info-section">
+            <h2>3 modes de jeu</h2>
+            <p style="color:var(--text-dim);margin-bottom:16px;">Au debut de chaque nouvelle partie, choisissez votre mode de difficulte. Ce choix est definitif !</p>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                <div class="info-item" style="border-left:4px solid var(--green);">
+                    <h4 style="color:var(--green);">Normal</h4>
+                    <p>Le jeu classique, sans restriction. Capturez autant de Pokemon que vous voulez, soignez-les au Centre Pokemon. Ideal pour decouvrir les Fakemons et l'aventure a votre rythme.</p>
+                </div>
+                <div class="info-item" style="border-left:4px solid var(--gold);">
+                    <h4 style="color:var(--gold);">Nuzlocke</h4>
+                    <p><strong>1 seule capture par zone.</strong> Seul le tout premier Pokemon sauvage rencontre dans chaque zone peut etre capture. S'il s'enfuit ou est mis KO, cette zone est perdue pour toujours. Le tracking commence quand vous recevez vos premieres Pokeballs.</p>
+                </div>
+                <div class="info-item" style="border-left:4px solid var(--red);">
+                    <h4 style="color:var(--red);">Nuzlocke Hardcore</h4>
+                    <p>Toutes les regles du Nuzlocke, plus : <strong>un Pokemon KO est definitivement perdu.</strong> Il est relache automatiquement a la fin du combat. Si toute votre equipe tombe a 0 PV, c'est le Game Over — retour au titre.</p>
+                </div>
+            </div>
+        </div>
+        <div class="info-section">
             <h2>Comment jouer ?</h2>
             <div class="info-grid">
                 <div class="info-item"><h4>1. Connexion</h4><p>Entrez votre pseudo sur la page de jeu. C'est votre identifiant unique pour les sauvegardes cloud.</p></div>
@@ -531,6 +549,7 @@
             <li><span class="status-done">OK</span><div><strong>Fakemons en cadeau</strong> — Battre un dresseur qui a un fakemon vous donne ce fakemon (champions, C4, dresseurs de route).</div></li>
             <li><span class="status-done">OK</span><div><strong>Rival avec Aurelisk</strong> — La rivale utilise Aurelisk et vous le donne apres la 3e rencontre (Route 119, niveau 1).</div></li>
             <li><span class="status-done">OK</span><div><strong>Arceus trouvable</strong> — Arceus est a 1% dans Sky Pillar 5F (niveau 55-60). Le Pokemon le plus rare du jeu.</div></li>
+            <li><span class="status-done">OK</span><div><strong>Mode Nuzlocke</strong> — Choix au debut de l'aventure entre 3 modes : Normal (classique), Nuzlocke (1 capture par zone) et Nuzlocke Hardcore (1 capture par zone + Pokemon KO relache definitivement, Game Over si equipe vide).</div></li>
         </ul>
 
         <h3 class="roadmap-category">Termine — Technique</h3>
@@ -544,22 +563,21 @@
 
         <h3 class="roadmap-category">En cours</h3>
         <ul class="roadmap-list">
-            <li><span class="status-wip">WIP</span><div><strong>Traduction FR complete</strong> — Traduire les 70% restants : PNJ secondaires, descriptions d'objets, attaques, menus.</div></li>
             <li><span class="status-wip">WIP</span><div><strong>Coherence site/jeu</strong> — Verification que toutes les infos du portail correspondent a la realite du jeu.</div></li>
         </ul>
 
         <h3 class="roadmap-category">A venir</h3>
         <ul class="roadmap-list">
-            <li><span class="status-todo">...</span><div><strong>Mode Nuzlocke</strong> — Option au debut de l'aventure : Normal, Nuzlocke (1 capture/zone), Nuzlocke Hardcore (+ mort permanente).</div></li>
-            <li><span class="status-todo">...</span><div><strong>Evenements legendaires</strong> — Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes et conditions speciales.</div></li>
-            <li><span class="status-todo">...</span><div><strong>Plus de fakemons</strong> — Objectif 300-500 fakemons au total avec de nouvelles familles et evolutions.</div></li>
-            <li><span class="status-todo">...</span><div><strong>Equilibrage post-game</strong> — Ajuster les stats, movepools et rencontres en fonction des retours joueurs.</div></li>
+            <li><span class="status-todo">...</span><div><strong>Arena Multi-Champion</strong> — Le premier joueur a battre une arene depose 6 Pokemon et devient Maitre de l'arene. Les autres doivent le battre pour prendre sa place. Historique et stats via Supabase.</div></li>
+            <li><span class="status-todo">...</span><div><strong>PvP en ligne</strong> — Combats joueur contre joueur avec les Pokemon de sa sauvegarde.</div></li>
+            <li><span class="status-todo">...</span><div><strong>Echanges en ligne</strong> — Echanges de Pokemon entre joueurs connectes.</div></li>
+            <li><span class="status-todo">...</span><div><strong>Traduction FR complete</strong> — Traduire les 70% restants : PNJ, descriptions, attaques, menus.</div></li>
         </ul>
 
         <h3 class="roadmap-category">Concept</h3>
         <ul class="roadmap-list">
-            <li><span class="status-todo">?</span><div><strong>Arena Multi-Champion</strong> — Le premier joueur a battre une arene depose 6 Pokemon et devient Maitre. Les autres doivent le battre. Historique des combats via Supabase.</div></li>
-            <li><span class="status-todo">?</span><div><strong>PvP & echanges</strong> — Combats PvP et echanges de Pokemon entre joueurs en ligne.</div></li>
+            <li><span class="status-todo">?</span><div><strong>Evenements legendaires</strong> — Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes et conditions speciales.</div></li>
+            <li><span class="status-todo">?</span><div><strong>Plus de fakemons</strong> — Objectif 300-500 fakemons au total avec de nouvelles familles et evolutions.</div></li>
             <li><span class="status-todo">?</span><div><strong>Interface admin</strong> — Page web pour editer fakemons, dresseurs et level caps sans recompiler.</div></li>
         </ul>
     </div>
