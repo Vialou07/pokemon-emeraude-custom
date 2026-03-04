@@ -299,25 +299,164 @@
         .trainer-summary-card .team-preview .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
         .trainer-summary-card .team-preview .dot.fakemon { background: var(--gold); }
 
+        /* Game modes grid */
+        .game-modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+        /* Type lookup mobile */
+        .type-lookup-mobile { display: none; }
+        .type-lookup-row { margin-bottom: 16px; }
+        .type-lookup-row label { display: block; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 8px; font-weight: 600; }
+        .type-lookup-options { display: flex; flex-wrap: wrap; gap: 8px; }
+        .type-lookup-result { text-align: center; padding: 20px; margin: 16px 0; background: var(--bg-card); border-radius: 12px; font-size: 1.1rem; font-weight: 700; }
+        .type-lookup-result .lookup-types { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+        .type-lookup-result .lookup-arrow { color: var(--text-dim); font-size: 1.2rem; }
+        .type-lookup-result.se { color: #4caf50; }
+        .type-lookup-result.nve { color: #e53935; }
+        .type-lookup-result.imm { color: #ff6b6b; }
+        .type-lookup-result.neutral { color: var(--text-dim); }
+        .type-chart-toggle { display: none; width: 100%; padding: 12px; background: var(--bg-card); color: var(--text-dim); border: 1px solid #333; border-radius: 8px; font-size: 0.9rem; cursor: pointer; margin-bottom: 16px; min-height: 44px; }
+
+        /* Type filters label */
+        .type-filters-label { display: none; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 8px; font-weight: 600; }
+
+        /* Tooltip touch support */
+        .ability-tag.tooltip-open .ability-tooltip { display: block; }
+
         /* RESPONSIVE */
         @media (max-width: 900px) { .features { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) {
-            nav { padding: 0 8px; height: 48px; } nav .logo { font-size: 1rem; margin-right: 12px; }
-            nav .tab { padding: 6px 10px; font-size: 0.8rem; }
-            .hero h1 { font-size: 1.6rem; } .section { padding: 16px 8px; }
-            .features { grid-template-columns: 1fr; } .info-section .info-grid { grid-template-columns: 1fr; }
-            .pokedex-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+            /* --- NAV --- */
+            nav { flex-wrap: wrap; height: auto; padding: 8px 12px; gap: 6px; }
+            nav .logo { width: 100%; text-align: center; margin-right: 0; font-size: 1.1rem; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+            nav .tabs { width: 100%; gap: 6px; scrollbar-width: none; scroll-snap-type: x mandatory;
+                mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%); }
+            nav .tabs::-webkit-scrollbar { display: none; }
+            nav .tab { padding: 10px 16px; font-size: 0.85rem; border-radius: 20px; min-height: 44px; display: flex; align-items: center; scroll-snap-align: start; }
+            nav .tab.active { background: var(--accent); }
+
+            /* --- GLOBAL --- */
+            body { font-size: 16px; }
+            input, select, textarea { font-size: 16px; }
+            .section { padding: 16px 10px; }
+
+            /* --- HOME --- */
+            .hero { padding: 32px 16px 24px; border-radius: 12px; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero p { font-size: 0.95rem; }
+            .hero .play-btn { padding: 14px 32px; font-size: 1rem; width: 100%; max-width: 300px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; }
+            .features { grid-template-columns: 1fr; }
+            .feature-card { padding: 16px; }
+            .feature-card h3 { font-size: 1rem; }
+            .feature-card p { font-size: 0.85rem; }
+            .info-section .info-grid { grid-template-columns: 1fr; }
+            .info-item { padding: 14px; }
+            .info-item p { font-size: 0.85rem; }
+            .game-modes-grid { grid-template-columns: 1fr; }
+
+            /* --- POKEDEX TOOLBAR --- */
+            .pokedex-toolbar { flex-direction: column; gap: 8px; }
+            .pokedex-toolbar input[type="text"] { width: 100%; min-width: unset; min-height: 48px; padding: 12px 16px; }
+            .pokedex-toolbar select { width: 100%; min-height: 44px; }
+            .pokedex-toolbar .stats-badge { text-align: center; font-size: 0.9rem; }
+            .ability-filter-row { flex-direction: column; gap: 6px; }
+            .ability-filter-row input { max-width: 100%; width: 100%; min-height: 44px; }
+
+            /* --- TYPE FILTERS --- */
+            .type-filters-label { display: block; }
+            .type-filters { gap: 8px; }
+            .type-btn { padding: 8px 14px; font-size: 0.8rem; min-height: 38px; display: inline-flex; align-items: center; }
+            .type-btn.active { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.3); transform: scale(1.05); }
+
+            /* --- VIEW TOGGLES --- */
+            #main-view-toggle { width: 100%; display: flex; }
+            #main-view-toggle button { flex: 1; text-align: center; padding: 10px 6px; font-size: 0.8rem; min-height: 44px; border-radius: 0; border: 1px solid #333; }
+            #main-view-toggle button:first-child { border-radius: 8px 0 0 8px; }
+            #main-view-toggle button:last-child { border-radius: 0 8px 8px 0; }
+            #pokedex > div:first-child { flex-direction: column; align-items: stretch; }
+            .view-toggle button { padding: 10px 14px; min-height: 44px; font-size: 0.85rem; }
+            .compare-toggle { padding: 10px 16px; min-height: 44px; width: 100%; text-align: center; }
+
+            /* --- POKEDEX GRID --- */
+            .pokedex-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+            .poke-card { padding: 12px 8px; }
+            .poke-card .poke-name { font-size: 0.9rem; }
+            .poke-card .poke-bst { font-size: 0.8rem; }
+            .poke-card .mini-stats span { font-size: 0.65rem; }
+
+            /* --- ALL POKEMON --- */
             .allpoke-grid { grid-template-columns: 1fr; gap: 8px; }
-            .allpoke-card { padding: 10px; }
-            .allpoke-toolbar { gap: 8px; }
-            .allpoke-toolbar input { min-width: 140px; }
-            .modal { padding: 20px; }
-            .compare-grid { grid-template-columns: 1fr; } .compare-vs { padding: 8px 0; }
-            .team-comparison { grid-template-columns: 1fr; } .team-arrow { transform: rotate(90deg); padding: 0; }
-            .distribution-stats { grid-template-columns: repeat(2, 1fr); }
-            .trainer-summary { grid-template-columns: repeat(2, 1fr); }
-            #main-view-toggle { gap: 2px; }
-            #main-view-toggle button { padding: 6px 8px; font-size: 0.75rem; }
+            .allpoke-card { padding: 12px; gap: 10px; min-height: 48px; }
+            .allpoke-card img { width: 40px; height: 40px; }
+            .allpoke-card .ap-name { font-size: 0.9rem; }
+            .allpoke-card .ap-method-tag { font-size: 0.7rem; }
+            .allpoke-toolbar { flex-direction: column; gap: 8px; }
+            .allpoke-toolbar input { width: 100%; min-width: unset; min-height: 48px; }
+            .allpoke-toolbar select { width: 100%; min-height: 44px; }
+
+            /* --- TYPE CHART MOBILE --- */
+            .type-lookup-mobile { display: block; }
+            .type-chart-toggle { display: block; }
+            .type-chart-wrapper { display: none; }
+            .type-chart-wrapper.force-show { display: block; overflow-x: auto; border: 1px solid #333; border-radius: 8px; padding: 8px; }
+            .type-chart-wrapper.force-show th, .type-chart-wrapper.force-show td { width: 32px; height: 32px; min-width: 32px; }
+
+            /* --- ROUTES --- */
+            .route-card { padding: 12px; }
+            .route-card-header { min-height: 48px; padding: 6px 0; }
+            .route-card-header h3 { font-size: 0.9rem; }
+            .route-badges { flex-wrap: wrap; gap: 4px; }
+            .route-badge { font-size: 0.7rem; }
+            .distribution-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .dist-stat-card { padding: 12px; }
+            .dist-stat-card .big-num { font-size: 1.6rem; }
+            .dist-toolbar { flex-direction: column; gap: 8px; }
+            .dist-toolbar input, .dist-toolbar select { width: 100%; min-height: 44px; }
+
+            /* --- TABLES RESPONSIVE --- */
+            .enc-table thead { display: none; }
+            .enc-table tr { display: block; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+            .enc-table td { display: inline-block; padding: 2px 6px; border: none; font-size: 0.85rem; }
+            .enc-table td:first-child { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.9rem; }
+            .allpoke-detail-routes thead { display: none; }
+            .allpoke-detail-routes tr { display: block; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+            .allpoke-detail-routes td { display: inline-block; padding: 2px 6px; border: none; }
+            .allpoke-detail-routes td:first-child { display: block; font-weight: 600; margin-bottom: 2px; }
+
+            /* --- TRAINERS --- */
+            .trainer-summary { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .trainer-summary-card { padding: 12px 8px; }
+            .trainer-summary-card .trainer-name { font-size: 0.85rem; }
+            .team-comparison { grid-template-columns: 1fr; }
+            .team-arrow { transform: rotate(90deg); padding: 0; }
+            .team-poke { font-size: 0.85rem; }
+            .team-moves span { font-size: 0.75rem; }
+            .trainer-card { padding: 14px; }
+            .trainer-header { gap: 10px; }
+            .trainer-header .trainer-type-badge { margin-left: 0; font-size: 0.75rem; }
+
+            /* --- MODALES --- */
+            .modal-overlay { padding: 0; align-items: flex-end; }
+            .modal { border-radius: 20px 20px 0 0; padding: 24px 16px; max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+            .modal::before { content: ''; display: block; width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 0 auto 16px; }
+            .modal-close { position: sticky; top: 0; right: 0; float: right; font-size: 2rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border-radius: 50%; z-index: 10; }
+            .modal .detail-header { flex-direction: column; text-align: center; gap: 12px; }
+            .modal .detail-sprite { margin: 0 auto; }
+            .modal .detail-name { font-size: 1.4rem; }
+            .compare-modal { padding: 0; align-items: flex-end; }
+            .compare-panel { border-radius: 20px 20px 0 0; padding: 24px 16px; max-height: 92vh; overflow-y: auto; }
+            .compare-panel::before { content: ''; display: block; width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 0 auto 16px; }
+            .compare-grid { grid-template-columns: 1fr; }
+            .compare-vs { padding: 8px 0; }
+            .compare-stat-row { grid-template-columns: 45px 1fr 35px 1fr 45px; font-size: 0.8rem; }
+            .compare-selection-bar { flex-direction: column; gap: 8px; text-align: center; }
+            .compare-selection-bar button { margin-left: 0; width: 100%; min-height: 44px; }
+
+            /* --- ROADMAP --- */
+            .roadmap-list li { padding: 12px; font-size: 0.85rem; }
+
+            /* --- PLAY --- */
+            #play a { display: block; width: 100%; max-width: 320px; margin: 0 auto; padding: 16px; min-height: 56px; text-align: center; }
         }
     </style>
 </head>
@@ -354,7 +493,7 @@
         <div class="info-section">
             <h2>3 modes de jeu</h2>
             <p style="color:var(--text-dim);margin-bottom:16px;">Au debut de chaque nouvelle partie, choisissez votre mode de difficulte. Ce choix est definitif !</p>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div class="game-modes-grid">
                 <div class="info-item" style="border-left:4px solid var(--green);">
                     <h4 style="color:var(--green);">Normal</h4>
                     <p>Le jeu classique, sans restriction. Capturez autant de Pokemon que vous voulez, soignez-les au Centre Pokemon. Ideal pour decouvrir les Fakemons et l'aventure a votre rythme.</p>
@@ -378,6 +517,18 @@
                 <div class="info-item"><h4>4. Tips</h4><p>Explorez chaque recoin ! Des Pokemon rares se cachent partout. Battez les dresseurs avec des Fakemons pour les recevoir en cadeau.</p></div>
             </div>
         </div>
+        <div class="info-section">
+            <h2>Guide de l'emulateur</h2>
+            <p style="color:var(--text-dim);margin-bottom:16px;">Tout ce qu'il faut savoir pour profiter du jeu sur mobile ou PC.</p>
+            <div class="info-grid">
+                <div class="info-item" style="border-left:4px solid var(--green);"><h4 style="color:var(--green);">Sauvegarde simplifiee</h4><p>Pas besoin de toucher aux states, d'importer ou d'exporter quoi que ce soit. Sauvegardez simplement en jeu (Menu > Sauvegarder) et attendez le message vert de confirmation. Votre progression est automatiquement stockee dans le cloud.</p></div>
+                <div class="info-item" style="border-left:4px solid var(--blue);"><h4 style="color:var(--blue);">Accelerer le jeu</h4><p>Appuyez sur les <strong>3 barres en haut a droite</strong> de l'emulateur, puis <strong>Speed Options</strong> > <strong>Fast Forward = Enabled</strong>. Choisissez le ratio de vitesse souhaite (x2, x4, etc). Attention : le son sera aussi accelere, on conseille de le couper si vous utilisez cette option.</p></div>
+                <div class="info-item" style="border-left:4px solid var(--purple);"><h4 style="color:var(--purple);">Acces au portail</h4><p>Un bouton <strong>"Portail"</strong> est accessible directement depuis l'interface du jeu, au-dessus de l'emulateur. Vous pouvez consulter le Pokedex, les routes et les infos sans quitter la page.</p></div>
+                <div class="info-item" style="border-left:4px solid var(--gold);"><h4 style="color:var(--gold);">Mode paysage recommande</h4><p>Sur certains telephones en mode portrait, le pseudo, le bouton Portail et Deconnexion peuvent cacher les <strong>3 barres de menu</strong> de l'emulateur. Si c'est le cas, <strong>passez en mode paysage</strong> (horizontal) pour y acceder.</p></div>
+                <div class="info-item" style="border-left:4px solid var(--accent);"><h4 style="color:var(--accent);">Plein ecran</h4><p>Pour une experience immersive, activez le <strong>plein ecran</strong> via les 3 barres en haut a droite de l'emulateur. Ideal sur mobile pour profiter de tout l'ecran !</p></div>
+            </div>
+        </div>
+
         <div class="info-section">
             <h2>Nouveautes vs Emeraude original</h2>
             <div class="info-grid">
@@ -439,6 +590,7 @@
                 <button onclick="launchCompare()">Comparer !</button>
                 <button onclick="clearCompare()" style="background:var(--red);color:white;margin-left:0;">Reset</button>
             </div>
+            <span class="type-filters-label">Filtrer par type :</span>
             <div class="type-filters" id="type-filters"></div>
             <div class="pokedex-grid" id="pokedex-grid"></div>
             <div class="route-view" id="route-view"></div>
@@ -519,6 +671,18 @@
     <div id="types" class="section">
         <h2 style="color:var(--accent);margin-bottom:8px;">Table des Types</h2>
         <p style="color:var(--text-dim);margin-bottom:16px;font-size:0.9rem;">Lignes = type attaquant, colonnes = type defenseur. <span style="color:#4caf50;font-weight:bold;">2x</span> = super efficace, <span style="color:#e53935;font-weight:bold;">&frac12;</span> = pas tres efficace, <span style="color:#666;font-weight:bold;">0</span> = immunite.</p>
+        <div class="type-lookup-mobile" id="type-lookup-mobile">
+            <div class="type-lookup-row">
+                <label>Type attaquant :</label>
+                <div class="type-lookup-options" id="type-atk-options"></div>
+            </div>
+            <div class="type-lookup-result" id="type-lookup-result">Selectionnez un type attaquant et un type defenseur</div>
+            <div class="type-lookup-row">
+                <label>Type defenseur :</label>
+                <div class="type-lookup-options" id="type-def-options"></div>
+            </div>
+        </div>
+        <button class="type-chart-toggle" id="type-chart-toggle">Voir la table complete</button>
         <div class="type-chart-wrapper" id="type-chart-container"></div>
     </div>
 
@@ -811,6 +975,7 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             tab.classList.add('active');
             document.getElementById(tab.dataset.tab).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 
@@ -823,6 +988,7 @@
             catalogue = await res.json();
             buildPokedex();
             buildTypeChart();
+            buildTypeLookup();
         } catch(e) {
             document.getElementById('pokedex-grid').innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:32px;">Catalogue non disponible.</p>';
         }
@@ -2086,6 +2252,125 @@
     }
 
     // ============================================================
+    // MOBILE TYPE LOOKUP
+    // ============================================================
+    function buildTypeLookup() {
+        const types = ALL_TYPES;
+        let selectedAtk = null, selectedDef = null;
+
+        function renderButtons(containerId, onSelect) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            el.innerHTML = types.map(t =>
+                '<button class="type-btn type-' + t.toLowerCase() + '" data-type="' + t + '">' + t + '</button>'
+            ).join('');
+            el.querySelectorAll('.type-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    el.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    onSelect(btn.dataset.type);
+                    updateResult();
+                });
+            });
+        }
+
+        renderButtons('type-atk-options', t => { selectedAtk = t; });
+        renderButtons('type-def-options', t => { selectedDef = t; });
+
+        function updateResult() {
+            const el = document.getElementById('type-lookup-result');
+            if (!selectedAtk || !selectedDef) {
+                el.textContent = 'Selectionnez les deux types';
+                el.className = 'type-lookup-result';
+                return;
+            }
+            const eff = (TYPE_CHART[selectedAtk] && TYPE_CHART[selectedAtk][selectedDef] !== undefined)
+                ? TYPE_CHART[selectedAtk][selectedDef] : 1;
+            const atkBadge = '<span class="type-badge type-' + selectedAtk.toLowerCase() + '">' + selectedAtk + '</span>';
+            const defBadge = '<span class="type-badge type-' + selectedDef.toLowerCase() + '">' + selectedDef + '</span>';
+            const typesHtml = '<div class="lookup-types">' + atkBadge + '<span class="lookup-arrow">→</span>' + defBadge + '</div>';
+            if (eff === 2) {
+                el.innerHTML = typesHtml + 'Super efficace ! (x2)';
+                el.className = 'type-lookup-result se';
+            } else if (eff === 0.5) {
+                el.innerHTML = typesHtml + 'Pas tres efficace (x0.5)';
+                el.className = 'type-lookup-result nve';
+            } else if (eff === 0) {
+                el.innerHTML = typesHtml + 'Immunite ! (x0)';
+                el.className = 'type-lookup-result imm';
+            } else {
+                el.innerHTML = typesHtml + 'Efficacite normale (x1)';
+                el.className = 'type-lookup-result neutral';
+            }
+        }
+
+        document.getElementById('type-chart-toggle').addEventListener('click', function() {
+            const wrapper = document.getElementById('type-chart-container');
+            wrapper.classList.toggle('force-show');
+            this.textContent = wrapper.classList.contains('force-show') ? 'Masquer la table' : 'Voir la table complete';
+        });
+    }
+
+    // ============================================================
+    // MOBILE ENHANCEMENTS
+    // ============================================================
+    // Tooltip touch support
+    if ('ontouchstart' in window) {
+        document.addEventListener('click', function(e) {
+            var tag = e.target.closest('.ability-tag');
+            document.querySelectorAll('.ability-tag.tooltip-open').forEach(function(el) {
+                if (el !== tag) el.classList.remove('tooltip-open');
+            });
+            if (tag) {
+                tag.classList.toggle('tooltip-open');
+                e.stopPropagation();
+            }
+        });
+    }
+
+    // Swipe-to-close modals
+    function initModalSwipe() {
+        if (!('ontouchstart' in window)) return;
+        ['detail-modal', 'compare-modal'].forEach(function(modalId) {
+            var overlay = document.getElementById(modalId);
+            if (!overlay) return;
+            var content = overlay.querySelector('.modal, .compare-panel');
+            if (!content) return;
+            var startY = 0, currentY = 0, tracking = false;
+            content.addEventListener('touchstart', function(e) {
+                if (content.scrollTop <= 0) {
+                    startY = e.touches[0].clientY;
+                    tracking = true;
+                }
+            }, { passive: true });
+            content.addEventListener('touchmove', function(e) {
+                if (!tracking) return;
+                currentY = e.touches[0].clientY;
+                var diff = currentY - startY;
+                if (diff > 0 && content.scrollTop <= 0) {
+                    content.style.transform = 'translateY(' + diff + 'px)';
+                    content.style.transition = 'none';
+                }
+            }, { passive: true });
+            content.addEventListener('touchend', function() {
+                if (!tracking) return;
+                var diff = currentY - startY;
+                content.style.transition = 'transform 0.3s ease';
+                if (diff > 100) {
+                    content.style.transform = 'translateY(100%)';
+                    setTimeout(function() {
+                        overlay.classList.remove('active');
+                        content.style.transform = '';
+                    }, 300);
+                } else {
+                    content.style.transform = '';
+                }
+                startY = 0; currentY = 0; tracking = false;
+            });
+        });
+    }
+
+    // ============================================================
     // EVENTS
     // ============================================================
     document.getElementById('search').addEventListener('input', filterPokedex);
@@ -2099,6 +2384,7 @@
     // ============================================================
     loadCatalogue();
     loadGameData();
+    initModalSwipe();
     </script>
 </body>
 </html>
