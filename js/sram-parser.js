@@ -34,6 +34,11 @@ const SRAMParser = (function () {
     const PARTY_SIZE = 6;
     const POKEMON_SIZE = 100; // BoxPokemon(80) + battle data(20)
 
+    // Flags array offset within SaveBlock1
+    const FLAGS_OFFSET = 0x1270;
+    // Badge flags: FLAG_BADGE01_GET = 2151 .. FLAG_BADGE08_GET = 2158
+    const BADGE_FLAGS = [2151, 2152, 2153, 2154, 2155, 2156, 2157, 2158];
+
     // BoxPokemon field offsets
     const BOX_PERSONALITY = 0;
     const BOX_OT_ID = 4;
@@ -270,6 +275,19 @@ const SRAMParser = (function () {
         };
     }
 
+    // ===================== BADGE PARSING =====================
+
+    function checkFlag(sb1, flagId) {
+        const byteOffset = FLAGS_OFFSET + Math.floor(flagId / 8);
+        const bitPos = flagId & 7;
+        if (byteOffset >= sb1.length) return false;
+        return ((sb1[byteOffset] >> bitPos) & 1) === 1;
+    }
+
+    function extractBadgesFromSB1(sb1) {
+        return BADGE_FLAGS.map(flag => checkFlag(sb1, flag));
+    }
+
     // ===================== PUBLIC API =====================
 
     function extractParty(sram) {
@@ -280,10 +298,6 @@ const SRAMParser = (function () {
         const sb1 = reconstructSaveBlock1(sram);
         const partyCount = Math.min(readU8(sb1, PARTY_COUNT_OFFSET), PARTY_SIZE);
 
-        if (partyCount === 0) {
-            return { partyCount: 0, party: [] };
-        }
-
         const party = [];
         for (let i = 0; i < partyCount; i++) {
             const offset = PARTY_ARRAY_OFFSET + (i * POKEMON_SIZE);
@@ -293,7 +307,9 @@ const SRAMParser = (function () {
             }
         }
 
-        return { partyCount, party };
+        const badges = extractBadgesFromSB1(sb1);
+
+        return { partyCount, party, badges };
     }
 
     function extractPartyFromBase64(base64Sram) {

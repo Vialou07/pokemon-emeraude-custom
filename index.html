@@ -539,20 +539,37 @@
         var _speciesNames = null;
         var _movesNames = null;
         var _itemsNames = null;
-        var _arenaParty = null;
+        var _speciesTypes = null;
+        var _arenaParty = null;    // full party from SRAM
+        var _arenaFiltered = null; // filtered by gym type
+        var _arenaBadges = null;   // [bool x8]
+
+        // Gym definitions with badge index (0-based) and type IDs
+        var ARENA_GYMS = {
+            roxanne:   { badge: 0, typeId: 6,  typeFr: 'Roche' },
+            brawly:    { badge: 1, typeId: 2,  typeFr: 'Combat' },
+            wattson:   { badge: 2, typeId: 14, typeFr: 'Electrik' },
+            flannery:  { badge: 3, typeId: 11, typeFr: 'Feu' },
+            norman:    { badge: 4, typeId: 1,  typeFr: 'Normal' },
+            winona:    { badge: 5, typeId: 3,  typeFr: 'Vol' },
+            tate_liza: { badge: 6, typeId: 15, typeFr: 'Psy' },
+            juan:      { badge: 7, typeId: 12, typeFr: 'Eau' },
+        };
 
         // Load lookup tables lazily
         async function loadLookupTables() {
             if (_speciesNames) return;
             try {
-                var [sp, mv, it] = await Promise.all([
-                    fetch('data/species_names.json').then(r => r.json()),
-                    fetch('data/moves_names.json').then(r => r.json()),
-                    fetch('data/items_names.json').then(r => r.json()),
+                var [sp, mv, it, st] = await Promise.all([
+                    fetch('data/species_names.json').then(function(r) { return r.json(); }),
+                    fetch('data/moves_names.json').then(function(r) { return r.json(); }),
+                    fetch('data/items_names.json').then(function(r) { return r.json(); }),
+                    fetch('data/species_types.json').then(function(r) { return r.json(); }),
                 ]);
                 _speciesNames = sp;
                 _movesNames = mv;
                 _itemsNames = it;
+                _speciesTypes = st;
                 console.log('[Arena] Lookup tables loaded');
             } catch(e) {
                 console.warn('[Arena] Failed to load lookup tables:', e);
@@ -566,6 +583,8 @@
             document.getElementById('arena-status').textContent = '';
             document.getElementById('arena-submit').disabled = true;
             _arenaParty = null;
+            _arenaFiltered = null;
+            _arenaBadges = null;
             loadLookupTables();
             extractCurrentParty();
         }
@@ -593,24 +612,35 @@
                     return;
                 }
                 _arenaParty = result.party;
-                renderPartyPreview(result.party);
+                _arenaBadges = result.badges || [];
+                console.log('[Arena] Badges:', _arenaBadges);
+                renderPartyPreview(result.party, null);
+                setArenaStatus('Selectionne une arene ci-dessus', false);
             } catch(e) {
                 console.error('[Arena] Parse error:', e);
                 setArenaStatus('Erreur lecture sauvegarde: ' + e.message, true);
             }
         }
 
-        function renderPartyPreview(party) {
+        // Check if a Pokemon has a given type
+        function pokemonHasType(speciesId, typeId) {
+            if (!_speciesTypes) return true; // fallback: allow all if types not loaded
+            var types = _speciesTypes[speciesId];
+            if (!types) return false;
+            return types.indexOf(typeId) !== -1;
+        }
+
+        function renderPartyPreview(party, gymTypeId) {
             var html = '';
             for (var i = 0; i < party.length; i++) {
                 var p = party[i];
                 var name = (_speciesNames && _speciesNames[p.species]) || p.nickname || ('Pokemon #' + p.species);
                 var item = p.heldItem > 0 && _itemsNames ? (_itemsNames[p.heldItem] || '') : '';
-                var moves = p.moves.map(function(m) {
-                    return _movesNames ? (_movesNames[m] || '???') : '#' + m;
-                }).join(', ');
-                html += '<div class="arena-pokemon">' +
-                    '<div><span class="poke-name">' + name + '</span>' +
+                var matchesType = gymTypeId === null || pokemonHasType(p.species, gymTypeId);
+                var opacity = matchesType ? '1' : '0.3';
+                var badge = matchesType ? '' : ' <span style="color:#ff5555;font-size:0.7rem;">(type incompatible)</span>';
+                html += '<div class="arena-pokemon" style="opacity:' + opacity + '">' +
+                    '<div><span class="poke-name">' + name + '</span>' + badge +
                     (item ? ' <span class="poke-item">@ ' + item + '</span>' : '') +
                     '</div>' +
                     '<span class="poke-level">Nv.' + p.level + '</span>' +
@@ -621,10 +651,37 @@
 
         async function onGymSelect() {
             var gymId = document.getElementById('arena-gym').value;
-            if (!gymId) {
-                document.getElementById('arena-submit').disabled = true;
+            var submitBtn = document.getElementById('arena-submit');
+            submitBtn.disabled = true;
+            _arenaFiltered = null;
+
+            if (!gymId || !_arenaParty) {
+                if (_arenaParty) renderPartyPreview(_arenaParty, null);
                 return;
             }
+
+            var gym = ARENA_GYMS[gymId];
+            if (!gym) return;
+
+            // Check badge
+            if (_arenaBadges && !_arenaBadges[gym.badge]) {
+                setArenaStatus('Tu n\'as pas le badge ' + gym.typeFr + ' ! Bats d\'abord le champion.', true);
+                renderPartyPreview(_arenaParty, gym.typeId);
+                return;
+            }
+
+            // Filter party by gym type
+            _arenaFiltered = _arenaParty.filter(function(p) {
+                return pokemonHasType(p.species, gym.typeId);
+            });
+
+            renderPartyPreview(_arenaParty, gym.typeId);
+
+            if (_arenaFiltered.length === 0) {
+                setArenaStatus('Aucun Pokemon de type ' + gym.typeFr + ' dans ton equipe !', true);
+                return;
+            }
+
             // Check if already a master
             try {
                 var res = await _sb.from('arena_masters')
@@ -632,17 +689,28 @@
                     .eq('gym_id', gymId)
                     .single();
                 if (res.data) {
-                    setArenaStatus('Maitre actuel : ' + res.data.master_pseudo + ' — Tu peux le detroner !', false);
+                    setArenaStatus('Maitre actuel : ' + res.data.master_pseudo + ' — ' + _arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' seront deposes', false);
                 } else {
-                    setArenaStatus('Aucun maitre — Sois le premier !', false);
+                    setArenaStatus('Aucun maitre — ' + _arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' seront deposes', false);
                 }
-            } catch(e) {}
-            document.getElementById('arena-submit').disabled = !_arenaParty || !_arenaParty.length;
+            } catch(e) {
+                setArenaStatus(_arenaFiltered.length + ' Pokemon ' + gym.typeFr + ' seront deposes', false);
+            }
+            submitBtn.disabled = false;
         }
 
         async function submitArenaTeam() {
             var gymId = document.getElementById('arena-gym').value;
-            if (!gymId || !_arenaParty || !_currentUser) return;
+            if (!gymId || !_arenaFiltered || !_arenaFiltered.length || !_currentUser) return;
+
+            var gym = ARENA_GYMS[gymId];
+            if (!gym) return;
+
+            // Double-check badge
+            if (_arenaBadges && !_arenaBadges[gym.badge]) {
+                setArenaStatus('Badge manquant !', true);
+                return;
+            }
 
             document.getElementById('arena-submit').disabled = true;
             setArenaStatus('Envoi en cours...', false);
@@ -651,8 +719,8 @@
                 ? _currentUser.user_metadata.pseudo
                 : _currentUser.email.split('@')[0];
 
-            // Build team JSON with resolved names
-            var team = _arenaParty.map(function(p) {
+            // Build team JSON from FILTERED party only
+            var team = _arenaFiltered.map(function(p) {
                 return {
                     species: p.species,
                     speciesName: (_speciesNames && _speciesNames[p.species]) || p.nickname,
@@ -680,7 +748,7 @@
                     setArenaStatus('Erreur: ' + res.error.message, true);
                     document.getElementById('arena-submit').disabled = false;
                 } else {
-                    setArenaStatus('Tu es le nouveau Maitre !', false);
+                    setArenaStatus('Tu es le nouveau Maitre ' + gym.typeFr + ' !', false);
                     toast('Maitre d\'arene enregistre !');
                     setTimeout(closeArenaModal, 2000);
                 }
