@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-05",
+  "lastUpdated": "2026-03-06",
   "sections": [
     {
       "title": "Gameplay",
@@ -58,35 +58,42 @@
         { "name": "Dialogues principaux", "desc": "Professeur Birch, champions d'arene, Conseil 4, Pierre, rival — tous traduits en francais.", "status": "done" },
         { "name": "Menus et messages systeme", "desc": "Messages de sauvegarde, PC, combats — traduits.", "status": "done" },
         { "name": "Fakemons", "desc": "Noms, descriptions et dialogues lies aux fakemons — traduits.", "status": "done" },
-        { "name": "Dresseurs de route", "desc": "~1145 lignes de dialogues de dresseurs de route encore en anglais.", "status": "todo" },
-        { "name": "PNJ des villes", "desc": "PNJ secondaires dans les villes et maisons — encore en anglais.", "status": "todo" },
-        { "name": "Descriptions attaques/talents", "desc": "Les descriptions des 800+ attaques et talents — encore en anglais.", "status": "todo" }
+        { "name": "Dresseurs de route", "desc": "~1145 lignes de dialogues de dresseurs de route encore en anglais.", "status": "todo", "difficulty": "long" },
+        { "name": "PNJ des villes", "desc": "PNJ secondaires dans les villes et maisons — encore en anglais.", "status": "todo", "difficulty": "long" },
+        { "name": "Descriptions attaques/talents", "desc": "Les descriptions des 800+ attaques et talents — encore en anglais.", "status": "todo", "difficulty": "long" }
       ]
     },
     {
       "title": "Ameliorations prevues",
       "status": "todo",
       "items": [
-        { "name": "Amelioration sprites fakemons", "desc": "Regenerer les sprites les plus moches avec de meilleurs prompts PixelLab. Ameliorer la quantification de couleurs (16 couleurs GBA max). Retouches manuelles si necessaire.", "status": "todo" },
-        { "name": "Animations de sprites", "desc": "Le moteur supporte les animations 2 frames (64x128 PNG). Ajouter des animations aux fakemons les plus importants (starters, legendaires, boss).", "status": "todo" },
-        { "name": "Icones des objets CS", "desc": "Les 7 objets CS utilisent une icone placeholder (GoGoggles). Creer des icones custom pour chaque objet (machette, lanterne, surfboard...).", "status": "todo" },
-        { "name": "Coherence portail/jeu", "desc": "Verifier que toutes les infos du portail web (encounters, dresseurs, types) correspondent a la realite en jeu.", "status": "wip" }
+        { "name": "Amelioration sprites fakemons", "desc": "Regenerer les sprites les plus moches avec de meilleurs prompts PixelLab. Ameliorer la quantification de couleurs (16 couleurs GBA max). Retouches manuelles si necessaire.", "status": "todo", "difficulty": "moyen" },
+        { "name": "Animations de sprites", "desc": "Le moteur supporte les animations 2 frames (64x128 PNG). Ajouter des animations aux fakemons les plus importants (starters, legendaires, boss).", "status": "todo", "difficulty": "long" },
+        { "name": "Icones des objets CS", "desc": "Les 7 objets CS utilisent une icone placeholder (GoGoggles). Creer des icones custom pour chaque objet (machette, lanterne, surfboard...).", "status": "todo", "difficulty": "moyen" },
+        { "name": "Coherence portail/jeu", "desc": "Verifier que toutes les infos du portail web (encounters, dresseurs, types) correspondent a la realite en jeu.", "status": "wip", "difficulty": "moyen" },
+        { "name": "Afficher IV et EV", "desc": "Voir les IVs et EVs de chaque Pokemon sur l'ecran de resume. Un simple toggle de config existe deja dans pokeemerald-expansion (P_SUMMARY_SCREEN_IV_EV_INFO).", "status": "todo", "difficulty": "trivial" },
+        { "name": "IV a 1 pour tous", "desc": "Tous les Pokemon sauvages, d'equipe et de dresseurs ont leurs IVs a 1. Rend les shinies encore plus speciaux (IVs a 31). Modification de la creation de Pokemon dans pokemon.c.", "status": "todo", "difficulty": "facile" },
+        { "name": "Shinies IVs parfaits", "desc": "Tous les Pokemon shiny ont automatiquement 31 dans toutes leurs IVs. Les shinies deviennent les meilleurs specimens possibles.", "status": "todo", "difficulty": "facile" },
+        { "name": "Shiny hunting facilite", "desc": "Augmenter les chances de trouver un shiny. Plusieurs options : modifier le taux de base (SHINY_ODDS), donner un Shiny Charm tot dans le jeu, ou implementer un systeme de chaining.", "status": "todo", "difficulty": "facile" },
+        { "name": "Quetes farming EV", "desc": "Systeme de quetes pour gagner des EVs. Exemple : tuer 100 Pokemon Feu donne des EVs en Attaque. Necessite un systeme de compteurs, NPC questgiver, et suivi de progression.", "status": "todo", "difficulty": "complexe" },
+        { "name": "Redistribution EV", "desc": "Une fois 255 EVs accumules sur un Pokemon, pouvoir les redistribuer librement entre les stats via un NPC ou le portail web. Systeme de curseurs/allocation.", "status": "todo", "difficulty": "complexe" }
       ]
     },
     {
       "title": "Idees futures",
       "status": "idea",
       "items": [
-        { "name": "Echanges entre joueurs", "desc": "Echanger des Pokemon entre joueurs connectes directement depuis le site web. Systeme de proposition/acceptation avec apercu du Pokemon.", "status": "idea" },
-        { "name": "PvP temps reel", "desc": "Combats PvP en direct entre deux joueurs connectes simultanement (plus complexe que le systeme actuel par ladder).", "status": "idea" },
-        { "name": "Evenements legendaires", "desc": "Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes, conditions speciales et recompenses uniques.", "status": "idea" },
-        { "name": "Fakemons overworld", "desc": "Rendre les fakemons visibles sur la carte (sprites overworld qui se baladent dans l'herbe, les grottes, etc.).", "status": "idea" },
-        { "name": "Tournois en ligne", "desc": "Organiser des tournois PvP avec brackets, phases de poule, finale et recompenses.", "status": "idea" },
-        { "name": "Evenements saisonniers", "desc": "Contenu special pour Noel, Halloween, etc. : Pokemon rares, objets exclusifs, decorations.", "status": "idea" },
-        { "name": "Plus de fakemons", "desc": "Objectif 300-500 fakemons au total avec de nouvelles familles, evolutions et types.", "status": "idea" },
-        { "name": "Interface admin", "desc": "Page web pour editer fakemons, dresseurs et level caps sans avoir a recompiler la ROM.", "status": "idea" },
-        { "name": "Quetes secondaires", "desc": "Missions optionnelles avec des PNJ : trouver des objets, battre des dresseurs specifiques, explorer des zones cachees.", "status": "idea" },
-        { "name": "Breeding ameliore", "desc": "Systeme d'elevage ameliore avec plus de controle sur les IVs, natures et attaques transmises.", "status": "idea" }
+        { "name": "Echanges entre joueurs", "desc": "Echanger des Pokemon entre joueurs connectes directement depuis le site web. Systeme de proposition/acceptation avec apercu du Pokemon.", "status": "idea", "difficulty": "complexe" },
+        { "name": "PvP temps reel", "desc": "Combats PvP en direct entre deux joueurs connectes simultanement (plus complexe que le systeme actuel par ladder).", "status": "idea", "difficulty": "quasi-impossible" },
+        { "name": "Evenements legendaires", "desc": "Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes, conditions speciales et recompenses uniques.", "status": "idea", "difficulty": "moyen" },
+        { "name": "Pokemon visibles hautes herbes", "desc": "Les Pokemon sauvages apparaissent sur la carte dans les hautes herbes avant le combat. L'infrastructure overworld existe dans pokeemerald-expansion (OW_POKEMON_OBJECT_EVENTS), mais necessite du scripting par route.", "status": "idea", "difficulty": "long" },
+        { "name": "Pokemon suit le dresseur", "desc": "Votre premier Pokemon vous suit sur la carte, comme dans HGSS. Necessite des sprites overworld pour chaque espece et un systeme de suivi de mouvement.", "status": "idea", "difficulty": "complexe" },
+        { "name": "Tournois en ligne", "desc": "Organiser des tournois PvP avec brackets, phases de poule, finale et recompenses.", "status": "idea", "difficulty": "long" },
+        { "name": "Evenements saisonniers", "desc": "Contenu special pour Noel, Halloween, etc. : Pokemon rares, objets exclusifs, decorations.", "status": "idea", "difficulty": "moyen" },
+        { "name": "Plus de fakemons", "desc": "Objectif 300-500 fakemons au total avec de nouvelles familles, evolutions et types.", "status": "idea", "difficulty": "long" },
+        { "name": "Interface admin", "desc": "Page web pour editer fakemons, dresseurs et level caps sans avoir a recompiler la ROM.", "status": "idea", "difficulty": "complexe" },
+        { "name": "Quetes secondaires", "desc": "Missions optionnelles avec des PNJ : trouver des objets, battre des dresseurs specifiques, explorer des zones cachees.", "status": "idea", "difficulty": "long" },
+        { "name": "Breeding ameliore", "desc": "Systeme d'elevage ameliore avec plus de controle sur les IVs, natures et attaques transmises.", "status": "idea", "difficulty": "moyen" }
       ]
     }
   ]

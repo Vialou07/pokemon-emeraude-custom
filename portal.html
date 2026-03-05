@@ -238,6 +238,13 @@
         .roadmap-list .status-done { color: var(--green); font-weight: bold; min-width: 20px; }
         .roadmap-list .status-wip { color: var(--gold); font-weight: bold; min-width: 20px; }
         .roadmap-list .status-todo { color: var(--text-dim); font-weight: bold; min-width: 20px; }
+        .roadmap-diff { display: inline-block; font-size: 0.65rem; padding: 2px 7px; border-radius: 10px; margin-left: 8px; font-weight: bold; vertical-align: middle; }
+        .diff-trivial { background: #1a472a; color: #4ade80; }
+        .diff-facile { background: #1a3a2a; color: #34d399; }
+        .diff-moyen { background: #2a2a1a; color: #fbbf24; }
+        .diff-long { background: #2a201a; color: #f97316; }
+        .diff-complexe { background: #2a1a1a; color: #f87171; }
+        .diff-quasi-impossible { background: #2a1a2a; color: #c084fc; }
         .roadmap-category { color: var(--accent); margin: 24px 0 12px; font-size: 1.1rem; }
 
         /* ARENA */
@@ -3285,6 +3292,11 @@
             html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:120px;border-left:4px solid var(--gold)"><div style="font-size:1.8rem;font-weight:bold;color:var(--gold)">${counts.wip + counts.todo}</div><div style="font-size:0.8rem;color:var(--text-dim)">En cours / A faire</div></div>`;
             html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:120px;border-left:4px solid var(--accent)"><div style="font-size:1.8rem;font-weight:bold;color:var(--accent)">${counts.idea}</div><div style="font-size:0.8rem;color:var(--text-dim)">Idees futures</div></div>`;
             html += '</div>';
+            // Difficulty labels
+            const diffLabels = {
+                'trivial': 'Trivial', 'facile': 'Facile', 'moyen': 'Moyen',
+                'long': 'Long mais faisable', 'complexe': 'Complexe', 'quasi-impossible': 'Quasi impossible'
+            };
             // Render sections
             data.sections.forEach(section => {
                 const sTitle = sectionTitles[section.status] || section.status;
@@ -3292,7 +3304,8 @@
                 html += '<ul class="roadmap-list">';
                 section.items.forEach(item => {
                     const cfg = statusConfig[item.status] || statusConfig.todo;
-                    html += `<li><span class="${cfg.cls}">${cfg.icon}</span><div><strong>${item.name}</strong> — ${item.desc}</div></li>`;
+                    const diffBadge = item.difficulty ? `<span class="roadmap-diff diff-${item.difficulty}">${diffLabels[item.difficulty] || item.difficulty}</span>` : '';
+                    html += `<li><span class="${cfg.cls}">${cfg.icon}</span><div><strong>${item.name}</strong>${diffBadge} — ${item.desc}</div></li>`;
                 });
                 html += '</ul>';
             });
