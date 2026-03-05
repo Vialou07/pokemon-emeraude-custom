@@ -247,6 +247,60 @@
         .diff-quasi-impossible { background: #2a1a2a; color: #c084fc; }
         .roadmap-category { color: var(--accent); margin: 24px 0 12px; font-size: 1.1rem; }
 
+        /* EDITOR */
+        .editor-legend {
+            display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; padding: 10px 14px;
+            background: var(--bg-card); border-radius: 8px; font-size: 0.8rem; color: var(--text-dim);
+            border: 1px solid #222;
+        }
+        .editor-legend span { display: flex; align-items: center; gap: 4px; }
+        .editor-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .editor-legend .dot-boost { background: #4fc3f7; }
+        .editor-legend .dot-reduce { background: #e94560; }
+        .editor-legend .dot-modified { background: #ffd700; }
+        .editor-locked-msg {
+            padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px dashed #444;
+            color: var(--text-dim); font-size: 0.82rem; text-align: center; margin: 8px 0;
+        }
+        .editor-section-title {
+            font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px;
+            margin: 12px 0 4px 0; padding-bottom: 3px; border-bottom: 1px solid #2a2a3e;
+        }
+        .nature-select-row {
+            display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap;
+        }
+        .nature-select-row select {
+            padding: 5px 10px; border-radius: 6px; border: 1px solid #333; background: var(--bg-card);
+            color: var(--text); font-size: 0.85rem; cursor: pointer; min-width: 140px;
+        }
+        .nature-select-row select:disabled { opacity: 0.4; cursor: not-allowed; }
+        .nature-effect { font-size: 0.78rem; color: var(--text-dim); }
+        .nature-effect .boost { color: #4fc3f7; }
+        .nature-effect .reduce { color: #e94560; }
+        .ev-orig { font-size: 0.7rem; color: #888; margin-left: 2px; }
+        .ev-val.changed { color: #ffd700; font-weight: 700; }
+        .editor-card {
+            background: var(--bg-card); border-radius: 12px; padding: 16px;
+            border: 1px solid #2a2a3e;
+        }
+        .editor-card.modified { border-color: var(--accent); }
+        .editor-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .editor-header img { width: 56px; height: 56px; image-rendering: pixelated; }
+        .editor-name { font-weight: 700; font-size: 1rem; }
+        .editor-meta { font-size: 0.8rem; color: var(--text-dim); }
+        .editor-shiny { color: #ffd700; margin-left: 4px; }
+        .ev-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 0.85rem; }
+        .ev-label { width: 60px; color: var(--text-dim); text-align: right; flex-shrink: 0; }
+        .ev-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: #2a2a3e; outline: none; }
+        .ev-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+        .ev-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; border: none; }
+        .ev-val { width: 32px; text-align: right; font-family: monospace; font-size: 0.85rem; }
+        .ev-total { text-align: center; font-size: 0.85rem; margin-top: 8px; padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.03); }
+        .ev-total.over { color: var(--red); font-weight: 700; }
+        .iv-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; font-size: 0.75rem; }
+        .iv-badge { padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--text-dim); }
+        .iv-badge.perfect { color: #ffd700; background: rgba(255,215,0,0.1); }
+
         /* ARENA */
         .arena-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
         .arena-gym-card {
@@ -620,6 +674,11 @@
             /* --- ROADMAP --- */
             .roadmap-list li { padding: 12px; font-size: 0.85rem; }
 
+            /* --- EDITOR --- */
+            #editor-party { grid-template-columns: 1fr; }
+            .editor-header img { width: 48px; height: 48px; }
+            .ev-label { width: 50px; font-size: 0.8rem; }
+
             /* --- ARENA --- */
             .arena-grid { grid-template-columns: 1fr; gap: 12px; }
             .arena-gym-card { padding: 14px; }
@@ -660,6 +719,7 @@
             <button class="tab" data-tab="roadmap">Roadmap</button>
             <button class="tab" data-tab="arena">Arena</button>
             <button class="tab" data-tab="pvp">PvP</button>
+            <button class="tab" data-tab="editeur">Editeur</button>
         </div>
     </nav>
 
@@ -964,6 +1024,49 @@
         </div>
     </div>
 
+    <!-- EDITEUR -->
+    <div id="editeur" class="section">
+        <h2 style="color:var(--accent);margin-bottom:4px;">Editeur de Pokemon</h2>
+        <p style="color:var(--text-dim);margin-bottom:20px;font-size:0.9rem;">Connecte-toi pour modifier les EVs de ton equipe. Les changements sont ecrits dans ta sauvegarde cloud.</p>
+
+        <!-- Login -->
+        <div id="editor-login" style="max-width:360px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+                <div style="flex:1;min-width:120px;">
+                    <label style="font-size:0.8rem;color:var(--text-dim);">Pseudo</label>
+                    <input type="text" id="editor-pseudo" placeholder="Ton pseudo" autocomplete="off"
+                           style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid #333;background:var(--bg-card);color:var(--text);font-size:0.95rem;">
+                </div>
+                <div style="flex:1;min-width:120px;">
+                    <label style="font-size:0.8rem;color:var(--text-dim);">Mot de passe</label>
+                    <input type="password" id="editor-password" placeholder="Mot de passe"
+                           style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid #333;background:var(--bg-card);color:var(--text);font-size:0.95rem;">
+                </div>
+                <button id="editor-load-btn" onclick="editorLogin()"
+                        style="padding:8px 20px;border-radius:8px;border:none;background:var(--accent);color:white;font-weight:600;cursor:pointer;white-space:nowrap;">
+                    Charger ma save
+                </button>
+            </div>
+            <p id="editor-error" style="color:var(--red);font-size:0.85rem;margin-top:8px;min-height:1.2em;"></p>
+        </div>
+
+        <!-- Party content (hidden until loaded) -->
+        <div id="editor-content" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+                <h3 style="margin:0;color:var(--text);" id="editor-player-name"></h3>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="editorReload()" style="padding:6px 14px;border-radius:8px;border:1px solid #444;background:transparent;color:var(--text-dim);cursor:pointer;font-size:0.85rem;">Recharger</button>
+                    <button id="editor-save-btn" onclick="editorSave()" disabled
+                            style="padding:6px 18px;border-radius:8px;border:none;background:var(--green);color:#000;font-weight:600;cursor:pointer;font-size:0.85rem;opacity:0.4;">
+                        Sauvegarder
+                    </button>
+                </div>
+            </div>
+            <div id="editor-party" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;"></div>
+            <p id="editor-status" style="color:var(--text-dim);font-size:0.85rem;margin-top:12px;text-align:center;"></p>
+        </div>
+    </div>
+
     <!-- DETAIL MODAL -->
     <div class="modal-overlay" id="detail-modal">
         <div class="modal">
@@ -981,24 +1084,24 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="sram_editor.js"></script>
     <script>
     // ============================================================
     // SUPABASE (for Arena)
     // ============================================================
     const _sbPortal = window.supabase.createClient(
         'https://oflklqvpqjrggacqypoa.supabase.co',
-        'sb_publishable_cTi55x7b89FizkL-cHwcAw_YCOEC4Xm'
+        'sb_publishable_cTi55x7b89FizkL-cHwcAw_YCOEC4Xm',
+        { auth: { storageKey: 'sb-portal-auth' } }
     );
 
     // Silent auth for public read access (no user login needed)
+    // Always sign in fresh — storageKey 'sb-portal-auth' isolates this from the game session
     let _portalReady = (async () => {
-        const { data } = await _sbPortal.auth.getSession();
-        if (!data.session) {
-            await _sbPortal.auth.signInWithPassword({
-                email: 'portal_reader@pokemon.local',
-                password: 'portal_read_2026'
-            });
-        }
+        await _sbPortal.auth.signInWithPassword({
+            email: 'portal_reader@pokemon.local',
+            password: 'portal_read_2026'
+        });
     })();
 
     // ============================================================
@@ -3313,6 +3416,397 @@
         } catch(e) {
             console.error('Roadmap load error:', e);
             document.getElementById('roadmap-content').innerHTML = '<p style="color:var(--text-dim)">Erreur de chargement de la roadmap.</p>';
+        }
+    }
+
+    // ============================================================
+    // EDITOR (Save editor — EV redistribution)
+    // ============================================================
+    let _editorSb = null;      // Supabase client for editor session
+    let _editorUser = null;    // authenticated user
+    let _editorSave = null;    // parsed SRAM data
+    let _editorOrigB64 = '';   // original base64 for dirty check
+    let _editorDirty = false;
+    let _editorBadges = 0;     // badge count for nature editor gate
+
+    // Separate Supabase client with its own storage key (avoids auth collision with portal_reader)
+    function getEditorSb() {
+        if (!_editorSb) {
+            _editorSb = window.supabase.createClient(
+                'https://oflklqvpqjrggacqypoa.supabase.co',
+                'sb_publishable_cTi55x7b89FizkL-cHwcAw_YCOEC4Xm',
+                { auth: { storageKey: 'sb-editor-auth' } }
+            );
+        }
+        return _editorSb;
+    }
+
+    async function editorLogin() {
+        const pseudo = document.getElementById('editor-pseudo').value.trim();
+        const password = document.getElementById('editor-password').value;
+        const errEl = document.getElementById('editor-error');
+        const btn = document.getElementById('editor-load-btn');
+        if (!pseudo || !password) { errEl.textContent = 'Remplis tous les champs'; return; }
+
+        btn.disabled = true;
+        errEl.textContent = 'Connexion...';
+        try {
+            const sb = getEditorSb();
+            const { data, error } = await sb.auth.signInWithPassword({
+                email: pseudo.toLowerCase() + '@pokemon.local',
+                password: password
+            });
+            if (error) { errEl.textContent = 'Pseudo ou mot de passe incorrect'; btn.disabled = false; return; }
+
+            _editorUser = data.user;
+            errEl.textContent = 'Chargement de la sauvegarde...';
+            await editorLoadSave(pseudo);
+        } catch(e) {
+            console.error('Editor login error:', e);
+            errEl.textContent = 'Erreur de connexion';
+            btn.disabled = false;
+        }
+    }
+
+    async function editorLoadSave(pseudo) {
+        const errEl = document.getElementById('editor-error');
+        try {
+            const sb = getEditorSb();
+            const { data, error } = await sb.from('saves')
+                .select('save_data')
+                .eq('user_id', _editorUser.id)
+                .eq('slot_name', '__sram__')
+                .single();
+
+            if (error || !data || !data.save_data) {
+                errEl.textContent = 'Aucune sauvegarde trouvee pour ce compte.';
+                document.getElementById('editor-load-btn').disabled = false;
+                return;
+            }
+
+            _editorOrigB64 = data.save_data;
+            const sramBuffer = SRAMEditor.fromBase64(data.save_data);
+
+            try {
+                _editorSave = SRAMEditor.parse(sramBuffer);
+            } catch(parseErr) {
+                console.error('SRAM parse error:', parseErr);
+                errEl.textContent = 'Erreur de lecture de la sauvegarde: ' + parseErr.message;
+                document.getElementById('editor-load-btn').disabled = false;
+                return;
+            }
+
+            _editorDirty = false;
+            _editorBadges = SRAMEditor.readBadges(_editorSave);
+            document.getElementById('editor-login').style.display = 'none';
+            document.getElementById('editor-content').style.display = 'block';
+            document.getElementById('editor-player-name').textContent = 'Equipe de ' + pseudo + ' (' + _editorSave.partyCount + ' Pokemon) — ' + _editorBadges + ' badge' + (_editorBadges !== 1 ? 's' : '');
+            document.getElementById('editor-save-btn').disabled = true;
+            document.getElementById('editor-save-btn').style.opacity = '0.4';
+            document.getElementById('editor-status').textContent = '';
+            editorRenderParty();
+        } catch(e) {
+            console.error('Editor load error:', e);
+            errEl.textContent = 'Erreur lors du chargement: ' + e.message;
+            document.getElementById('editor-load-btn').disabled = false;
+        }
+    }
+
+    async function editorReload() {
+        if (!_editorUser) return;
+        const pseudo = document.getElementById('editor-pseudo').value.trim();
+        document.getElementById('editor-status').textContent = 'Rechargement...';
+        await editorLoadSave(pseudo);
+    }
+
+    const EV_NAMES = [
+        { key: 'hp', label: 'PV' },
+        { key: 'attack', label: 'Attaque' },
+        { key: 'defense', label: 'Defense' },
+        { key: 'speed', label: 'Vitesse' },
+        { key: 'spAttack', label: 'Atq.Spe' },
+        { key: 'spDefense', label: 'Def.Spe' },
+    ];
+    const IV_NAMES = [
+        { key: 'hp', label: 'PV' },
+        { key: 'attack', label: 'Atk' },
+        { key: 'defense', label: 'Def' },
+        { key: 'speed', label: 'Vit' },
+        { key: 'spAttack', label: 'SpA' },
+        { key: 'spDefense', label: 'SpD' },
+    ];
+    const STAT_LABELS = { hp:'PV', attack:'Atk', defense:'Def', speed:'Vit', spAttack:'SpA', spDefense:'SpD' };
+    const NATURE_STAT_NAMES = ['Attaque','Defense','Vitesse','Atq.Spe','Def.Spe'];
+
+    function natureEffectHTML(nature) {
+        const n = SRAMEditor.NATURES[nature];
+        if (!n || n[0] === n[1]) return '<span class="nature-effect">Neutre</span>';
+        return `<span class="nature-effect"><span class="boost">+${NATURE_STAT_NAMES[n[0]]}</span> <span class="reduce">-${NATURE_STAT_NAMES[n[1]]}</span></span>`;
+    }
+
+    function editorRenderParty() {
+        const container = document.getElementById('editor-party');
+        if (!_editorSave || !_editorSave.party.length) {
+            container.innerHTML = '<p style="color:var(--text-dim)">Aucun Pokemon dans l\'equipe.</p>';
+            return;
+        }
+
+        // Color legend
+        let legend = '<div class="editor-legend">';
+        legend += '<span><span class="dot dot-boost"></span> Nature +10%</span>';
+        legend += '<span><span class="dot dot-reduce"></span> Nature -10%</span>';
+        legend += '<span><span class="dot dot-modified"></span> EV modifie</span>';
+        legend += '<span>IVs : 0 (min) a 31 (max)</span>';
+        legend += '</div>';
+
+        let html = legend;
+        _editorSave.party.forEach((mon, idx) => {
+            const name = _speciesNames[mon.species] || mon.nickname || `#${mon.species}`;
+            const isFakemon = mon.species >= 1573;
+            const spriteHTML = isFakemon
+                ? `<img src="sprites/${name.toLowerCase().replace(/ /g,'_')}.png" onerror="this.src='${FALLBACK}'" style="width:56px;height:56px;image-rendering:pixelated;">`
+                : `<img src="${getShowdownSprite(name)}" onerror="this.src='${FALLBACK}'" style="width:56px;height:56px;image-rendering:pixelated;">`;
+
+            const origTotal = SRAMEditor.evTotal(mon._origEvs);
+            const total = SRAMEditor.evTotal(mon.evs);
+            const evLocked = origTotal < 510;
+
+            html += `<div class="editor-card" id="editor-card-${idx}">`;
+
+            // Header
+            html += `<div class="editor-header">`;
+            html += spriteHTML;
+            html += `<div>`;
+            html += `<div class="editor-name">${name}${mon.isShiny ? '<span class="editor-shiny">★</span>' : ''}</div>`;
+            html += `<div class="editor-meta">Nv. ${mon.level} — PV ${mon.hp}/${mon.maxHP}`;
+            if (!mon.checksumOk) html += ' <span style="color:var(--red);">(checksum erreur)</span>';
+            html += `</div>`;
+            html += `</div></div>`;
+
+            // ---- NATURE SECTION ----
+            html += `<div class="editor-section-title">Nature</div>`;
+            html += `<div class="nature-select-row">`;
+            if (_editorBadges >= 8) {
+                html += `<select data-mon="${idx}" onchange="editorNatureChange(this)">`;
+                SRAMEditor.NATURE_NAMES.forEach((n, ni) => {
+                    const sel = ni === mon.nature ? ' selected' : '';
+                    const info = SRAMEditor.NATURES[ni];
+                    const tag = info[0] === info[1] ? '' : ` (+${NATURE_STAT_NAMES[info[0]]} / -${NATURE_STAT_NAMES[info[1]]})`;
+                    html += `<option value="${ni}"${sel}>${n}${tag}</option>`;
+                });
+                html += `</select>`;
+            } else {
+                html += `<select disabled><option>${mon.natureName}</option></select>`;
+                html += `<span style="font-size:0.78rem;color:#e94560;">Necessite 8 badges (${_editorBadges}/8)</span>`;
+            }
+            html += natureEffectHTML(mon.nature);
+            html += `</div>`;
+
+            // ---- EV SECTION ----
+            html += `<div class="editor-section-title">EVs — Redistribution</div>`;
+
+            if (evLocked) {
+                html += `<div class="editor-locked-msg">`;
+                html += `Ce Pokemon n'a que <strong>${origTotal}</strong>/510 EVs. `;
+                html += `Fais plus de combats ou utilise des Baies en jeu pour atteindre 510 EVs avant de redistribuer.`;
+                html += `</div>`;
+                // Show current EVs as read-only
+                EV_NAMES.forEach(ev => {
+                    const val = mon.evs[ev.key];
+                    html += `<div class="ev-row" style="opacity:0.4;">`;
+                    html += `<span class="ev-label">${ev.label}</span>`;
+                    html += `<input type="range" class="ev-slider" min="0" max="252" value="${val}" disabled>`;
+                    html += `<span class="ev-val">${val}</span>`;
+                    html += `</div>`;
+                });
+                html += `<div class="ev-total">Total EVs : <strong>${origTotal}</strong> / 510</div>`;
+            } else {
+                EV_NAMES.forEach(ev => {
+                    const val = mon.evs[ev.key];
+                    const orig = mon._origEvs[ev.key];
+                    const changed = val !== orig;
+                    html += `<div class="ev-row">`;
+                    html += `<span class="ev-label">${ev.label}</span>`;
+                    html += `<input type="range" class="ev-slider" min="0" max="252" value="${val}" data-mon="${idx}" data-ev="${ev.key}" oninput="editorSliderChange(this)">`;
+                    html += `<span class="ev-val${changed ? ' changed' : ''}" id="ev-val-${idx}-${ev.key}">${val}</span>`;
+                    if (changed) html += `<span class="ev-orig">(${orig})</span>`;
+                    html += `</div>`;
+                });
+                html += `<div class="ev-total" id="ev-total-${idx}">Total EVs : <strong>${total}</strong> / 510</div>`;
+            }
+
+            // ---- IV SECTION ----
+            html += `<div class="editor-section-title">IVs — Valeurs individuelles (0 a 31, non modifiables)</div>`;
+            html += `<div class="iv-row">`;
+            IV_NAMES.forEach(iv => {
+                const val = mon.ivs[iv.key];
+                const cls = val === 31 ? 'iv-badge perfect' : val === 0 ? 'iv-badge' : 'iv-badge';
+                const style = val === 31 ? '' : val >= 25 ? 'color:#8bc34a;' : val <= 5 ? 'color:#e94560;' : '';
+                html += `<span class="${cls}" style="${style}">${iv.label}: ${val}</span>`;
+            });
+            html += `</div>`;
+
+            // ---- STATS PREVIEW ----
+            html += `<div class="editor-section-title">Stats apres modification</div>`;
+            html += `<div id="editor-stats-${idx}" style="font-size:0.8rem;color:var(--text-dim);margin-top:4px;">`;
+            html += editorStatsLine(mon);
+            html += `</div>`;
+
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function editorStatsLine(mon) {
+        const bs = mon.baseStats;
+        const nature = mon.nature;
+        const lv = mon.level;
+        const iv = mon.ivs;
+        const ev = mon.evs;
+        let html = '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
+        if (bs.hp != null) {
+            const val = SRAMEditor.calcHP(bs.hp, iv.hp, ev.hp, lv);
+            html += `<span>PV: <strong>${val}</strong></span>`;
+        }
+        const STATS = [
+            {k:'attack',l:'Atk',i:'attack',e:'attack',idx:0},
+            {k:'defense',l:'Def',i:'defense',e:'defense',idx:1},
+            {k:'speed',l:'Vit',i:'speed',e:'speed',idx:2},
+            {k:'spAttack',l:'SpA',i:'spAttack',e:'spAttack',idx:3},
+            {k:'spDefense',l:'SpD',i:'spDefense',e:'spDefense',idx:4},
+        ];
+        for (const s of STATS) {
+            if (bs[s.k] != null) {
+                const nmod = SRAMEditor.getNatureMod(nature, s.idx);
+                const val = SRAMEditor.calcStat(bs[s.k], iv[s.i], ev[s.e], lv, nmod);
+                const color = nmod > 1 ? 'color:#4fc3f7;font-weight:700' : nmod < 1 ? 'color:#e94560;font-weight:700' : '';
+                html += `<span style="${color}">${s.l}: <strong>${val}</strong></span>`;
+            }
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function editorSliderChange(slider) {
+        const monIdx = parseInt(slider.dataset.mon);
+        const evKey = slider.dataset.ev;
+        let val = parseInt(slider.value);
+
+        const mon = _editorSave.party[monIdx];
+        if (!mon) return;
+
+        // Compute current total WITHOUT this slider
+        const EV_KEYS = ['hp','attack','defense','speed','spAttack','spDefense'];
+        let otherTotal = 0;
+        EV_KEYS.forEach(k => { if (k !== evKey) otherTotal += mon.evs[k]; });
+
+        // Cap slider so total <= 510
+        const maxAllowed = Math.min(252, 510 - otherTotal);
+        if (val > maxAllowed) {
+            val = maxAllowed;
+            slider.value = val;
+        }
+
+        // Update EV display
+        const evValEl = document.getElementById(`ev-val-${monIdx}-${evKey}`);
+        evValEl.textContent = val;
+        const orig = mon._origEvs[evKey];
+        const changed = val !== orig;
+        evValEl.className = 'ev-val' + (changed ? ' changed' : '');
+        // Update or add orig indicator
+        const row = evValEl.parentElement;
+        let origSpan = row.querySelector('.ev-orig');
+        if (changed) {
+            if (!origSpan) { origSpan = document.createElement('span'); origSpan.className = 'ev-orig'; row.appendChild(origSpan); }
+            origSpan.textContent = `(${orig})`;
+        } else if (origSpan) {
+            origSpan.remove();
+        }
+
+        mon.evs[evKey] = val;
+
+        const total = SRAMEditor.evTotal(mon.evs);
+        const totalEl = document.getElementById(`ev-total-${monIdx}`);
+        totalEl.innerHTML = `Total EVs : <strong>${total}</strong> / 510`;
+        totalEl.classList.toggle('over', total > 510);
+
+        // Update stats preview
+        const statsEl = document.getElementById(`editor-stats-${monIdx}`);
+        if (statsEl) statsEl.innerHTML = editorStatsLine(mon);
+
+        // Mark card as modified
+        document.getElementById(`editor-card-${monIdx}`).classList.add('modified');
+
+        // Enable save button
+        _editorDirty = true;
+        document.getElementById('editor-save-btn').disabled = false;
+        document.getElementById('editor-save-btn').style.opacity = '1';
+    }
+
+    function editorNatureChange(select) {
+        const monIdx = parseInt(select.dataset.mon);
+        const newNature = parseInt(select.value);
+        const mon = _editorSave.party[monIdx];
+        if (!mon) return;
+
+        SRAMEditor.writeNature(_editorSave, monIdx, newNature);
+
+        // Update stats preview
+        const statsEl = document.getElementById(`editor-stats-${monIdx}`);
+        if (statsEl) statsEl.innerHTML = editorStatsLine(mon);
+
+        // Mark card as modified
+        document.getElementById(`editor-card-${monIdx}`).classList.add('modified');
+
+        _editorDirty = true;
+        document.getElementById('editor-save-btn').disabled = false;
+        document.getElementById('editor-save-btn').style.opacity = '1';
+    }
+
+    async function editorSave() {
+        if (!_editorSave || !_editorDirty || !_editorUser) return;
+
+        const btn = document.getElementById('editor-save-btn');
+        const status = document.getElementById('editor-status');
+        btn.disabled = true;
+        btn.style.opacity = '0.4';
+        status.textContent = 'Sauvegarde en cours...';
+        status.style.color = 'var(--text-dim)';
+
+        try {
+            // Write all modified EVs to SRAM
+            _editorSave.party.forEach((mon, idx) => {
+                SRAMEditor.writeEVs(_editorSave, idx, mon.evs);
+            });
+
+            // Convert SRAM to base64
+            const newB64 = SRAMEditor.toBase64(_editorSave.sram);
+
+            // Upload to Supabase
+            const sb = getEditorSb();
+            const { error } = await sb.from('saves').upsert({
+                user_id: _editorUser.id,
+                slot_name: '__sram__',
+                save_data: newB64,
+                save_type: 'sram'
+            }, { onConflict: 'user_id,slot_name' });
+
+            if (error) throw error;
+
+            _editorOrigB64 = newB64;
+            _editorDirty = false;
+            status.textContent = 'Sauvegarde reussie ! Les changements seront appliques au prochain lancement du jeu.';
+            status.style.color = 'var(--green)';
+
+            // Remove modified markers
+            document.querySelectorAll('.editor-card.modified').forEach(el => el.classList.remove('modified'));
+        } catch(e) {
+            console.error('Editor save error:', e);
+            status.textContent = 'Erreur de sauvegarde : ' + (e.message || e);
+            status.style.color = 'var(--red)';
+            btn.disabled = false;
+            btn.style.opacity = '1';
         }
     }
 
