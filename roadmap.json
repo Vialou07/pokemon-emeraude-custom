@@ -1,0 +1,91 @@
+{
+  "lastUpdated": "2026-03-05",
+  "sections": [
+    {
+      "title": "Gameplay",
+      "status": "done",
+      "items": [
+        { "name": "194 Fakemons", "desc": "194 fakemons custom integres (89 familles) avec stats, types, talents, sprites, evolutions et chaines completes. Inspires de LoL, Yu-Gi-Oh, Digimon, Mario, Naruto, Disney + creations originales. Inclut 9 boss ultimes (BST 780-850) et 3 lignes a 5 stades.", "status": "done" },
+        { "name": "3 types custom", "desc": "Cosmic, Void et Divine avec triangle d'efficacite (Cosmic > Void > Divine > Cosmic). Table de types complete integree au jeu.", "status": "done" },
+        { "name": "1377 Pokemon trouvables", "desc": "Tous les Pokemon Gen 1 a 9 repartis sur toutes les routes, grottes, surf, peche et Safari Zone. Les fakemons aussi sur leurs routes dediees.", "status": "done" },
+        { "name": "Level caps souples", "desc": "Limite de niveau par badge : 15 / 19 / 24 / 29 / 31 / 33 / 42 / 46 / 58. L'XP diminue progressivement quand le Pokemon approche du cap.", "status": "done" },
+        { "name": "Box Link (PC portable)", "desc": "Acces au PC depuis n'importe ou via le menu. Donne au debut du jeu par le Pr. Birch.", "status": "done" },
+        { "name": "Level-up PC", "desc": "Parler a l'assistant du Pr. Birch apres chaque arene pour monter tous ses Pokemon au level cap precedent.", "status": "done" },
+        { "name": "Mega-Evolution et Dynamax", "desc": "Mega Ring et Dynamax Band donnes en jeu. Les champions et Conseil 4 utilisent Mega, Dynamax et Gigamax.", "status": "done" },
+        { "name": "Mode Nuzlocke", "desc": "Choix au debut entre 3 modes : Normal (classique), Nuzlocke (1 capture par zone, Pokemon KO = mort), Nuzlocke Hardcore (idem + pas de Centre Pokemon, Game Over si equipe vide).", "status": "done" },
+        { "name": "CT reutilisables", "desc": "Les CT restent dans le sac apres utilisation, comme dans les jeux Pokemon modernes. Fini les CT a usage unique !", "status": "done" },
+        { "name": "7 objets CS", "desc": "Machette (Coupe), Lanterne (Flash), Pioche (Eclate-Roc), Gants Force (Force), Surfboard (Surf), Kit Plongee (Plongee), Harnais (Cascade). Plus besoin d'enseigner les CS a vos Pokemon !", "status": "done" },
+        { "name": "Lanterne automatique", "desc": "La Lanterne dans le sac eclaire 100% les grottes sombres automatiquement a l'entree. Plus jamais besoin d'utiliser Flash.", "status": "done" },
+        { "name": "CS oubliables", "desc": "Les attaques CS (Coupe, Surf, Force...) peuvent etre oubliees librement comme n'importe quelle attaque. Liberez vos slots d'attaque !", "status": "done" },
+        { "name": "Learnsets fakemons", "desc": "Tous les 194 fakemons peuvent apprendre des CT/CS logiques selon leur type. Ex: Ogeko (Eau) apprend Surf, Ice Beam, Waterfall. Flamber (Feu) apprend Flamethrower, Fire Blast.", "status": "done" },
+        { "name": "Dresseurs modifies", "desc": "Champions d'arene, Conseil 4, Pierre et 15+ dresseurs de route ont des fakemons dans leurs equipes avec Mega/Dynamax.", "status": "done" },
+        { "name": "Fakemons en cadeau", "desc": "Battre un dresseur qui a un fakemon vous donne ce fakemon ! Champions, Conseil 4, et certains dresseurs de route.", "status": "done" },
+        { "name": "Rival avec Aurelisk", "desc": "Votre rivale utilise Aurelisk (type Cosmic) et vous le donne apres la 3e rencontre sur la Route 119.", "status": "done" },
+        { "name": "Arceus trouvable", "desc": "Arceus est a 1% dans Sky Pillar 5F (niveau 55-60). Le Pokemon le plus rare du jeu. Bonne chance !", "status": "done" },
+        { "name": "Formes regionales", "desc": "Toutes les formes Alola, Galar, Hisui et Paldea sont disponibles dans le jeu.", "status": "done" },
+        { "name": "Mecanique Gen 9", "desc": "Toutes les mecaniques de combat modernes : split physique/special, EXP partagee, Fairy type, nouveaux talents et attaques.", "status": "done" }
+      ]
+    },
+    {
+      "title": "Multijoueur",
+      "status": "done",
+      "items": [
+        { "name": "Arena Multi-Champion", "desc": "Deposez votre equipe de 6 Pokemon (dont 1+ du type de l'arene) pour devenir Maitre d'arene. Les autres joueurs vous defient en vrai combat GBA ! Le vainqueur prend la place. Classement et historique sur le portail.", "status": "done" },
+        { "name": "PvP — Le Trone", "desc": "Classement ladder : defiez le joueur au-dessus de vous en combat 5v6 (equipe inconnue, IA intelligente). Grimpez au sommet du classement ! Stats detaillees, face-a-face et historique complet sur le portail.", "status": "done" },
+        { "name": "Stats joueurs", "desc": "Profil extrait de la sauvegarde : badges, equipe, visites Centre Pokemon, oeufs eclos, rang PvP. Tout visible sur le portail.", "status": "done" },
+        { "name": "Classement", "desc": "Tableau des joueurs avec victoires, defaites, ratio et rang. Mis a jour apres chaque combat.", "status": "done" }
+      ]
+    },
+    {
+      "title": "Technique",
+      "status": "done",
+      "items": [
+        { "name": "Sauvegardes cloud", "desc": "Sauvegarde automatique sur Supabase toutes les 10 secondes. Connexion par pseudo. Un message vert 'Sauvegarde reussie !' confirme chaque backup. Restauration automatique au login.", "status": "done" },
+        { "name": "Jouable en navigateur", "desc": "EmulatorJS integre, jouable sur mobile et PC sans rien installer. Juste ouvrir le lien et jouer !", "status": "done" },
+        { "name": "Portail web compagnon", "desc": "Site complet avec 8 onglets : Pokedex (1377 Pokemon), routes et encounters, dresseurs, table des types interactive, stats joueurs, arena et PvP.", "status": "done" },
+        { "name": "Sprites PixelLab", "desc": "Sprites 64x64 pixel art generes par IA (PixelLab) pour chacun des 194 fakemons. Style GBA authentique.", "status": "done" },
+        { "name": "Pipeline de build Docker", "desc": "Compilation automatisee via Docker. Build incremental en 5 min, rebuild complet en 20 min. Script build.sh avec modes dev/prod/swap/clean.", "status": "done" },
+        { "name": "Toolkit fakemon", "desc": "Systeme complet pour ajouter des fakemons : catalogue JSON, generation de sprites, conversion GBA, guide pour les amis.", "status": "done" },
+        { "name": "Menu Debug", "desc": "Menu debug accessible en jeu (cache derriere une combinaison de touches). Permet de tester, teleporter, donner des items, etc.", "status": "done" }
+      ]
+    },
+    {
+      "title": "Traduction francaise",
+      "status": "wip",
+      "items": [
+        { "name": "Dialogues principaux", "desc": "Professeur Birch, champions d'arene, Conseil 4, Pierre, rival — tous traduits en francais.", "status": "done" },
+        { "name": "Menus et messages systeme", "desc": "Messages de sauvegarde, PC, combats — traduits.", "status": "done" },
+        { "name": "Fakemons", "desc": "Noms, descriptions et dialogues lies aux fakemons — traduits.", "status": "done" },
+        { "name": "Dresseurs de route", "desc": "~1145 lignes de dialogues de dresseurs de route encore en anglais.", "status": "todo" },
+        { "name": "PNJ des villes", "desc": "PNJ secondaires dans les villes et maisons — encore en anglais.", "status": "todo" },
+        { "name": "Descriptions attaques/talents", "desc": "Les descriptions des 800+ attaques et talents — encore en anglais.", "status": "todo" }
+      ]
+    },
+    {
+      "title": "Ameliorations prevues",
+      "status": "todo",
+      "items": [
+        { "name": "Amelioration sprites fakemons", "desc": "Regenerer les sprites les plus moches avec de meilleurs prompts PixelLab. Ameliorer la quantification de couleurs (16 couleurs GBA max). Retouches manuelles si necessaire.", "status": "todo" },
+        { "name": "Animations de sprites", "desc": "Le moteur supporte les animations 2 frames (64x128 PNG). Ajouter des animations aux fakemons les plus importants (starters, legendaires, boss).", "status": "todo" },
+        { "name": "Icones des objets CS", "desc": "Les 7 objets CS utilisent une icone placeholder (GoGoggles). Creer des icones custom pour chaque objet (machette, lanterne, surfboard...).", "status": "todo" },
+        { "name": "Coherence portail/jeu", "desc": "Verifier que toutes les infos du portail web (encounters, dresseurs, types) correspondent a la realite en jeu.", "status": "wip" }
+      ]
+    },
+    {
+      "title": "Idees futures",
+      "status": "idea",
+      "items": [
+        { "name": "Echanges entre joueurs", "desc": "Echanger des Pokemon entre joueurs connectes directement depuis le site web. Systeme de proposition/acceptation avec apercu du Pokemon.", "status": "idea" },
+        { "name": "PvP temps reel", "desc": "Combats PvP en direct entre deux joueurs connectes simultanement (plus complexe que le systeme actuel par ladder).", "status": "idea" },
+        { "name": "Evenements legendaires", "desc": "Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes, conditions speciales et recompenses uniques.", "status": "idea" },
+        { "name": "Fakemons overworld", "desc": "Rendre les fakemons visibles sur la carte (sprites overworld qui se baladent dans l'herbe, les grottes, etc.).", "status": "idea" },
+        { "name": "Tournois en ligne", "desc": "Organiser des tournois PvP avec brackets, phases de poule, finale et recompenses.", "status": "idea" },
+        { "name": "Evenements saisonniers", "desc": "Contenu special pour Noel, Halloween, etc. : Pokemon rares, objets exclusifs, decorations.", "status": "idea" },
+        { "name": "Plus de fakemons", "desc": "Objectif 300-500 fakemons au total avec de nouvelles familles, evolutions et types.", "status": "idea" },
+        { "name": "Interface admin", "desc": "Page web pour editer fakemons, dresseurs et level caps sans avoir a recompiler la ROM.", "status": "idea" },
+        { "name": "Quetes secondaires", "desc": "Missions optionnelles avec des PNJ : trouver des objets, battre des dresseurs specifiques, explorer des zones cachees.", "status": "idea" },
+        { "name": "Breeding ameliore", "desc": "Systeme d'elevage ameliore avec plus de controle sur les IVs, natures et attaques transmises.", "status": "idea" }
+      ]
+    }
+  ]
+}
