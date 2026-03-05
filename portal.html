@@ -983,6 +983,17 @@
         'sb_publishable_cTi55x7b89FizkL-cHwcAw_YCOEC4Xm'
     );
 
+    // Silent auth for public read access (no user login needed)
+    let _portalReady = (async () => {
+        const { data } = await _sbPortal.auth.getSession();
+        if (!data.session) {
+            await _sbPortal.auth.signInWithPassword({
+                email: 'portal_reader@pokemon.local',
+                password: 'portal_read_2026'
+            });
+        }
+    })();
+
     // ============================================================
     // CONSTANTS
     // ============================================================
@@ -2617,6 +2628,7 @@
     ];
 
     async function loadArenaData() {
+        await _portalReady;
         const grid = document.getElementById('arena-grid');
         const summaryEl = document.getElementById('arena-summary');
         const lbEl = document.getElementById('arena-leaderboard');
@@ -2792,6 +2804,7 @@
     }
 
     async function loadPlayerStats() {
+        await _portalReady;
         const recordsEl = document.getElementById('stats-records');
         const playersEl = document.getElementById('stats-players');
         if (!recordsEl || !playersEl) return;
@@ -3001,6 +3014,7 @@
     }
 
     async function loadPvPData() {
+        await _portalReady;
         const contentEl = document.getElementById('pvp-content');
         if (!contentEl) return;
 

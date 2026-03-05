@@ -38,7 +38,7 @@
     },
     {
       "title": "Technique",
-      "status": "done",
+      "status": "wip",
       "items": [
         { "name": "Sauvegardes cloud", "desc": "Sauvegarde automatique sur Supabase toutes les 10 secondes. Connexion par pseudo. Un message vert 'Sauvegarde reussie !' confirme chaque backup. Restauration automatique au login.", "status": "done" },
         { "name": "Jouable en navigateur", "desc": "EmulatorJS integre, jouable sur mobile et PC sans rien installer. Juste ouvrir le lien et jouer !", "status": "done" },
@@ -46,7 +46,9 @@
         { "name": "Sprites PixelLab", "desc": "Sprites 64x64 pixel art generes par IA (PixelLab) pour chacun des 194 fakemons. Style GBA authentique.", "status": "done" },
         { "name": "Pipeline de build Docker", "desc": "Compilation automatisee via Docker. Build incremental en 5 min, rebuild complet en 20 min. Script build.sh avec modes dev/prod/swap/clean.", "status": "done" },
         { "name": "Toolkit fakemon", "desc": "Systeme complet pour ajouter des fakemons : catalogue JSON, generation de sprites, conversion GBA, guide pour les amis.", "status": "done" },
-        { "name": "Menu Debug", "desc": "Menu debug accessible en jeu (cache derriere une combinaison de touches). Permet de tester, teleporter, donner des items, etc.", "status": "done" }
+        { "name": "Menu Debug", "desc": "Menu debug accessible en jeu (cache derriere une combinaison de touches). Permet de tester, teleporter, donner des items, etc.", "status": "done" },
+        { "name": "Optimisations iOS", "desc": "Systeme de crash logs automatique (envoyes sur Supabase), backup adaptatif (30s sur iOS, 15s sur desktop), fix locale EmulatorJS. En cours de test avec les joueurs iPhone.", "status": "wip" },
+        { "name": "Portail public", "desc": "Les onglets Joueurs, PvP et Arena du portail sont accessibles sans connexion. Les classements et stats sont publics.", "status": "wip" }
       ]
     },
     {
