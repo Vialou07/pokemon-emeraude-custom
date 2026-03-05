@@ -220,7 +220,7 @@
             <div class="sep"></div>
             <button class="btn-deco" onclick="showCrashLogs();toggleMenu()"><span class="icon">&#128196;</span> Crash logs</button>
             <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
-            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v51</div>
+            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v52</div>
         </div>
     </div>
 
@@ -269,7 +269,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 51 - Fix SRAM restore race condition + iOS threading fix');
+        console.log('[Pokemon] Version 52 - Robust SRAM restore with escalating retries');
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
@@ -586,38 +586,37 @@
         }
 
         // Inject SRAM when BOTH conditions are met: save data ready + emulator ready
+        // Uses escalating delays: 1s, 3s, 5s, 8s — first load needs more time (ROM parsing)
+        var _injectRetries = [1000, 3000, 5000, 8000];
+
         function tryInjectNow() {
             if (_sramInjected || !_pendingSaveB64 || !_emulatorReady) return;
+            _attemptInject(0);
+        }
 
-            var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
-            if (!gm) return;
+        function _attemptInject(attempt) {
+            if (_sramInjected || !_pendingSaveB64) return;
+            if (attempt >= _injectRetries.length) {
+                console.error('[SRAM] All injection attempts failed');
+                toast('Erreur: sauvegarde non restauree. Rechargez la page.', true);
+                return;
+            }
 
-            // Small delay to let emulator fully initialize after gameManager appears
+            var delay = _injectRetries[attempt];
+            console.log('[SRAM] Injection attempt ' + (attempt + 1) + '/' + _injectRetries.length + ' in ' + delay + 'ms...');
+
             setTimeout(function() {
                 if (_sramInjected) return;
-                console.log('[SRAM] Attempting injection...');
                 var ok = injectSRAM(_pendingSaveB64);
                 if (ok) {
                     _sramInjected = true;
                     _pendingSaveB64 = null;
                     toast('Sauvegarde restauree !');
                 } else {
-                    // Retry once after 2s
-                    console.warn('[SRAM] First attempt failed, retrying in 2s...');
-                    setTimeout(function() {
-                        if (_sramInjected) return;
-                        var ok2 = injectSRAM(_pendingSaveB64);
-                        if (ok2) {
-                            _sramInjected = true;
-                            _pendingSaveB64 = null;
-                            toast('Sauvegarde restauree !');
-                        } else {
-                            console.error('[SRAM] Injection failed after retry');
-                            toast('Erreur: sauvegarde non restauree', true);
-                        }
-                    }, 2000);
+                    console.warn('[SRAM] Attempt ' + (attempt + 1) + ' failed');
+                    _attemptInject(attempt + 1);
                 }
-            }, 500);
+            }, delay);
         }
 
         // Write SRAM into emulator FS, reload into core, restart game
