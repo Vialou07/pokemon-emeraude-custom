@@ -2854,7 +2854,7 @@
                 ledgesJumped: st.ledgesJumped || 0,
                 updatedAt: p.updated_at,
             };
-        }).filter(p => p.maxLevel > 0); // Filter out empty/new saves
+        }).filter(p => p.saves > 0); // Show all players who have saved at least once
 
         if (players.length === 0) {
             recordsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);grid-column:1/-1;">Aucun joueur actif pour le moment.</div>';
