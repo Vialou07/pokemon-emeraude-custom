@@ -220,7 +220,7 @@
             <div class="sep"></div>
             <button class="btn-deco" onclick="showCrashLogs();toggleMenu()"><span class="icon">&#128196;</span> Crash logs</button>
             <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
-            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v49</div>
+            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v50</div>
         </div>
     </div>
 
@@ -269,7 +269,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 49 - Filter harmless iOS rejections from crash logs');
+        console.log('[Pokemon] Version 50 - Disable EmulatorJS threading on iOS to reduce memory');
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
@@ -534,12 +534,19 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=47';
+        EJS_gameUrl = 'rom/pokemon.gba?v=50';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
         EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
         EJS_disableAutoLang = false;
+
+        // iOS: disable WebWorker threading to reduce memory pressure
+        // Safari kills tabs that exceed ~300MB — threads add ~50MB overhead
+        if (_isIOS) {
+            EJS_threads = false;
+            console.log('[iOS] Threading disabled to reduce memory usage');
+        }
 
         // ============================================================
         // SRAM SYSTEM - Only save method, per-user, cloud-backed
