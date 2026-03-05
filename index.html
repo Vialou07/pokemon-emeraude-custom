@@ -220,7 +220,7 @@
             <div class="sep"></div>
             <button class="btn-deco" onclick="showCrashLogs();toggleMenu()"><span class="icon">&#128196;</span> Crash logs</button>
             <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
-            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v50</div>
+            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v51</div>
         </div>
     </div>
 
@@ -269,7 +269,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 50 - Disable EmulatorJS threading on iOS to reduce memory');
+        console.log('[Pokemon] Version 51 - Fix SRAM restore race condition + iOS threading fix');
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
@@ -493,6 +493,8 @@
             await _sb.auth.signOut();
             _currentUser = null;
             _sramInjected = false;
+            _pendingSaveB64 = null;
+            _saveFetched = false;
             location.reload();
         }
 
@@ -534,7 +536,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=50';
+        EJS_gameUrl = 'rom/pokemon.gba?v=51';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
@@ -553,10 +555,15 @@
         // ============================================================
         var _sramInjected = false;
         var _lastSramHash = '';
+        var _pendingSaveB64 = null;   // save data waiting for emulator
+        var _emulatorReady = false;   // true once gameManager exists
+        var _saveFetched = false;     // true once Supabase fetch completed
 
-        // Restore SRAM for the logged-in user (cloud-only, no local cache)
+        // Fetch SRAM from cloud and store it; inject if emulator is ready
         function restoreUserSRAM() {
             if (!_currentUser) return;
+            if (_sramInjected) return;
+            if (_saveFetched) { tryInjectNow(); return; } // already fetched, just retry inject
 
             console.log('[SRAM] Fetching save from cloud...');
             _sb.from('saves')
@@ -564,31 +571,53 @@
                 .eq('user_id', _currentUser.id)
                 .eq('slot_name', '__sram__')
                 .single().then(function(res) {
+                    _saveFetched = true;
                     if (res.data && res.data.save_data) {
-                        console.log('[SRAM] Cloud save found, injecting...');
-                        tryInjectSRAM(res.data.save_data);
+                        console.log('[SRAM] Cloud save found (' + Math.round(res.data.save_data.length / 1024) + 'KB)');
+                        _pendingSaveB64 = res.data.save_data;
+                        tryInjectNow();
                     } else {
                         console.log('[SRAM] No cloud save - new player');
                     }
                 }).catch(function(err) {
+                    _saveFetched = true;
                     console.warn('[SRAM] Cloud fetch failed:', err);
                 });
         }
 
-        // Wait for emulator then inject
-        function tryInjectSRAM(b64) {
-            if (_sramInjected) return;
-            if (!window.EJS_emulator || !window.EJS_emulator.gameManager) {
-                setTimeout(function() { tryInjectSRAM(b64); }, 1000);
-                return;
-            }
+        // Inject SRAM when BOTH conditions are met: save data ready + emulator ready
+        function tryInjectNow() {
+            if (_sramInjected || !_pendingSaveB64 || !_emulatorReady) return;
+
+            var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+            if (!gm) return;
+
+            // Small delay to let emulator fully initialize after gameManager appears
             setTimeout(function() {
-                var ok = injectSRAM(b64);
+                if (_sramInjected) return;
+                console.log('[SRAM] Attempting injection...');
+                var ok = injectSRAM(_pendingSaveB64);
                 if (ok) {
                     _sramInjected = true;
+                    _pendingSaveB64 = null;
                     toast('Sauvegarde restauree !');
+                } else {
+                    // Retry once after 2s
+                    console.warn('[SRAM] First attempt failed, retrying in 2s...');
+                    setTimeout(function() {
+                        if (_sramInjected) return;
+                        var ok2 = injectSRAM(_pendingSaveB64);
+                        if (ok2) {
+                            _sramInjected = true;
+                            _pendingSaveB64 = null;
+                            toast('Sauvegarde restauree !');
+                        } else {
+                            console.error('[SRAM] Injection failed after retry');
+                            toast('Erreur: sauvegarde non restauree', true);
+                        }
+                    }, 2000);
                 }
-            }, 2000);
+            }, 500);
         }
 
         // Write SRAM into emulator FS, reload into core, restart game
@@ -721,15 +750,19 @@
             }
         }
 
-        // Wait for emulator ready
+        // Wait for emulator ready, then trigger save injection
         var _waitReady = setInterval(function() {
             try {
                 if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                     clearInterval(_waitReady);
+                    _emulatorReady = true;
                     console.log('[Save] Emulator ready');
 
-                    // If already logged in, restore SRAM
-                    if (_currentUser && !_sramInjected) {
+                    // Try inject pending save (if Supabase fetch already completed)
+                    tryInjectNow();
+
+                    // If logged in but save not fetched yet, trigger fetch
+                    if (_currentUser && !_saveFetched) {
                         restoreUserSRAM();
                     }
 
