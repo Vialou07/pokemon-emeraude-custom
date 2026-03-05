@@ -220,7 +220,7 @@
             <div class="sep"></div>
             <button class="btn-deco" onclick="showCrashLogs();toggleMenu()"><span class="icon">&#128196;</span> Crash logs</button>
             <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
-            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v48</div>
+            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v49</div>
         </div>
     </div>
 
@@ -269,7 +269,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 48 - iOS permission fix + better crash logs');
+        console.log('[Pokemon] Version 49 - Filter harmless iOS rejections from crash logs');
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
@@ -285,9 +285,18 @@
             try { localStorage.setItem('_crashLogs', JSON.stringify(_crashLogs)); } catch(e) {}
             console.error('[CrashLog]', entry);
         };
+        // Known harmless rejections (emulator Wake Lock, background tab, storage persist)
+        var _ignoredRejections = ['Permission was denied', 'Document is hidden', 'not-allowed'];
         window.addEventListener('unhandledrejection', function(ev) {
             var reason = ev.reason;
             var msg = reason ? (reason.message || String(reason)) : 'Unknown rejection';
+            // Skip known harmless browser/emulator API rejections
+            for (var k = 0; k < _ignoredRejections.length; k++) {
+                if (msg.indexOf(_ignoredRejections[k]) !== -1) {
+                    console.warn('[CrashLog] Ignored harmless rejection:', msg);
+                    return;
+                }
+            }
             var stack = reason && reason.stack ? reason.stack.split('\n').slice(0, 3).join(' | ') : '';
             var entry = { ts: new Date().toISOString(), type: 'rejection', msg: msg };
             if (stack) entry.stack = stack;
