@@ -268,7 +268,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 46 - Self-hosted EmulatorJS + crash logs');
+        console.log('[Pokemon] Version 47 - CDN restored + crash logs + iOS fixes');
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
@@ -518,12 +518,12 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=46';
+        EJS_gameUrl = 'rom/pokemon.gba?v=47';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
-        EJS_startOnLoaded = false;
-        EJS_pathtodata = 'emulatorjs/';
-        EJS_language = 'en';
+        EJS_startOnLoaded = true;
+        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+        EJS_disableAutoLang = false;
 
         // ============================================================
         // SRAM SYSTEM - Only save method, per-user, cloud-backed
@@ -1537,6 +1537,6 @@
             }
         }
     </script>
-    <script src="emulatorjs/loader.js"></script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 </body>
 </html>
