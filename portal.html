@@ -301,6 +301,34 @@
         }
         .arena-win-bar .fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.3s; }
 
+        /* Multijoueur section (Accueil) */
+        .multi-modes-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px; margin-bottom: 20px;
+        }
+        .multi-card ul.multi-rules {
+            margin: 10px 0 0; padding: 0 0 0 18px; font-size: 0.85rem; color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .multi-card ul.multi-rules li { margin-bottom: 2px; }
+        .multi-howto {
+            background: rgba(255,255,255,0.03); border-radius: 10px; padding: 16px; margin-top: 4px;
+        }
+        .multi-steps { display: flex; flex-direction: column; gap: 8px; }
+        .multi-step {
+            display: flex; align-items: center; gap: 12px; font-size: 0.88rem; color: var(--text-dim);
+        }
+        .multi-step .step-num {
+            min-width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+            color: white; font-weight: bold; font-size: 0.8rem;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+
+        /* PvP section improvements */
+        .pvp-table { width: 100%; border-collapse: collapse; }
+        .pvp-table th { padding: 8px; font-size: 0.8rem; color: var(--gold); border-bottom: 2px solid var(--gold); }
+        .pvp-table td { padding: 8px; font-size: 0.85rem; border-bottom: 1px solid #2a2a2a; }
+
         /* Stats Joueurs */
         .stats-records {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -585,6 +613,27 @@
             /* --- ROADMAP --- */
             .roadmap-list li { padding: 12px; font-size: 0.85rem; }
 
+            /* --- ARENA --- */
+            .arena-grid { grid-template-columns: 1fr; gap: 12px; }
+            .arena-gym-card { padding: 14px; }
+            .arena-summary { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .arena-summary-card { padding: 10px; }
+            .arena-summary-card .value { font-size: 1.2rem; }
+            .arena-lb-table th, .arena-lb-table td { padding: 6px 4px; font-size: 0.78rem; }
+            .arena-leaderboard { padding: 14px; }
+            .arena-mon { padding: 6px 8px; }
+
+            /* --- PVP --- */
+            #pvp h2 { font-size: 1.2rem; }
+            #pvp .arena-intro { font-size: 0.82rem; }
+            #pvp-content table { font-size: 0.8rem; }
+            #pvp-content table th, #pvp-content table td { padding: 6px 4px; }
+
+            /* --- MULTIJOUEUR (Accueil) --- */
+            .multi-modes-grid { grid-template-columns: 1fr; }
+            .multi-step { font-size: 0.82rem; gap: 10px; }
+            .multi-step .step-num { min-width: 26px; height: 26px; font-size: 0.75rem; }
+
             /* --- PLAY --- */
             #play a { display: block; width: 100%; max-width: 320px; margin: 0 auto; padding: 16px; min-height: 56px; text-align: center; }
         }
@@ -603,6 +652,7 @@
             <button class="tab" data-tab="stats">Joueurs</button>
             <button class="tab" data-tab="roadmap">Roadmap</button>
             <button class="tab" data-tab="arena">Arena</button>
+            <button class="tab" data-tab="pvp">PvP</button>
         </div>
     </nav>
 
@@ -620,7 +670,7 @@
             <div class="feature-card"><h3>3 types inedits</h3><p>Cosmic, Void et Divine : un triangle strategique totalement nouveau. Cosmic bat Void, Void bat Divine, Divine bat Cosmic.</p></div>
             <div class="feature-card"><h3>Arenes surboostees</h3><p>Champions, Conseil 4 et Pierre ont des Fakemons + Mega/Dynamax. Chacun offre son Fakemon apres sa defaite !</p></div>
             <div class="feature-card"><h3>Sauvegardes cloud</h3><p>Connectez-vous avec votre pseudo. Sauvegardez en jeu (menu > Sauvegarder). <strong style="color:#ff6b6b">Attendez le message vert avant de fermer !</strong></p></div>
-            <div class="feature-card" style="border-top:3px solid var(--accent)"><h3>Arena Multi-Champion</h3><p>Battez un champion d'arene et deposez votre equipe pour devenir Maitre ! Vos amis devront vous battre en vrai combat GBA pour prendre votre place. PvP et echanges arrivent bientot !</p></div>
+            <div class="feature-card" style="border-top:3px solid var(--accent)"><h3>Multijoueur</h3><p>Arena : deposez votre equipe pour devenir Maitre d'arene. PvP Le Trone : grimpez le classement en battant le joueur au-dessus de vous. Tout se joue depuis le site !</p></div>
         </div>
         <div class="info-section">
             <h2>3 modes de jeu</h2>
@@ -647,6 +697,42 @@
                 <div class="info-item"><h4>2. Controles</h4><p>Sur mobile, les touches tactiles apparaissent automatiquement. Sur PC : fleches + <code>Z</code> <code>X</code> <code>Enter</code> <code>Backspace</code>.</p></div>
                 <div class="info-item" style="border: 2px solid #ff6b6b; background: rgba(255,107,107,0.1);"><h4 style="color:#ff6b6b">3. Sauvegarder (IMPORTANT)</h4><p>Menu en jeu > "Sauvegarder". <strong style="color:#ff6b6b">NE FERMEZ PAS la page tant que le message vert "Sauvegarde reussie !" n'est pas apparu.</strong> Il n'y a pas de sauvegarde automatique. Si vous fermez avant, votre progression est perdue.</p></div>
                 <div class="info-item"><h4>4. Tips</h4><p>Explorez chaque recoin ! Des Pokemon rares se cachent partout. Battez les dresseurs avec des Fakemons pour les recevoir en cadeau.</p></div>
+            </div>
+        </div>
+        <div class="info-section">
+            <h2>Multijoueur</h2>
+            <p style="color:var(--text-dim);margin-bottom:16px;">Deux modes multijoueurs pour se mesurer a vos amis. Tout passe par le site, pas besoin de cable link !</p>
+            <div class="multi-modes-grid">
+                <div class="info-item multi-card" style="border-left:4px solid var(--gold);">
+                    <h4 style="color:var(--gold);">Arena Multi-Champion</h4>
+                    <p>Battez un champion d'arene dans le jeu, puis deposez votre equipe sur le site pour devenir <strong>Maitre</strong> de cette arene. Les autres joueurs vous defient en vrai combat GBA — si vous perdez, ils prennent votre place.</p>
+                    <ul class="multi-rules">
+                        <li>Equipe du type de l'arene uniquement</li>
+                        <li>6 vs 6, votre equipe complete</li>
+                        <li>Un seul Maitre par arene</li>
+                        <li>Stats et historique sur l'onglet Arena</li>
+                    </ul>
+                </div>
+                <div class="info-item multi-card" style="border-left:4px solid #e74c3c;">
+                    <h4 style="color:#e74c3c;">PvP — Le Trone</h4>
+                    <p>Classement ladder : defiez le joueur juste au-dessus de vous. Si vous gagnez, vous prenez sa place. Objectif : atteindre le <strong>sommet du Trone</strong>.</p>
+                    <ul class="multi-rules">
+                        <li><strong>5 vs 6</strong> — l'attaquant a un handicap</li>
+                        <li>Equipe adverse <strong>inconnue</strong> (surprise totale)</li>
+                        <li>IA intelligente (switch, anti-stall)</li>
+                        <li>Stats, face-a-face et KOs sur l'onglet PvP</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="multi-howto">
+                <h4 style="color:var(--text-dim);margin-bottom:8px;">Comment ca marche ?</h4>
+                <div class="multi-steps">
+                    <div class="multi-step"><span class="step-num">1</span><span>Sauvegardez en jeu (votre equipe est uploadee dans le cloud)</span></div>
+                    <div class="multi-step"><span class="step-num">2</span><span>Ouvrez le menu du jeu > <strong>Arena</strong> ou <strong>PvP</strong></span></div>
+                    <div class="multi-step"><span class="step-num">3</span><span>Choisissez votre cible et cliquez <strong>Defier</strong></span></div>
+                    <div class="multi-step"><span class="step-num">4</span><span>Le jeu redemarre > cliquez <strong>Continuer</strong> > le combat se lance</span></div>
+                    <div class="multi-step"><span class="step-num">5</span><span>Le resultat s'enregistre automatiquement — consultez les stats sur le portail</span></div>
+                </div>
             </div>
         </div>
         <div class="info-section">
@@ -877,11 +963,11 @@
         <h3 class="roadmap-category">Termine — Multi-joueur</h3>
         <ul class="roadmap-list">
             <li><span class="status-done">&#10003;</span><div><strong>Arena Multi-Champion</strong> — Deposez votre equipe pour devenir Maitre d'une arene. Les autres joueurs vous defient en vrai combat GBA ! Classement et stats sur le portail.</div></li>
+            <li><span class="status-done">&#10003;</span><div><strong>PvP — Le Trone</strong> — Classement ladder : defiez le joueur au-dessus de vous (5v6, equipe inconnue, IA intelligente). Grimpez au sommet ! Stats detaillees, face-a-face et historique sur le portail.</div></li>
         </ul>
 
         <h3 class="roadmap-category">A venir (bientot)</h3>
         <ul class="roadmap-list">
-            <li><span class="status-wip">WIP</span><div><strong>PvP en ligne</strong> — Combats joueur contre joueur avec les Pokemon de sa sauvegarde. Defiez vos amis en temps reel !</div></li>
             <li><span class="status-wip">WIP</span><div><strong>Echanges en ligne</strong> — Echangez des Pokemon entre joueurs connectes directement depuis le site.</div></li>
             <li><span class="status-todo">...</span><div><strong>Traduction FR complete</strong> — Traduire les 70% restants : PNJ, descriptions, attaques, menus.</div></li>
         </ul>
@@ -906,6 +992,16 @@
         <h3 style="color:var(--accent);margin-bottom:8px;">Arenes</h3>
         <div id="arena-grid" class="arena-grid">
             <div style="text-align:center;padding:40px;color:var(--text-dim);">Chargement des arenes...</div>
+        </div>
+    </div>
+
+    <!-- PVP -->
+    <div id="pvp" class="section">
+        <h2>PvP - Le Trone</h2>
+        <p class="arena-intro">Ladder : bats le joueur <strong>au-dessus</strong> de toi pour monter. <strong>5v6</strong>, equipe <strong>inconnue</strong>, IA <strong>intelligente</strong>.</p>
+
+        <div id="pvp-content">
+            <div style="text-align:center;padding:40px;color:var(--text-dim);">Chargement...</div>
         </div>
     </div>
 
@@ -1142,6 +1238,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
+
+    // ============================================================
+    // SPECIES NAMES (global, loaded once for sprites)
+    // ============================================================
+    let _speciesNames = {};
+    async function loadSpeciesNames() {
+        try {
+            const resp = await fetch('data/species_names.json');
+            if (resp.ok) _speciesNames = await resp.json();
+        } catch(e) { console.warn('[Portal] species_names.json not found'); }
+    }
 
     // ============================================================
     // CATALOGUE
@@ -2713,11 +2820,12 @@
     // ============================================================
 
     function getSpriteUrl(species) {
-        // Standard Pokemon: use PokeAPI sprites
-        if (species > 0 && species <= 1025) {
+        if (!species || species <= 0) return null;
+        if (species <= 1025)
             return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + species + '.png';
-        }
-        // Fakemons: no sprite available
+        // Fakemons: use local sprites via species name
+        const name = _speciesNames[species];
+        if (name) return 'sprites/' + name.toLowerCase().replace(/ /g, '_') + '.png';
         return null;
     }
 
@@ -2834,12 +2942,8 @@
             return b.maxLevel - a.maxLevel;
         });
 
-        // Load species names for display
-        let speciesNames = {};
-        try {
-            const resp = await fetch('data/species_names.json');
-            if (resp.ok) speciesNames = await resp.json();
-        } catch(e) {}
+        // Use global species names
+        const speciesNames = _speciesNames;
 
         let movesNames = {};
         try {
@@ -2902,13 +3006,297 @@
     }
 
     // ============================================================
+    // PVP STATS
+    // ============================================================
+    function pokeSpriteUrl(species) {
+        if (!species || species <= 0) return '';
+        if (species <= 1025)
+            return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + species + '.png';
+        // Fakemons: use local sprites via species name
+        const name = _speciesNames[species];
+        if (name) return 'sprites/' + name.toLowerCase().replace(/ /g, '_') + '.png';
+        return '';
+    }
+
+    function renderMonCard(mon) {
+        if (!mon || !mon.species) return '';
+        const hasHP = mon.hp !== undefined && mon.maxHp !== undefined && mon.maxHp > 0;
+        const spriteUrl = pokeSpriteUrl(mon.species);
+        const name = _speciesNames[mon.species] || mon.nickname || '';
+        if (hasHP) {
+            // Challenger mon: show HP bar
+            const hpPct = Math.round(100 * mon.hp / mon.maxHp);
+            const hpColor = mon.hp <= 0 ? '#555' : hpPct > 50 ? '#0f8' : hpPct > 20 ? '#f39c12' : '#ff5555';
+            const opacity = mon.hp <= 0 ? '0.35' : '1';
+            const koLabel = mon.hp <= 0 ? '<div style="color:#ff5555;font-size:0.65rem;font-weight:bold;">KO</div>' : '';
+            return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;opacity:${opacity};min-width:52px;">
+                <img src="${spriteUrl}" style="width:40px;height:40px;image-rendering:pixelated;" onerror="this.src='';this.style.display='none'">
+                ${koLabel}
+                <div style="width:36px;height:4px;background:#333;border-radius:2px;overflow:hidden;">
+                    <div style="width:${hpPct}%;height:100%;background:${hpColor};"></div>
+                </div>
+                <div style="font-size:0.6rem;color:#888;">${mon.hp}/${mon.maxHp}</div>
+            </div>`;
+        } else {
+            // Defender mon: show sprite + level (HP unknown)
+            const lvl = mon.level ? 'Nv.' + mon.level : '';
+            return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;">
+                <img src="${spriteUrl}" style="width:40px;height:40px;image-rendering:pixelated;" onerror="this.src='';this.style.display='none'">
+                <div style="font-size:0.6rem;color:#aaa;">${name}</div>
+                <div style="font-size:0.6rem;color:#888;">${lvl}</div>
+            </div>`;
+        }
+    }
+
+    async function loadPvPData() {
+        const contentEl = document.getElementById('pvp-content');
+        if (!contentEl) return;
+
+        // --- Load data ---
+        let profiles = [];
+        let matches = [];
+        try {
+            const [profRes, matchRes] = await Promise.all([
+                _sbPortal.from('player_profiles').select('*'),
+                _sbPortal.from('pvp_matches').select('*').order('created_at', { ascending: false })
+            ]);
+            if (profRes.data) profiles = profRes.data;
+            if (matchRes.data) matches = matchRes.data;
+        } catch(e) {
+            console.warn('[PvP] Load error:', e);
+            contentEl.innerHTML = '<div style="text-align:center;padding:40px;color:#ff5555;">Erreur de chargement</div>';
+            return;
+        }
+
+        // --- Compute per-player stats from matches ---
+        const pStats = {};
+        const initP = (name) => {
+            if (!pStats[name]) pStats[name] = {
+                atk: 0, def: 0, atkW: 0, atkL: 0, defW: 0, defL: 0,
+                kosGiven: 0, kosTaken: 0, bestStreak: 0, streak: 0,
+                h2h: {}, lastMatch: {}
+            };
+        };
+        // Process oldest → newest for streaks
+        [...matches].reverse().forEach(m => {
+            const cp = m.challenger_pseudo, dp = m.defender_pseudo;
+            initP(cp); initP(dp);
+            const cWon = m.winner === 'challenger';
+            const winner = cWon ? cp : dp, loser = cWon ? dp : cp;
+            pStats[cp].atk++;
+            pStats[dp].def++;
+            if (cWon) { pStats[cp].atkW++; pStats[dp].defL++; }
+            else { pStats[cp].atkL++; pStats[dp].defW++; }
+            // KOs — use actual team sizes from team data if available
+            const cR = m.challenger_remaining || 0, dR = m.defender_remaining || 0;
+            const cTeamLen = (m.challenger_team && m.challenger_team.length > 0) ? m.challenger_team.length : Math.min(gPlayerCount || 5, 5);
+            const dTeamLen = (m.defender_team && m.defender_team.length > 0) ? m.defender_team.length : 6;
+            pStats[cp].kosGiven += Math.max(0, dTeamLen - dR);
+            pStats[cp].kosTaken += Math.max(0, cTeamLen - cR);
+            pStats[dp].kosGiven += Math.max(0, cTeamLen - cR);
+            pStats[dp].kosTaken += Math.max(0, dTeamLen - dR);
+            // Streaks
+            pStats[winner].streak++;
+            if (pStats[winner].streak > pStats[winner].bestStreak) pStats[winner].bestStreak = pStats[winner].streak;
+            pStats[loser].streak = 0;
+            // H2H
+            if (!pStats[cp].h2h[dp]) pStats[cp].h2h[dp] = { w: 0, l: 0 };
+            if (!pStats[dp].h2h[cp]) pStats[dp].h2h[cp] = { w: 0, l: 0 };
+            if (cWon) { pStats[cp].h2h[dp].w++; pStats[dp].h2h[cp].l++; }
+            else { pStats[cp].h2h[dp].l++; pStats[dp].h2h[cp].w++; }
+            // Store last match for each pair
+            const pairKey = [cp, dp].sort().join('|');
+            pStats[cp].lastMatch[dp] = m;
+            pStats[dp].lastMatch[cp] = m;
+        });
+
+        // --- Build all HTML ---
+        let html = '';
+
+        // ==================== CLASSEMENT ====================
+        html += '<h3 style="color:#f39c12;margin:0 0 10px;">Classement</h3>';
+        const ranked = profiles.filter(p => p.pvp_rank > 0).sort((a, b) => a.pvp_rank - b.pvp_rank);
+        const unranked = profiles.filter(p => !p.pvp_rank || p.pvp_rank <= 0);
+        const allPlayers = [...ranked, ...unranked];
+
+        if (allPlayers.length > 0) {
+            html += '<table style="width:100%;border-collapse:collapse;margin-bottom:20px;">';
+            html += '<tr style="border-bottom:2px solid #f39c12;color:#f39c12;font-size:0.8rem;">' +
+                '<th style="padding:8px;width:35px;">#</th>' +
+                '<th style="text-align:left;padding:8px;">Joueur</th>' +
+                '<th style="padding:8px;width:50px;">V</th>' +
+                '<th style="padding:8px;width:50px;">D</th>' +
+                '<th style="padding:8px;width:55px;">%</th>' +
+                '<th style="padding:8px;width:55px;">Serie</th>' +
+                '</tr>';
+            allPlayers.forEach(p => {
+                const s = pStats[p.pseudo] || { atkW: 0, defW: 0, atkL: 0, defL: 0, streak: 0, bestStreak: 0 };
+                const w = s.atkW + s.defW, l = s.atkL + s.defL;
+                const total = w + l;
+                const pct = total > 0 ? Math.round(100 * w / total) : 0;
+                const pctColor = pct >= 60 ? '#0f8' : pct >= 40 ? '#f39c12' : total === 0 ? '#666' : '#ff5555';
+                const rank = p.pvp_rank || '-';
+                const icon = rank === 1 ? ' &#128081;' : rank === 2 ? ' &#129352;' : rank === 3 ? ' &#129353;' : '';
+                const rc = rank === 1 ? '#ffd700' : rank === 2 ? '#c0c0c0' : rank === 3 ? '#cd7f32' : '#aaa';
+                const bg = rank === 1 ? 'rgba(255,215,0,0.07)' : rank === 2 ? 'rgba(192,192,192,0.05)' : rank === 3 ? 'rgba(205,127,50,0.05)' : '';
+                html += `<tr style="border-bottom:1px solid #2a2a2a;font-size:0.85rem;background:${bg};">
+                    <td style="padding:8px;text-align:center;font-weight:bold;color:${rc};">${rank}${icon}</td>
+                    <td style="padding:8px;font-weight:bold;color:${rc};">${p.pseudo || '???'}</td>
+                    <td style="padding:8px;text-align:center;color:#0f8;font-weight:bold;">${w}</td>
+                    <td style="padding:8px;text-align:center;color:#ff5555;font-weight:bold;">${l}</td>
+                    <td style="padding:8px;text-align:center;color:${pctColor};font-weight:bold;">${total > 0 ? pct + '%' : '-'}</td>
+                    <td style="padding:8px;text-align:center;color:${s.streak > 0 ? '#0f8' : '#666'};">${s.streak > 0 ? s.streak + 'W' : '-'}</td>
+                </tr>`;
+            });
+            html += '</table>';
+        }
+
+        if (matches.length === 0) {
+            html += '<div style="text-align:center;padding:30px;color:#666;">Aucun combat PvP pour le moment.</div>';
+            contentEl.innerHTML = html;
+            return;
+        }
+
+        // ==================== HISTORIQUE ====================
+        html += '<h3 style="color:#f39c12;margin:20px 0 10px;">Derniers combats</h3>';
+        html += '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">';
+        matches.slice(0, 20).forEach((m, idx) => {
+            const date = new Date(m.created_at);
+            const dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) + ' ' + date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            const cWon = m.winner === 'challenger';
+            const cR = m.challenger_remaining != null ? m.challenger_remaining : '?';
+            const dR = m.defender_remaining != null ? m.defender_remaining : '?';
+            const winnerName = cWon ? m.challenger_pseudo : m.defender_pseudo;
+            const cTeam = m.challenger_team || [];
+            const dTeam = m.defender_team || [];
+            const hasTeamData = cTeam.length > 0 || dTeam.length > 0;
+
+            html += `<div style="border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.03);border-left:3px solid ${cWon ? '#ff9800' : '#2196f3'};">
+                <div style="padding:10px 14px;cursor:${hasTeamData ? 'pointer' : 'default'};" onclick="${hasTeamData ? `document.getElementById('pvp-detail-${idx}').style.display=document.getElementById('pvp-detail-${idx}').style.display==='none'?'block':'none'` : ''}">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="color:#666;font-size:0.75rem;">${dateStr}</span>
+                        <span style="font-size:0.85rem;">
+                            <span style="color:${cWon ? '#0f8' : '#ff5555'};font-weight:bold;">${m.challenger_pseudo}</span>
+                            <span style="color:#555;"> (${cR} rest.) </span>
+                            <span style="color:#888;">vs</span>
+                            <span style="color:${!cWon ? '#0f8' : '#ff5555'};font-weight:bold;"> ${m.defender_pseudo}</span>
+                            <span style="color:#555;"> (${dR} rest.)</span>
+                        </span>
+                        <span style="color:#0f8;font-weight:bold;font-size:0.85rem;">${winnerName}${hasTeamData ? ' &#9660;' : ''}</span>
+                    </div>
+                </div>
+                <div id="pvp-detail-${idx}" style="display:none;padding:10px 14px;border-top:1px solid #333;">
+                    <div style="display:flex;gap:16px;align-items:flex-start;">
+                        <div style="flex:1;">
+                            <div style="font-size:0.78rem;color:${cWon ? '#0f8' : '#ff5555'};font-weight:bold;margin-bottom:6px;">${m.challenger_pseudo} (ATK)</div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                                ${cTeam.map(mon => renderMonCard(mon)).join('')}
+                            </div>
+                        </div>
+                        <div style="color:#555;font-size:1.2rem;font-weight:bold;padding-top:20px;">VS</div>
+                        <div style="flex:1;">
+                            <div style="font-size:0.78rem;color:${!cWon ? '#0f8' : '#ff5555'};font-weight:bold;margin-bottom:6px;">${m.defender_pseudo} (DEF) — ${dR}/${dTeam.length || '?'} restants</div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                                ${dTeam.map(mon => renderMonCard(mon)).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    ${!hasTeamData ? '<div style="color:#666;font-size:0.75rem;text-align:center;padding:8px;">Donnees detaillees non disponibles (ancien match)</div>' : ''}
+                </div>
+            </div>`;
+        });
+        html += '</div>';
+
+        // ==================== FACE A FACE ====================
+        html += '<h3 style="color:#f39c12;margin:20px 0 10px;">Face a face</h3>';
+        const pairs = {};
+        matches.forEach(m => {
+            const k = [m.challenger_pseudo, m.defender_pseudo].sort().join('|');
+            if (!pairs[k]) pairs[k] = { p1: k.split('|')[0], p2: k.split('|')[1], wins: {}, matches: [] };
+            const winner = m.winner === 'challenger' ? m.challenger_pseudo : m.defender_pseudo;
+            pairs[k].wins[winner] = (pairs[k].wins[winner] || 0) + 1;
+            pairs[k].matches.push(m);
+        });
+
+        html += '<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">';
+        Object.values(pairs).forEach(pair => {
+            const { p1, p2, wins } = pair;
+            const w1 = wins[p1] || 0, w2 = wins[p2] || 0;
+            const total = w1 + w2;
+            const pct1 = total > 0 ? Math.round(100 * w1 / total) : 50;
+            const last = pair.matches[pair.matches.length - 1];
+            const lastDate = new Date(last.created_at);
+            const lastDateStr = lastDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+            const lastCWon = last.winner === 'challenger';
+            const lastWinner = lastCWon ? last.challenger_pseudo : last.defender_pseudo;
+
+            html += `<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="font-weight:bold;color:${w1 >= w2 ? '#0f8' : '#ff5555'};font-size:1rem;">${p1}</span>
+                    <span style="color:#888;font-size:0.8rem;">${total} combat${total > 1 ? 's' : ''}</span>
+                    <span style="font-weight:bold;color:${w2 >= w1 ? '#0f8' : '#ff5555'};font-size:1rem;">${p2}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <span style="color:#ffd700;font-weight:bold;min-width:20px;text-align:center;">${w1}</span>
+                    <div style="flex:1;display:flex;height:10px;border-radius:5px;overflow:hidden;">
+                        <div style="width:${pct1}%;background:${w1 >= w2 ? '#0f8' : '#ff5555'};"></div>
+                        <div style="width:${100 - pct1}%;background:${w2 >= w1 ? '#0f8' : '#ff5555'};"></div>
+                    </div>
+                    <span style="color:#ffd700;font-weight:bold;min-width:20px;text-align:center;">${w2}</span>
+                </div>
+                <div style="font-size:0.78rem;color:#888;">Dernier : <b style="color:#ccc;">${lastWinner}</b> gagne (${lastDateStr})</div>
+            </div>`;
+        });
+        html += '</div>';
+
+        // ==================== STATS PAR JOUEUR ====================
+        html += '<h3 style="color:#f39c12;margin:20px 0 10px;">Stats detaillees</h3>';
+        html += '<div style="display:flex;flex-direction:column;gap:10px;">';
+        const sortedP = Object.entries(pStats).sort((a, b) => (b[1].atkW + b[1].defW) - (a[1].atkW + a[1].defW));
+        sortedP.forEach(([pseudo, s]) => {
+            const w = s.atkW + s.defW, l = s.atkL + s.defL;
+            const total = w + l;
+            const pct = total > 0 ? Math.round(100 * w / total) : 0;
+            const pctCol = pct >= 60 ? '#0f8' : pct >= 40 ? '#f39c12' : '#ff5555';
+            let nemesis = null, victim = null;
+            Object.entries(s.h2h).forEach(([opp, rec]) => {
+                if (!nemesis || rec.l > nemesis.l) nemesis = { name: opp, ...rec };
+                if (!victim || rec.w > victim.w) victim = { name: opp, ...rec };
+            });
+
+            html += `<div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:10px;border-left:3px solid ${pctCol};">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <span style="font-weight:bold;color:#f39c12;font-size:1rem;">${pseudo}</span>
+                    <span style="color:${pctCol};font-weight:bold;">${w}V ${l}D (${pct}%)</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:0.8rem;color:#bbb;">
+                    <span>ATK : ${s.atkW}V / ${s.atkL}D</span>
+                    <span>DEF : ${s.defW}V / ${s.defL}D</span>
+                    <span>KOs infliges : <b style="color:#0f8;">${s.kosGiven}</b></span>
+                    <span>KOs subis : <b style="color:#ff5555;">${s.kosTaken}</b></span>
+                    <span>Record serie : <b style="color:#ffd700;">${s.bestStreak}W</b></span>
+                    <span>Serie en cours : <b style="color:${s.streak > 0 ? '#0f8' : '#666'};">${s.streak > 0 ? s.streak + 'W' : '-'}</b></span>
+                    <span>Nemesis : ${nemesis && nemesis.l > 0 ? '<b style="color:#ff5555;">' + nemesis.name + '</b> (' + nemesis.l + 'D)' : '-'}</span>
+                    <span>Victime : ${victim && victim.w > 0 ? '<b style="color:#0f8;">' + victim.name + '</b> (' + victim.w + 'V)' : '-'}</span>
+                </div>
+            </div>`;
+        });
+        html += '</div>';
+
+        contentEl.innerHTML = html;
+    }
+
+    // ============================================================
     // INIT
     // ============================================================
-    loadCatalogue();
-    loadGameData();
-    loadArenaData();
-    loadPlayerStats();
-    initModalSwipe();
+    loadSpeciesNames().then(() => {
+        loadCatalogue();
+        loadGameData();
+        loadArenaData();
+        loadPlayerStats();
+        loadPvPData();
+        initModalSwipe();
+    });
     </script>
 </body>
 </html>

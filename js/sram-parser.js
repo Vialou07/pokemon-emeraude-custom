@@ -444,10 +444,12 @@ const SRAMParser = (function () {
         sram[base + 6] = count;
         sram[base + 7] = 0; // result = pending
 
-        // Write party (BattleTowerPokemon × 6, starting at offset 8)
+        // offset 8-9: challengerRemaining / defenderRemaining (written by ROM after battle)
+        // offset 10-11: padding
+        // Write party (BattleTowerPokemon × 6, starting at offset 12)
         for (let i = 0; i < count; i++) {
             const btp = serializeBTP(party[i]);
-            sram.set(btp, base + 8 + i * BTP_SIZE);
+            sram.set(btp, base + 12 + i * BTP_SIZE);
         }
 
         return sram;
@@ -466,11 +468,43 @@ const SRAMParser = (function () {
         const base = ARENA_SECTOR_OFFSET;
         const magic = readU32(sram, base);
 
+        // Read per-Pokemon battle results (offset 276 for challenger, 312 for defender)
+        // Each entry: species(u16) + currentHP(u16) + maxHP(u16) = 6 bytes
+        const PARTY_OFFSET = 12 + 6 * 44; // 12 + 264 = 276
+        var challengerMons = [];
+        var defenderMons = [];
+        var challengerTeamSize = sram[base + 10] || 0;
+        var defenderTeamSize = sram[base + 11] || 0;
+
+        for (var i = 0; i < 6; i++) {
+            var cOff = base + PARTY_OFFSET + i * 6;
+            var cSpecies = sram[cOff] | (sram[cOff + 1] << 8);
+            var cHP = sram[cOff + 2] | (sram[cOff + 3] << 8);
+            var cMaxHP = sram[cOff + 4] | (sram[cOff + 5] << 8);
+            if (cSpecies > 0 && cSpecies < 0xFFFF) {
+                challengerMons.push({ species: cSpecies, hp: cHP, maxHp: cMaxHP });
+            }
+
+            var dOff = base + PARTY_OFFSET + 36 + i * 6;
+            var dSpecies = sram[dOff] | (sram[dOff + 1] << 8);
+            var dHP = sram[dOff + 2] | (sram[dOff + 3] << 8);
+            var dMaxHP = sram[dOff + 4] | (sram[dOff + 5] << 8);
+            if (dSpecies > 0 && dSpecies < 0xFFFF) {
+                defenderMons.push({ species: dSpecies, hp: dHP, maxHp: dMaxHP });
+            }
+        }
+
         return {
             valid: magic === ARENA_MAGIC,
             active: sram[base + 4] === 1,
             gymId: sram[base + 5],
-            result: sram[base + 7], // 0=pending, 1=win, 2=loss
+            result: sram[base + 7],
+            challengerRemaining: sram[base + 8],
+            defenderRemaining: sram[base + 9],
+            challengerTeamSize: challengerTeamSize,
+            defenderTeamSize: defenderTeamSize,
+            challengerMons: challengerMons,
+            defenderMons: defenderMons,
         };
     }
 

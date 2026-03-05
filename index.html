@@ -55,6 +55,7 @@
         #menu-dropdown button .icon { width: 16px; text-align: center; }
         #menu-dropdown .sep { height: 1px; background: #333; margin: 2px 8px; }
         #menu-dropdown .btn-arena { color: #e94560; }
+        #menu-dropdown .btn-pvp { color: #f39c12; }
         #menu-dropdown .btn-deco { color: #888; }
 
         /* Arena modal */
@@ -92,6 +93,50 @@
         .arena-btns .btn-submit:disabled { opacity: 0.4; }
         .arena-btns .btn-close { background: #333; color: #aaa; }
         #arena-status { font-size: 0.8rem; margin-top: 8px; min-height: 1.2em; }
+
+        /* PvP modal */
+        #pvp-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 60000;
+            align-items: center; justify-content: center;
+        }
+        #pvp-overlay.open { display: flex; }
+        .pvp-card {
+            background: #16213e; border: 2px solid #f39c12; border-radius: 16px;
+            padding: 24px; width: 92%; max-width: 420px; max-height: 85vh;
+            overflow-y: auto; text-align: center;
+        }
+        .pvp-card h3 { color: #f39c12; margin-bottom: 14px; font-size: 1.15rem; }
+        .pvp-ladder { text-align: left; margin-bottom: 14px; }
+        .pvp-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 12px; border-radius: 8px; margin-bottom: 4px;
+            font-size: 0.85rem; transition: background 0.15s;
+        }
+        .pvp-row.is-me { background: rgba(243,156,18,0.15); border: 1px solid rgba(243,156,18,0.4); }
+        .pvp-row.is-target { background: rgba(255,85,85,0.1); border: 1px dashed rgba(255,85,85,0.5); }
+        .pvp-row:not(.is-me):not(.is-target) { background: rgba(255,255,255,0.03); }
+        .pvp-rank { font-weight: bold; min-width: 28px; text-align: center; color: #f39c12; font-size: 1rem; }
+        .pvp-rank.gold { color: #ffd700; }
+        .pvp-rank.silver { color: #c0c0c0; }
+        .pvp-rank.bronze { color: #cd7f32; }
+        .pvp-pseudo { font-weight: bold; flex: 1; }
+        .pvp-pseudo.me { color: #f39c12; }
+        .pvp-pseudo.target { color: #ff5555; }
+        .pvp-meta { color: #888; font-size: 0.75rem; }
+        .pvp-warning {
+            font-size: 0.75rem; color: #ff9800; padding: 8px; background: rgba(243,156,18,0.1);
+            border-radius: 6px; margin: 10px 0;
+        }
+        .pvp-btns { display: flex; gap: 8px; margin-top: 10px; }
+        .pvp-btns button {
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            font-size: 0.9rem; font-weight: bold; cursor: pointer;
+        }
+        .pvp-btns .btn-pvp-go { background: #f39c12; color: white; }
+        .pvp-btns .btn-pvp-go:disabled { opacity: 0.4; }
+        .pvp-btns .btn-pvp-close { background: #333; color: #aaa; }
+        #pvp-status { font-size: 0.8rem; margin-top: 8px; min-height: 1.2em; }
 
         /* Toast */
         #toast {
@@ -171,6 +216,7 @@
         <div id="menu-dropdown">
             <button onclick="window.open('portal.html','_blank');toggleMenu()"><span class="icon">&#127760;</span> Portail</button>
             <button class="btn-arena" onclick="openArenaModal();toggleMenu()"><span class="icon">&#9876;</span> Arena</button>
+            <button class="btn-pvp" onclick="openPvPModal();toggleMenu()"><span class="icon">&#9889;</span> PvP</button>
             <div class="sep"></div>
             <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
         </div>
@@ -204,9 +250,24 @@
         </div>
     </div>
 
+    <!-- PvP modal -->
+    <div id="pvp-overlay">
+        <div class="pvp-card">
+            <h3>PvP - Le Trone</h3>
+            <div id="pvp-ladder" class="pvp-ladder"><div style="color:#888;text-align:center;">Chargement...</div></div>
+            <div id="pvp-target-info" style="display:none;"></div>
+            <div class="pvp-warning">5 vs 6 Pokemon. Equipe adverse inconnue. IA intelligente. Bats celui au-dessus pour monter !</div>
+            <div id="pvp-status"></div>
+            <div class="pvp-btns">
+                <button class="btn-pvp-go" id="pvp-challenge-btn" onclick="challengePvP()" disabled>Defier</button>
+                <button class="btn-pvp-close" onclick="closePvPModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 39 - Stats Joueurs');
+        console.log('[Pokemon] Version 44 - PvP defender from Supabase');
 
         // ============================================================
         // SUPABASE
@@ -379,7 +440,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=37';
+        EJS_gameUrl = 'rom/pokemon.gba?v=44';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
@@ -982,6 +1043,9 @@
                     // Clear the mailbox in SRAM
                     SRAMParser.clearArenaMailbox(sram);
 
+                    // Force immediate cloud backup so result persists
+                    try { backupSRAM(); } catch(bk) {}
+
                 } catch(e) {
                     console.warn('[Arena] Poll error:', e);
                 }
@@ -1076,6 +1140,316 @@
             var el = document.getElementById('arena-status');
             el.textContent = msg;
             el.style.color = isError ? '#ff5555' : '#0f8';
+        }
+
+        // ============================================================
+        // PVP - LE TRONE (Ladder System)
+        // ============================================================
+        var _pvpAllPlayers = [];
+        var _pvpTarget = null; // player directly above me
+        var _pvpMyRank = null;
+        var _pvpPollingId = null;
+        var _pvpDefenderParty = []; // saved from Supabase profile at challenge time
+
+        function openPvPModal() {
+            document.getElementById('pvp-overlay').classList.add('open');
+            document.getElementById('pvp-status').textContent = '';
+            document.getElementById('pvp-challenge-btn').disabled = true;
+            document.getElementById('pvp-challenge-btn').textContent = 'Defier';
+            document.getElementById('pvp-target-info').style.display = 'none';
+            _pvpTarget = null;
+            _pvpMyRank = null;
+            loadPvPLadder();
+        }
+
+        function closePvPModal() {
+            document.getElementById('pvp-overlay').classList.remove('open');
+        }
+
+        function setPvPStatus(msg, isError) {
+            var el = document.getElementById('pvp-status');
+            el.textContent = msg;
+            el.style.color = isError ? '#ff5555' : '#0f8';
+        }
+
+        async function loadPvPLadder() {
+            try {
+                var res = await _sb.from('player_profiles').select('*');
+                if (res.error) throw res.error;
+                var players = res.data || [];
+
+                if (players.length === 0) {
+                    document.getElementById('pvp-ladder').innerHTML = '<div style="color:#888;text-align:center;">Aucun joueur inscrit</div>';
+                    return;
+                }
+
+                // Auto-assign ranks to players who don't have one
+                var maxRank = 0;
+                var needsRank = [];
+                for (var i = 0; i < players.length; i++) {
+                    if (players[i].pvp_rank != null && players[i].pvp_rank > 0) {
+                        if (players[i].pvp_rank > maxRank) maxRank = players[i].pvp_rank;
+                    } else {
+                        needsRank.push(players[i]);
+                    }
+                }
+                for (var i = 0; i < needsRank.length; i++) {
+                    maxRank++;
+                    needsRank[i].pvp_rank = maxRank;
+                    // Save rank to DB
+                    await _sb.from('player_profiles').update({ pvp_rank: maxRank }).eq('user_id', needsRank[i].user_id);
+                }
+
+                // Sort by rank
+                players.sort(function(a, b) { return (a.pvp_rank || 999) - (b.pvp_rank || 999); });
+                _pvpAllPlayers = players;
+
+                // Find myself and my target
+                _pvpMyRank = null;
+                _pvpTarget = null;
+                for (var i = 0; i < players.length; i++) {
+                    if (players[i].user_id === _currentUser.id) {
+                        _pvpMyRank = players[i].pvp_rank;
+                        // Target = player directly above (index i-1)
+                        if (i > 0) {
+                            _pvpTarget = players[i - 1];
+                        }
+                        break;
+                    }
+                }
+
+                renderPvPLadder();
+
+            } catch(e) {
+                console.error('[PvP] Load ladder error:', e);
+                document.getElementById('pvp-ladder').innerHTML = '<div style="color:#ff5555;text-align:center;">Erreur chargement</div>';
+            }
+        }
+
+        function renderPvPLadder() {
+            var ladderEl = document.getElementById('pvp-ladder');
+            var btn = document.getElementById('pvp-challenge-btn');
+            var targetInfo = document.getElementById('pvp-target-info');
+
+            var html = '';
+            for (var i = 0; i < _pvpAllPlayers.length; i++) {
+                var p = _pvpAllPlayers[i];
+                var profile = p.profile || {};
+                var party = profile.party || [];
+                var avgLv = 0;
+                if (party.length > 0) {
+                    var sum = 0;
+                    for (var j = 0; j < party.length; j++) sum += (party[j].level || 0);
+                    avgLv = Math.round(sum / party.length);
+                }
+                var badges = profile.badges || [];
+                var badgeCount = badges.filter(function(b){ return b; }).length;
+
+                var isMe = p.user_id === _currentUser.id;
+                var isTarget = _pvpTarget && p.user_id === _pvpTarget.user_id;
+                var rankClass = p.pvp_rank === 1 ? 'gold' : p.pvp_rank === 2 ? 'silver' : p.pvp_rank === 3 ? 'bronze' : '';
+                var rowClass = isMe ? 'is-me' : isTarget ? 'is-target' : '';
+                var pseudoClass = isMe ? 'me' : isTarget ? 'target' : '';
+                var crown = p.pvp_rank === 1 ? '&#128081; ' : '';
+                var youTag = isMe ? ' (TOI)' : '';
+                var targetTag = isTarget ? ' &#8592; Cible' : '';
+
+                html += '<div class="pvp-row ' + rowClass + '">' +
+                    '<span class="pvp-rank ' + rankClass + '">' + p.pvp_rank + '</span>' +
+                    '<span class="pvp-pseudo ' + pseudoClass + '">' + crown + (p.pseudo || '???') + youTag + '</span>' +
+                    '<span class="pvp-meta">' + badgeCount + 'B | Nv.' + avgLv + targetTag + '</span>' +
+                    '</div>';
+            }
+            ladderEl.innerHTML = html;
+
+            // Target info + button
+            if (_pvpMyRank === 1) {
+                targetInfo.style.display = 'block';
+                targetInfo.innerHTML = '<div style="color:#ffd700;font-weight:bold;padding:8px;background:rgba(255,215,0,0.1);border-radius:6px;margin:8px 0;">&#128081; Tu es au sommet du Trone ! Defends ta place.</div>';
+                btn.disabled = true;
+                btn.textContent = 'Tu es #1 !';
+            } else if (_pvpTarget) {
+                targetInfo.style.display = 'block';
+                targetInfo.innerHTML = '<div style="color:#ff9800;padding:8px;background:rgba(243,156,18,0.1);border-radius:6px;margin:8px 0;">Tu es <b>#' + _pvpMyRank + '</b>. Bats <b style="color:#ff5555;">' + (_pvpTarget.pseudo || '???') + '</b> (#' + _pvpTarget.pvp_rank + ') pour monter !</div>';
+                btn.disabled = false;
+                btn.textContent = 'Defier ' + (_pvpTarget.pseudo || '???');
+            } else {
+                targetInfo.style.display = 'none';
+                btn.disabled = true;
+                btn.textContent = 'Defier';
+            }
+        }
+
+        async function challengePvP() {
+            if (!_pvpTarget || !_currentUser) return;
+
+            var defender = _pvpTarget;
+            var defenderProfile = defender.profile || {};
+            var defenderParty = defenderProfile.party || [];
+
+            if (defenderParty.length === 0) {
+                setPvPStatus('Ce joueur n\'a pas de Pokemon !', true);
+                return;
+            }
+
+            // Save defender party from Supabase for post-battle recording
+            _pvpDefenderParty = defenderParty.map(function(p) {
+                return { species: p.species, nickname: p.nickname || '', level: p.level || 0, maxHp: p.maxHP || p.maxHp || 0 };
+            });
+
+            document.getElementById('pvp-challenge-btn').disabled = true;
+            setPvPStatus('Preparation du combat...', false);
+
+            try {
+                var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+                if (!gm) {
+                    setPvPStatus('Emulateur non pret', true);
+                    return;
+                }
+                gm.saveSaveFiles();
+                var sram = gm.getSaveFile();
+                if (!sram || sram.length < 131072) {
+                    setPvPStatus('Sauvegarde introuvable', true);
+                    return;
+                }
+
+                // Build defender team for BTP format
+                var team = defenderParty.map(function(p) {
+                    return {
+                        species: p.species,
+                        heldItem: p.heldItem || 0,
+                        level: p.level || 5,
+                        moves: p.moves || [0, 0, 0, 0],
+                        evs: p.evs || [0, 0, 0, 0, 0, 0],
+                        ivs: p.ivs || { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+                        personality: p.personality || 0,
+                        otId: p.otId || 0,
+                        ppBonuses: p.ppBonuses || 0,
+                        friendship: p.friendship || 0,
+                        nickname: p.nickname || '',
+                    };
+                });
+
+                // Write mailbox with gymId=0xFF (PvP)
+                var sramCopy = new Uint8Array(sram);
+                SRAMParser.writeArenaMailbox(sramCopy, {
+                    gymId: 0xFF,
+                    party: team,
+                });
+
+                // Inject modified SRAM and restart
+                var b64 = '';
+                var CHUNK = 8192;
+                for (var i = 0; i < sramCopy.length; i += CHUNK) {
+                    var slice = sramCopy.subarray(i, Math.min(i + CHUNK, sramCopy.length));
+                    for (var j = 0; j < slice.length; j++) b64 += String.fromCharCode(slice[j]);
+                }
+                b64 = btoa(b64);
+
+                setPvPStatus('Lancement du combat... Appuie sur Continuer !', false);
+                closePvPModal();
+                toast('Combat PvP lance ! Appuie sur Continuer');
+
+                injectSRAM(b64);
+
+                // Start polling with rank info for swap
+                startPvPPolling(defender.user_id, defender.pseudo || '???', defender.pvp_rank, _pvpMyRank);
+
+            } catch(e) {
+                console.error('[PvP] Challenge error:', e);
+                setPvPStatus('Erreur: ' + e.message, true);
+                document.getElementById('pvp-challenge-btn').disabled = false;
+            }
+        }
+
+        function startPvPPolling(defenderId, defenderPseudo, defenderRank, myRank) {
+            if (_pvpPollingId) clearInterval(_pvpPollingId);
+
+            var pollCount = 0;
+            var maxPolls = 200;
+
+            _pvpPollingId = setInterval(function() {
+                pollCount++;
+                if (pollCount > maxPolls) {
+                    clearInterval(_pvpPollingId);
+                    _pvpPollingId = null;
+                    console.log('[PvP] Polling timeout');
+                    return;
+                }
+
+                try {
+                    var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+                    if (!gm) return;
+                    gm.saveSaveFiles();
+                    var sram = gm.getSaveFile();
+                    if (!sram || sram.length < 131072) return;
+
+                    var result = SRAMParser.readArenaResult(sram);
+                    if (!result.valid) return;
+                    if (result.active) return;
+
+                    // Battle done
+                    var winner = result.result === 1 ? 'challenger' : 'defender';
+                    // Challenger team from ROM (gPlayerParty is valid post-battle)
+                    // Defender team from Supabase profile (ROM data is unreliable)
+                    handlePvPResult(defenderId, defenderPseudo, winner,
+                        result.challengerRemaining || 0, result.defenderRemaining || 0,
+                        defenderRank, myRank,
+                        result.challengerMons || [], _pvpDefenderParty,
+                        result.challengerTeamSize || 0, _pvpDefenderParty.length);
+
+                    clearInterval(_pvpPollingId);
+                    _pvpPollingId = null;
+
+                    SRAMParser.clearArenaMailbox(sram);
+
+                    // Force immediate cloud backup so result persists
+                    try { backupSRAM(); } catch(bk) {}
+
+                } catch(e) {
+                    console.warn('[PvP] Poll error:', e);
+                }
+            }, 3000);
+        }
+
+        async function handlePvPResult(defenderId, defenderPseudo, winner, challengerRemaining, defenderRemaining, defenderRank, myRank, challengerMons, defenderMons, challengerTeamSize, defenderTeamSize) {
+            var pseudo = _currentUser.user_metadata && _currentUser.user_metadata.pseudo
+                ? _currentUser.user_metadata.pseudo
+                : _currentUser.email.split('@')[0];
+
+            if (winner === 'challenger') {
+                toast('Victoire ! Tu passes #' + defenderRank + ' !');
+                try {
+                    await _sb.from('player_profiles').update({ pvp_rank: defenderRank }).eq('user_id', _currentUser.id);
+                    await _sb.from('player_profiles').update({ pvp_rank: myRank }).eq('user_id', defenderId);
+                    console.log('[PvP] Ranks swapped:', pseudo, defenderRank, '<->', defenderPseudo, myRank);
+                } catch(e) {
+                    console.error('[PvP] Rank swap error:', e);
+                }
+            } else {
+                toast('Defaite... Tu restes #' + myRank);
+            }
+
+            try {
+                await _sb.from('pvp_matches').insert({
+                    challenger_id: _currentUser.id,
+                    challenger_pseudo: pseudo,
+                    defender_id: defenderId,
+                    defender_pseudo: defenderPseudo,
+                    winner: winner,
+                    challenger_remaining: challengerRemaining,
+                    defender_remaining: defenderRemaining,
+                    challenger_team: challengerMons || [],
+                    defender_team: defenderMons || [],
+                });
+                console.log('[PvP] Match recorded:', pseudo, 'vs', defenderPseudo, '->', winner,
+                    'C:', challengerRemaining, '/', challengerTeamSize,
+                    'D:', defenderRemaining, '/', defenderTeamSize,
+                    'CMons:', JSON.stringify(challengerMons),
+                    'DMons:', JSON.stringify(defenderMons));
+            } catch(e) {
+                console.error('[PvP] Record match error:', e);
+            }
         }
     </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
