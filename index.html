@@ -268,7 +268,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 47 - CDN restored + crash logs + iOS fixes');
+        console.log('[Pokemon] Version 48 - iOS permission fix + better crash logs');
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
@@ -285,8 +285,11 @@
             console.error('[CrashLog]', entry);
         };
         window.addEventListener('unhandledrejection', function(ev) {
-            var msg = ev.reason ? (ev.reason.message || String(ev.reason)) : 'Unknown rejection';
+            var reason = ev.reason;
+            var msg = reason ? (reason.message || String(reason)) : 'Unknown rejection';
+            var stack = reason && reason.stack ? reason.stack.split('\n').slice(0, 3).join(' | ') : '';
             var entry = { ts: new Date().toISOString(), type: 'rejection', msg: msg };
+            if (stack) entry.stack = stack;
             _crashLogs.push(entry);
             if (_crashLogs.length > _maxCrashLogs) _crashLogs.shift();
             try { localStorage.setItem('_crashLogs', JSON.stringify(_crashLogs)); } catch(e) {}
@@ -322,6 +325,7 @@
                 var e = _crashLogs[i];
                 txt += e.ts.split('T')[1].split('.')[0] + ' [' + e.type + '] ' + e.msg;
                 if (e.line) txt += ' (L' + e.line + ')';
+                if (e.stack) txt += '\n  → ' + e.stack;
                 txt += '\n';
             }
             alert(txt);
@@ -506,10 +510,12 @@
             if (e.key === 'Enter') doRegister();
         });
 
-        // Persistent storage
+        // Persistent storage (wrapped - iOS Safari can reject with "Permission was denied")
         if (navigator.storage && navigator.storage.persist) {
             navigator.storage.persist().then(function(g) {
                 console.log('[Save] Persistent storage:', g ? 'granted' : 'denied');
+            }).catch(function(e) {
+                console.warn('[Save] Persistent storage request denied by browser (normal on iOS):', e.message);
             });
         }
 
@@ -664,12 +670,15 @@
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'user_id,slot_name' }).then(function(res) {
                     if (res.error) {
-                        console.warn('[SRAM] Cloud failed:', res.error.message);
+                        console.warn('[SRAM] Cloud failed:', res.error.message, res.error);
                         toast('Erreur sauvegarde cloud !', true);
                     } else {
                         console.log('[SRAM] Cloud OK');
                         toast('Sauvegarde reussie !');
                     }
+                }).catch(function(err) {
+                    console.warn('[SRAM] Cloud network error:', err.message);
+                    toast('Erreur reseau sauvegarde !', true);
                 });
 
                 // Upload profile to Supabase (non-blocking)
@@ -683,7 +692,9 @@
                         profile: profile,
                         updated_at: new Date().toISOString()
                     }, { onConflict: 'user_id' }).then(function(res) {
-                        if (res.error) console.warn('[Profile] Update failed:', res.error.message);
+                        if (res.error) console.warn('[Profile] Update failed:', res.error.message, res.error);
+                    }).catch(function(err) {
+                        console.warn('[Profile] Network error:', err.message);
                     });
                 }
                 // Also send crash logs to cloud (non-blocking)
