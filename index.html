@@ -218,6 +218,7 @@
             <button class="btn-arena" onclick="openArenaModal();toggleMenu()"><span class="icon">&#9876;</span> Arena</button>
             <button class="btn-pvp" onclick="openPvPModal();toggleMenu()"><span class="icon">&#9889;</span> PvP</button>
             <div class="sep"></div>
+            <button class="btn-deco" onclick="showCrashLogs();toggleMenu()"><span class="icon">&#128196;</span> Crash logs</button>
             <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
         </div>
     </div>
@@ -267,7 +268,84 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 44 - PvP defender from Supabase');
+        console.log('[Pokemon] Version 46 - Self-hosted EmulatorJS + crash logs');
+
+        // ============================================================
+        // CRASH LOG SYSTEM — captures JS errors for remote debugging
+        // ============================================================
+        var _crashLogs = [];
+        var _maxCrashLogs = 50;
+        var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        window.onerror = function(msg, url, line, col, err) {
+            var entry = { ts: new Date().toISOString(), type: 'error', msg: msg, url: (url || '').split('/').pop(), line: line, col: col };
+            _crashLogs.push(entry);
+            if (_crashLogs.length > _maxCrashLogs) _crashLogs.shift();
+            try { localStorage.setItem('_crashLogs', JSON.stringify(_crashLogs)); } catch(e) {}
+            console.error('[CrashLog]', entry);
+        };
+        window.addEventListener('unhandledrejection', function(ev) {
+            var msg = ev.reason ? (ev.reason.message || String(ev.reason)) : 'Unknown rejection';
+            var entry = { ts: new Date().toISOString(), type: 'rejection', msg: msg };
+            _crashLogs.push(entry);
+            if (_crashLogs.length > _maxCrashLogs) _crashLogs.shift();
+            try { localStorage.setItem('_crashLogs', JSON.stringify(_crashLogs)); } catch(e) {}
+            console.error('[CrashLog]', entry);
+        });
+
+        // Restore previous crash logs from localStorage
+        try {
+            var stored = localStorage.getItem('_crashLogs');
+            if (stored) _crashLogs = JSON.parse(stored);
+        } catch(e) {}
+
+        // Memory monitoring for iOS
+        if (_isIOS && performance && performance.memory) {
+            setInterval(function() {
+                var m = performance.memory;
+                if (m.usedJSHeapSize > m.jsHeapSizeLimit * 0.85) {
+                    var entry = { ts: new Date().toISOString(), type: 'memory_warning', used: m.usedJSHeapSize, limit: m.jsHeapSizeLimit };
+                    _crashLogs.push(entry);
+                    try { localStorage.setItem('_crashLogs', JSON.stringify(_crashLogs)); } catch(e) {}
+                    console.warn('[CrashLog] Memory pressure!', entry);
+                }
+            }, 10000);
+        }
+
+        function showCrashLogs() {
+            if (_crashLogs.length === 0) {
+                alert('Aucun crash enregistre !');
+                return;
+            }
+            var txt = 'CRASH LOGS (' + _crashLogs.length + '):\n\n';
+            for (var i = _crashLogs.length - 1; i >= 0; i--) {
+                var e = _crashLogs[i];
+                txt += e.ts.split('T')[1].split('.')[0] + ' [' + e.type + '] ' + e.msg;
+                if (e.line) txt += ' (L' + e.line + ')';
+                txt += '\n';
+            }
+            alert(txt);
+        }
+
+        function clearCrashLogs() {
+            _crashLogs = [];
+            try { localStorage.removeItem('_crashLogs'); } catch(e) {}
+        }
+
+        // Send crash logs to Supabase (called on backup or manually)
+        async function sendCrashLogsToCloud() {
+            if (!_currentUser || _crashLogs.length === 0) return;
+            try {
+                await _sb.from('saves').upsert({
+                    user_id: _currentUser.id,
+                    slot_name: '__crash_logs__',
+                    save_data: JSON.stringify(_crashLogs),
+                    save_type: 'crash_logs',
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id,slot_name' });
+                console.log('[CrashLog] Sent to cloud');
+            } catch(e) {}
+        }
 
         // ============================================================
         // SUPABASE
@@ -440,11 +518,11 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=45';
+        EJS_gameUrl = 'rom/pokemon.gba?v=46';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
-        EJS_startOnLoaded = true;
-        EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+        EJS_startOnLoaded = false;
+        EJS_pathtodata = 'emulatorjs/';
 
         // ============================================================
         // SRAM SYSTEM - Only save method, per-user, cloud-backed
@@ -545,10 +623,11 @@
             return count;
         }
 
-        // Backup SRAM to localStorage + cloud (called every 10s)
+        // Backup SRAM to cloud (called periodically)
         function backupSRAM() {
             try {
                 if (!_currentUser) return;
+                if (!window.EJS_emulator || !window.EJS_emulator.gameManager) return;
                 var gm = window.EJS_emulator.gameManager;
                 gm.saveSaveFiles();
                 var sav = gm.getSaveFile();
@@ -606,7 +685,11 @@
                         if (res.error) console.warn('[Profile] Update failed:', res.error.message);
                     });
                 }
-            } catch(e) {}
+                // Also send crash logs to cloud (non-blocking)
+                sendCrashLogsToCloud();
+            } catch(e) {
+                console.warn('[SRAM] Backup error:', e.message);
+            }
         }
 
         // Wait for emulator ready
@@ -621,10 +704,11 @@
                         restoreUserSRAM();
                     }
 
-                    // Start SRAM backup polling after 5s
+                    // Start SRAM backup polling after 5s (30s on iOS to reduce memory pressure)
+                    var backupInterval = _isIOS ? 30000 : 15000;
                     setTimeout(function() {
-                        setInterval(backupSRAM, 10000);
-                        console.log('[SRAM] Backup active (every 10s)');
+                        setInterval(backupSRAM, backupInterval);
+                        console.log('[SRAM] Backup active (every ' + (backupInterval/1000) + 's)');
                     }, 5000);
                 }
             } catch(e) {}
@@ -1452,6 +1536,6 @@
             }
         }
     </script>
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+    <script src="emulatorjs/loader.js"></script>
 </body>
 </html>
