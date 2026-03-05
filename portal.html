@@ -803,6 +803,16 @@
             </div>
         </div>
         <div class="info-section">
+            <h2>Editeur de Pokemon</h2>
+            <p style="color:var(--text-dim);margin-bottom:16px;">Depuis l'onglet <strong>Editeur</strong>, vous pouvez modifier directement les Pokemon de votre equipe. Voici les regles :</p>
+            <div class="info-grid">
+                <div class="info-item" style="border-left:4px solid var(--accent);"><h4 style="color:var(--accent);">Redistribution des EVs</h4><p>Redistribuez librement les EVs (Effort Values) de chaque Pokemon. <strong>Condition :</strong> le Pokemon doit avoir accumule 510 EVs au total avant de pouvoir redistribuer. Si ce n'est pas le cas, faites plus de combats ou utilisez des Baies en jeu. Maximum 252 par stat, 510 au total.</p></div>
+                <div class="info-item" style="border-left:4px solid var(--gold);"><h4 style="color:var(--gold);">Changement de Nature</h4><p>Modifiez la nature de vos Pokemon pour optimiser leurs stats. <strong>Condition :</strong> avoir obtenu les <strong>8 badges</strong> d'arene. Chaque nature donne +10% sur une stat et -10% sur une autre (ou neutre). <span style="color:#4fc3f7;">Bleu = +10%</span>, <span style="color:#e94560;">Rouge = -10%</span>.</p></div>
+                <div class="info-item" style="border-left:4px solid #888;"><h4>IVs (valeurs individuelles)</h4><p>Les IVs sont les talents innees de chaque Pokemon, de 0 a 31. Ils ne sont <strong>pas modifiables</strong> dans l'editeur. Un IV de 31 est parfait (affiche en or). Ces valeurs sont fixees a la capture/eclosion.</p></div>
+                <div class="info-item" style="border-left:4px solid var(--green);"><h4 style="color:var(--green);">Comment utiliser</h4><p>Connectez-vous dans l'onglet Editeur avec votre pseudo + mot de passe. Modifiez les EVs/natures de votre equipe, puis cliquez Sauvegarder. Les changements s'appliquent au <strong>prochain lancement du jeu</strong>.</p></div>
+            </div>
+        </div>
+        <div class="info-section">
             <h2>Guide de l'emulateur</h2>
             <p style="color:var(--text-dim);margin-bottom:16px;">Tout ce qu'il faut savoir pour profiter du jeu sur mobile ou PC.</p>
             <div class="info-grid">
@@ -1062,6 +1072,7 @@
                     </button>
                 </div>
             </div>
+            <div id="editor-legend-container"></div>
             <div id="editor-party" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;"></div>
             <p id="editor-status" style="color:var(--text-dim);font-size:0.85rem;margin-top:12px;text-align:center;"></p>
         </div>
@@ -3551,15 +3562,16 @@
             return;
         }
 
-        // Color legend
-        let legend = '<div class="editor-legend">';
-        legend += '<span><span class="dot dot-boost"></span> Nature +10%</span>';
-        legend += '<span><span class="dot dot-reduce"></span> Nature -10%</span>';
-        legend += '<span><span class="dot dot-modified"></span> EV modifie</span>';
-        legend += '<span>IVs : 0 (min) a 31 (max)</span>';
-        legend += '</div>';
+        // Color legend (in separate container above grid)
+        const legendContainer = document.getElementById('editor-legend-container');
+        legendContainer.innerHTML = '<div class="editor-legend">'
+            + '<span><span class="dot dot-boost"></span> Nature +10%</span>'
+            + '<span><span class="dot dot-reduce"></span> Nature -10%</span>'
+            + '<span><span class="dot dot-modified"></span> EV modifie</span>'
+            + '<span>IVs : 0 (min) a 31 (max)</span>'
+            + '</div>';
 
-        let html = legend;
+        let html = '';
         _editorSave.party.forEach((mon, idx) => {
             const name = _speciesNames[mon.species] || mon.nickname || `#${mon.species}`;
             const isFakemon = mon.species >= 1573;

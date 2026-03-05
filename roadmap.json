@@ -76,8 +76,9 @@
         { "name": "Shinies IVs parfaits", "desc": "Tous les Pokemon shiny ont automatiquement 31 dans toutes leurs IVs. Les shinies deviennent les meilleurs specimens possibles.", "status": "todo", "difficulty": "facile" },
         { "name": "Shiny hunting cible", "desc": "Choisir un Pokemon a chasser en shiny via le portail web. Le taux passe de 1/8192 a ~1/80 pour cette espece uniquement. Chaque joueur a sa propre cible. Necessite 1 rebuild ROM + editeur de save web.", "status": "todo", "difficulty": "facile" },
         { "name": "Quetes farming EV", "desc": "Systeme de quetes pour gagner des EVs. Exemple : tuer 100 Pokemon Feu donne des EVs en Attaque. Necessite un systeme de compteurs, NPC questgiver, et suivi de progression.", "status": "todo", "difficulty": "complexe" },
-        { "name": "Redistribution EV", "desc": "Redistribuer les EVs de ses Pokemon via le portail web avec des curseurs. Total max 510, max 252 par stat. Deja fonctionnel dans l'onglet Editeur !", "status": "wip", "difficulty": "complexe" },
-        { "name": "Editeur de sauvegarde web", "desc": "Onglet Editeur sur le portail : connecte-toi, charge ta save, modifie les EVs de ton equipe avec des curseurs, vois les IVs. Parser SRAM complet (dechiffrement, substructs, checksums). Prochaines etapes : items, moves, shiny target.", "status": "wip", "difficulty": "complexe" }
+        { "name": "Redistribution EV", "desc": "Redistribuer les EVs de ses Pokemon via le portail web avec des curseurs. Total max 510, max 252 par stat. Disponible dans l'onglet Editeur. Condition : le Pokemon doit avoir 510 EVs au total.", "status": "done", "difficulty": "complexe" },
+        { "name": "Changement de nature", "desc": "Modifier la nature de ses Pokemon depuis l'onglet Editeur. 25 natures avec +10%/-10% sur les stats. Condition : 8 badges d'arene requis.", "status": "done", "difficulty": "complexe" },
+        { "name": "Editeur de sauvegarde web", "desc": "Onglet Editeur complet : connexion, chargement save cloud, redistribution EVs, changement nature, apercu IVs, recalcul stats en temps reel. Parser SRAM avec dechiffrement Pokemon, substructs, checksums, lecture badges. Prochaines etapes : items, moves, shiny target.", "status": "done", "difficulty": "complexe" }
       ]
     },
     {
