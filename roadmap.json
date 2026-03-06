@@ -30,7 +30,7 @@
         { "name": "IV a 1 pour tous", "desc": "Tous les nouveaux Pokemon rencontres ont leurs IVs a 1. Rend les shinies encore plus speciaux car ils ont tous leurs IVs a 31 !", "status": "done" },
         { "name": "Shinies IVs parfaits", "desc": "Tous les Pokemon shiny ont automatiquement 31 dans toutes leurs IVs. Les shinies sont les meilleurs specimens possibles.", "status": "done" },
         { "name": "Shiny hunting cible", "desc": "Choisir un Pokemon a chasser en shiny via l'editeur du portail web. Le taux passe de 1/8192 a ~1/5 (20%) pour cette espece et toutes ses formes. Chaque joueur a sa propre cible.", "status": "done" },
-        { "name": "Baisser le niveau via l'editeur", "desc": "Bouton sur chaque Pokemon de l'equipe dans l'editeur pour baisser son niveau au cap precedent. Exemple : 2 badges = bouton 'Passer au Nv.19'. Pratique pour capturer des Pokemon bas niveau sans les oneshot.", "status": "todo", "difficulty": "moyen" },
+        { "name": "Monter le niveau via l'editeur", "desc": "Bouton sur chaque Pokemon de l'equipe dans l'editeur pour monter son niveau au level cap precedent. Exemple : 2 badges = bouton 'Passer au Nv.19'. Contrairement a l'assistant du Pr. Birch qui monte TOUS les Pokemon d'un coup, ici on choisit lesquels monter. Pratique pour level-up un nouveau Pokemon capture sans grinder.", "status": "todo", "difficulty": "moyen" },
         { "name": "Quetes farming EV", "desc": "Systeme de quetes pour gagner des EVs. Exemple : tuer 100 Pokemon Feu donne des EVs en Attaque. Necessite un systeme de compteurs et NPC questgiver.", "status": "todo", "difficulty": "complexe" }
       ]
     },
