@@ -1152,6 +1152,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="js/sram-parser.js"></script>
     <script src="sram_editor.js"></script>
     <script>
     // ============================================================
@@ -3050,6 +3051,29 @@
             return;
         }
 
+        // Enrich profiles with fresh save data (re-parse for shiny info)
+        if (typeof SRAMParser !== 'undefined') {
+            try {
+                const savesRes = await _sbPortal.from('saves').select('user_id, save_data').eq('slot_name', '__sram__');
+                if (savesRes.data && savesRes.data.length > 0) {
+                    const savesMap = {};
+                    savesRes.data.forEach(s => { savesMap[s.user_id] = s.save_data; });
+                    for (const p of profiles) {
+                        const b64 = savesMap[p.user_id];
+                        if (!b64) continue;
+                        try {
+                            const bin = atob(b64);
+                            const sram = new Uint8Array(bin.length);
+                            for (let i = 0; i < bin.length; i++) sram[i] = bin.charCodeAt(i);
+                            const fresh = SRAMParser.extractProfile(sram);
+                            p.profile = fresh;
+                        } catch(pe) { console.warn('[Stats] Re-parse failed for', p.pseudo, ':', pe.message); }
+                    }
+                    console.log('[Stats] Enriched profiles from saves (' + savesRes.data.length + ' saves)');
+                }
+            } catch(e) { console.warn('[Stats] Save enrichment unavailable:', e.message); }
+        }
+
         // Parse profiles
         const players = profiles.map(p => {
             const pr = p.profile || {};
@@ -3641,6 +3665,21 @@
 
             _editorDirty = false;
             _editorBadges = SRAMEditor.readBadges(_editorSave);
+
+            // Re-upload profile with fresh shiny data (fixes stale profiles)
+            try {
+                const freshProfile = SRAMParser.extractProfile(sramBuffer);
+                sb.from('player_profiles').upsert({
+                    user_id: _editorUser.id,
+                    pseudo: pseudo,
+                    profile: freshProfile,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id' }).then(r => {
+                    if (r.error) console.warn('[Editor] Profile refresh failed:', r.error.message);
+                    else console.log('[Editor] Profile refreshed with shiny data');
+                });
+            } catch(pe) { console.warn('[Editor] Profile extract failed:', pe.message); }
+
             document.getElementById('editor-login').style.display = 'none';
             document.getElementById('editor-content').style.display = 'block';
             document.getElementById('editor-player-name').textContent = 'Equipe de ' + pseudo + ' (' + _editorSave.partyCount + ' Pokemon) — ' + _editorBadges + ' badge' + (_editorBadges !== 1 ? 's' : '');
