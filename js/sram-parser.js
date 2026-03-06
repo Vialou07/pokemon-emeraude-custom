@@ -28,6 +28,14 @@ const SRAMParser = (function () {
     const SB1_START = 1;
     const SB1_END = 4;
 
+    // PokemonStorage logical sector IDs (PC boxes)
+    const SB3_START = 5;
+    const SB3_END = 13;
+    const BOXMON_SIZE = 80;
+    const BOX_STORAGE_OFFSET = 4; // currentBox (u8) + 3 bytes padding
+    const TOTAL_BOXES = 14;
+    const IN_BOX_COUNT = 30;
+
     // Party offsets within SaveBlock1
     const PARTY_COUNT_OFFSET = 0x234;
     const PARTY_ARRAY_OFFSET = 0x238;
@@ -107,7 +115,7 @@ const SRAMParser = (function () {
 
     // ===================== SECTOR PARSING =====================
 
-    function reconstructSaveBlock1(sram) {
+    function getActiveSlot(sram) {
         const slots = [
             { startSector: 0, counter: 0, sectors: {}, validCount: 0 },
             { startSector: 14, counter: 0, sectors: {}, validCount: 0 }
@@ -133,15 +141,18 @@ const SRAMParser = (function () {
             }
         }
 
-        // Pick the slot with the highest counter
         const active = (slots[1].counter > slots[0].counter && slots[1].validCount > 0)
             ? slots[1] : slots[0];
 
         if (active.validCount === 0) {
             throw new Error('Aucun slot de sauvegarde valide trouvé');
         }
+        return active;
+    }
 
-        // Reconstruct SaveBlock1 from logical sectors 1-4
+    function reconstructSaveBlock1(sram) {
+        const active = getActiveSlot(sram);
+
         const numChunks = SB1_END - SB1_START + 1;
         const sb1 = new Uint8Array(numChunks * SECTOR_DATA_SIZE);
 
@@ -155,6 +166,40 @@ const SRAMParser = (function () {
         }
 
         return sb1;
+    }
+
+    function countBoxShinies(sram) {
+        try {
+            const active = getActiveSlot(sram);
+
+            // Reconstruct PokemonStorage from sectors 5-13
+            const numChunks = SB3_END - SB3_START + 1;
+            const storage = new Uint8Array(numChunks * SECTOR_DATA_SIZE);
+            for (let id = SB3_START; id <= SB3_END; id++) {
+                const physAddr = active.sectors[id];
+                if (physAddr === undefined) return 0;
+                const destOffset = (id - SB3_START) * SECTOR_DATA_SIZE;
+                storage.set(sram.subarray(physAddr, physAddr + SECTOR_DATA_SIZE), destOffset);
+            }
+
+            // Count shinies in all 14 boxes x 30 slots
+            let count = 0;
+            for (let slot = 0; slot < TOTAL_BOXES * IN_BOX_COUNT; slot++) {
+                const offset = BOX_STORAGE_OFFSET + slot * BOXMON_SIZE;
+                const personality = readU32(storage, offset);
+                const otId = readU32(storage, offset + 4);
+                if (personality === 0 && otId === 0) continue;
+
+                const shinyModWord = readU16(storage, offset + 0x1E);
+                const shinyMod = (shinyModWord >>> 14) & 1;
+                const shinyVal = ((otId >>> 16) ^ (otId & 0xFFFF) ^ (personality >>> 16) ^ (personality & 0xFFFF));
+                if (((shinyVal < 8) ? 1 : 0) ^ shinyMod) count++;
+            }
+            return count;
+        } catch (e) {
+            console.warn('[SRAMParser] countBoxShinies error:', e.message);
+            return 0;
+        }
     }
 
     // ===================== POKEMON PARSING =====================
@@ -250,6 +295,12 @@ const SRAMParser = (function () {
         // Skip empty slots / eggs
         if (growth.species === 0) return null;
 
+        // Compute shiny status from personality, otId, and shinyModifier bit
+        const shinyModWord = readU16(sb1, offset + 0x1E);
+        const shinyMod = (shinyModWord >>> 14) & 1;
+        const shinyVal = ((otId >>> 16) ^ (otId & 0xFFFF) ^ (personality >>> 16) ^ (personality & 0xFFFF));
+        const isShiny = (((shinyVal < 8) ? 1 : 0) ^ shinyMod) === 1;
+
         return {
             personality: personality,
             otId: otId,
@@ -275,6 +326,7 @@ const SRAMParser = (function () {
             },
             abilityNum: misc.abilityNum,
             isEgg: misc.isEgg === 1,
+            isShiny: isShiny,
             friendship: growth.friendship,
             experience: growth.experience,
         };
@@ -632,6 +684,7 @@ const SRAMParser = (function () {
                     hp: pokemon.hp,
                     maxHP: pokemon.maxHP,
                     moves: pokemon.moves,
+                    isShiny: pokemon.isShiny,
                 });
             }
         }
@@ -677,9 +730,16 @@ const SRAMParser = (function () {
             };
         }
 
-        // Highest level Pokemon
+        // Highest level Pokemon + party shiny count
         var maxLevel = 0;
-        party.forEach(function(p) { if (p.level > maxLevel) maxLevel = p.level; });
+        var partyShinies = 0;
+        party.forEach(function(p) {
+            if (p.level > maxLevel) maxLevel = p.level;
+            if (p.isShiny) partyShinies++;
+        });
+
+        // Count shinies in PC boxes
+        var boxShinies = countBoxShinies(sram);
 
         return {
             playerName: playerName,
@@ -693,6 +753,7 @@ const SRAMParser = (function () {
             party: party,
             partyCount: party.length,
             maxLevel: maxLevel,
+            shiniesCount: partyShinies + boxShinies,
             stats: stats,
         };
     }

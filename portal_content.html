@@ -3078,6 +3078,7 @@
                 usedSplash: st.usedSplash || 0,
                 usedStruggle: st.usedStruggle || 0,
                 ledgesJumped: st.ledgesJumped || 0,
+                shiniesCount: pr.shiniesCount || 0,
                 updatedAt: p.updated_at,
             };
         }).filter(p => p.saves > 0); // Show all players who have saved at least once
@@ -3096,6 +3097,7 @@
             { label: 'Chasseur de Pokemon', icon: '&#127903;', key: 'pokemonCaught', format: v => String(v) },
             { label: 'Plus de badges', icon: '&#127942;', key: 'badgeCount', format: v => v + '/8' },
             { label: 'Temps de jeu', icon: '&#9200;', key: '_playtime', format: v => formatTime(v.h, v.m), sort: p => p.playTimeHours * 60 + p.playTimeMinutes },
+            { label: 'Chasseur de Shinies', icon: '&#10024;', key: 'shiniesCount', format: v => v + ' shiny' },
             { label: 'Fan de Trempette', icon: '&#128167;', key: 'usedSplash', format: v => v + ' fois' },
             { label: 'Visites Centre Pokemon', icon: '&#127973;', key: 'pokecenterVisits', format: v => v + ' fois' },
             { label: 'Eleveur de Pokemon', icon: '&#129442;', key: 'eggsHatched', format: v => v + ' oeufs' },
@@ -3164,7 +3166,7 @@
                 partyHtml += `<div class="stats-party-mon">
                     ${img}
                     <div class="mon-info">
-                        <span class="mon-name">${name}</span>
+                        <span class="mon-name">${name}${mon.isShiny ? ' <span style="color:#ffd700;">★</span>' : ''}</span>
                         <span class="mon-level">Nv.${mon.level}</span>
                     </div>
                 </div>`;
@@ -3178,6 +3180,7 @@
                 <div class="stats-num"><div class="num-val">${formatNumber(p.money)}$</div><div class="num-label">Argent</div></div>
                 <div class="stats-num"><div class="num-val">${p.trainerBattles}</div><div class="num-label">Dresseurs</div></div>
                 <div class="stats-num"><div class="num-val">${p.pokemonEvolved}</div><div class="num-label">Evolutions</div></div>
+                <div class="stats-num"><div class="num-val" style="color:#ffd700">${p.shiniesCount}</div><div class="num-label">Shinies</div></div>
             `;
 
             plHtml += `<div class="stats-player-card${rankClass}">
