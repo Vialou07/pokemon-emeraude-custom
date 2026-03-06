@@ -23,6 +23,28 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg-dark); font-family: 'Segoe UI', -apple-system, sans-serif; color: var(--text); min-height: 100vh; }
 
+        /* FULLPAGE MODE — hides nav, shows back button */
+        body.fullpage nav { display: none; }
+        body.fullpage .section { padding-top: 8px; }
+        .back-bar {
+            display: none;
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg-dark); border-bottom: 1px solid #222;
+            padding: 10px 16px;
+        }
+        body.fullpage .back-bar { display: flex; align-items: center; gap: 12px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; border-radius: 10px;
+            background: var(--bg-card); color: var(--text); border: 1px solid #333;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .back-btn:hover { background: var(--bg-card-hover); border-color: var(--accent); }
+        .back-page-title {
+            font-size: 1rem; font-weight: 700; color: var(--accent);
+        }
+
         /* NAV */
         nav { background: var(--bg-card); border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; display: flex; align-items: center; padding: 0 16px; height: 56px; box-shadow: 0 2px 12px rgba(0,0,0,0.5); }
         nav .logo { font-size: 1.2rem; font-weight: bold; color: var(--accent); margin-right: 24px; white-space: nowrap; }
@@ -80,6 +102,15 @@
         .ability-filter-row input:focus { border-color: var(--purple); }
         .ability-filter-row label { color: var(--text-dim); font-size: 0.85rem; }
 
+        .type-filters-toggle {
+            display: inline-block; padding: 8px 16px; margin-bottom: 8px;
+            background: var(--bg-card); border: 1px solid #333; border-radius: 8px;
+            color: var(--text-dim); font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .type-filters-toggle:hover { border-color: var(--accent); color: var(--text); }
+        .type-filters-toggle.open { border-color: var(--accent); color: var(--accent); }
+        .type-filters.collapsed { display: none; }
         .type-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
         .type-btn { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 2px solid transparent; cursor: pointer; color: white; transition: all 0.2s; text-transform: uppercase; }
         .type-btn.active { border-color: white; box-shadow: 0 0 8px rgba(255,255,255,0.3); }
@@ -536,7 +567,7 @@
         .type-chart-toggle { display: none; width: 100%; padding: 12px; background: var(--bg-card); color: var(--text-dim); border: 1px solid #333; border-radius: 8px; font-size: 0.9rem; cursor: pointer; margin-bottom: 16px; min-height: 44px; }
 
         /* Type filters label */
-        .type-filters-label { display: none; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 8px; font-weight: 600; }
+        .type-filters-label { display: none; }
 
         /* Tooltip touch support */
         .ability-tag.tooltip-open .ability-tooltip { display: block; }
@@ -577,12 +608,13 @@
             .pokedex-toolbar { flex-direction: column; gap: 8px; }
             .pokedex-toolbar input[type="text"] { width: 100%; min-width: unset; min-height: 48px; padding: 12px 16px; }
             .pokedex-toolbar select { width: 100%; min-height: 44px; }
-            .pokedex-toolbar .stats-badge { text-align: center; font-size: 0.9rem; }
-            .ability-filter-row { flex-direction: column; gap: 6px; }
-            .ability-filter-row input { max-width: 100%; width: 100%; min-height: 44px; }
+            .pokedex-toolbar .stats-badge#result-count { display: none; }
+            .ability-filter-row { flex-direction: row; flex-wrap: wrap; gap: 8px; align-items: center; }
+            .ability-filter-row input { flex: 1; min-width: 150px; min-height: 44px; }
+            .ability-filter-row label { flex-shrink: 0; }
+            #result-count-alt { font-size: 0.85rem; color: var(--text-dim); flex-shrink: 0; }
 
             /* --- TYPE FILTERS --- */
-            .type-filters-label { display: block; }
             .type-filters { gap: 8px; }
             .type-btn { padding: 8px 14px; font-size: 0.8rem; min-height: 38px; display: inline-flex; align-items: center; }
             .type-btn.active { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.3); transform: scale(1.05); }
@@ -706,6 +738,10 @@
     </style>
 </head>
 <body>
+    <div class="back-bar">
+        <a class="back-btn" href="portal_v2.html">&#8592; Accueil</a>
+        <span class="back-page-title" id="back-page-title"></span>
+    </div>
     <nav>
         <div class="logo">Poke<span>Custom</span></div>
         <div class="tabs">
@@ -877,6 +913,7 @@
             <div class="ability-filter-row">
                 <label>Talent :</label>
                 <input type="text" id="ability-filter" placeholder="Filtrer par talent (ex: Intimidation, Levitate...)" autocomplete="off">
+                <span class="stats-badge" id="result-count-alt"></span>
             </div>
             <div class="compare-selection-bar" id="compare-bar">
                 <span>Comparaison :</span>
@@ -885,8 +922,8 @@
                 <button onclick="launchCompare()">Comparer !</button>
                 <button onclick="clearCompare()" style="background:var(--red);color:white;margin-left:0;">Reset</button>
             </div>
-            <span class="type-filters-label">Filtrer par type :</span>
-            <div class="type-filters" id="type-filters"></div>
+            <div class="type-filters-toggle" id="type-filters-toggle" onclick="toggleTypeFilters()">Filtrer par type &#9660;</div>
+            <div class="type-filters collapsed" id="type-filters"></div>
             <div class="pokedex-grid" id="pokedex-grid"></div>
             <div class="route-view" id="route-view"></div>
         </div>
@@ -1312,16 +1349,52 @@
     // ============================================================
     // TAB NAV
     // ============================================================
+    function switchTab(tabName) {
+        var target = document.getElementById(tabName);
+        if (!target) return;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        var btn = document.querySelector('.tab[data-tab="' + tabName + '"]');
+        if (btn) btn.classList.add('active');
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
             if (tab.disabled) return;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById(tab.dataset.tab).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            switchTab(tab.dataset.tab);
         });
     });
+
+    // Support hash-based navigation (e.g. portal.html#pokedex)
+    // Fullpage mode: portal.html?fullpage#arena → hides nav, shows back button
+    var _isFullpage = window.location.search.indexOf('fullpage') !== -1;
+    if (_isFullpage) {
+        document.body.classList.add('fullpage');
+    }
+
+    var _tabTitles = {
+        home: 'Guide du jeu', pokedex: 'Pokedex', routes: 'Routes',
+        trainers: 'Dresseurs', types: 'Types', play: 'Jouer',
+        stats: 'Joueurs', roadmap: 'Roadmap', arena: 'Arena',
+        pvp: 'PvP — Le Trone', editeur: 'Editeur'
+    };
+
+    function checkHash() {
+        if (window.location.hash) {
+            var hashTab = window.location.hash.substring(1);
+            if (document.getElementById(hashTab)) {
+                switchTab(hashTab);
+                if (_isFullpage) {
+                    var titleEl = document.getElementById('back-page-title');
+                    if (titleEl) titleEl.textContent = _tabTitles[hashTab] || '';
+                }
+            }
+        }
+    }
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
 
     // ============================================================
     // SPECIES NAMES (global, loaded once for sprites)
@@ -1416,7 +1489,10 @@
         else if (sortBy === 'ability') filtered.sort((a,b) => (a.abilities[0]||'').localeCompare(b.abilities[0]||''));
         else filtered.sort((a,b) => a.id - b.id);
 
-        document.getElementById('result-count').textContent = `${filtered.length} / ${allPokemon.length}`;
+        var countText = `${filtered.length} / ${allPokemon.length}`;
+        document.getElementById('result-count').textContent = countText;
+        var altCount = document.getElementById('result-count-alt');
+        if (altCount) altCount.textContent = countText;
 
         if (currentView === 'grid') {
             renderGrid(filtered);
@@ -1585,6 +1661,15 @@
             c.classList.toggle('compare-selected', compareSlots.includes(parseInt(c.dataset.id)));
         });
     }
+    function toggleTypeFilters() {
+        var filters = document.getElementById('type-filters');
+        var toggle = document.getElementById('type-filters-toggle');
+        var isOpen = !filters.classList.contains('collapsed');
+        filters.classList.toggle('collapsed', isOpen);
+        toggle.classList.toggle('open', !isOpen);
+        toggle.innerHTML = isOpen ? 'Filtrer par type &#9660;' : 'Filtrer par type &#9650;';
+    }
+
     function clearCompare() {
         compareSlots = [null, null];
         document.getElementById('compare-slot-1').textContent = 'Slot 1 : -';
@@ -3383,45 +3468,69 @@
             const container = document.getElementById('roadmap-content');
             const subtitle = document.getElementById('roadmap-subtitle');
             if (data.lastUpdated) {
-                subtitle.textContent = 'Tout ce qui a ete modifie par rapport au jeu d\'origine, et ce qui est prevu. Derniere maj : ' + data.lastUpdated;
+                subtitle.textContent = 'Derniere mise a jour : ' + data.lastUpdated;
             }
             const statusConfig = {
-                done:  { icon: '&#10003;', cls: 'status-done' },
-                wip:   { icon: 'WIP',      cls: 'status-wip' },
-                todo:  { icon: '...',       cls: 'status-todo' },
-                idea:  { icon: '?',         cls: 'status-todo' }
+                done:  { icon: '&#10003;', cls: 'status-done', label: 'Termine' },
+                wip:   { icon: '&#9881;',  cls: 'status-wip',  label: 'En cours' },
+                todo:  { icon: '&#8226;',  cls: 'status-todo', label: 'A faire' },
+                idea:  { icon: '&#63;',    cls: 'status-todo', label: 'Idees' }
             };
-            const sectionTitles = {
-                done: 'Termine',
-                wip:  'En cours',
-                todo: 'A faire',
-                idea: 'Idees futures'
+            const diffLabels = {
+                'trivial': 'Trivial', 'facile': 'Facile', 'moyen': 'Moyen',
+                'long': 'Long', 'complexe': 'Complexe', 'quasi-impossible': 'Quasi impossible'
             };
-            // Count items per status
+            // Global counts
             let counts = { done: 0, wip: 0, todo: 0, idea: 0 };
             data.sections.forEach(s => s.items.forEach(i => { counts[i.status] = (counts[i.status]||0) + 1; }));
             // Summary bar
-            let html = '<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;">';
-            html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:120px;border-left:4px solid var(--green)"><div style="font-size:1.8rem;font-weight:bold;color:var(--green)">${counts.done}</div><div style="font-size:0.8rem;color:var(--text-dim)">Termine</div></div>`;
-            html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:120px;border-left:4px solid var(--gold)"><div style="font-size:1.8rem;font-weight:bold;color:var(--gold)">${counts.wip + counts.todo}</div><div style="font-size:0.8rem;color:var(--text-dim)">En cours / A faire</div></div>`;
-            html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:120px;border-left:4px solid var(--accent)"><div style="font-size:1.8rem;font-weight:bold;color:var(--accent)">${counts.idea}</div><div style="font-size:0.8rem;color:var(--text-dim)">Idees futures</div></div>`;
+            let html = '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;">';
+            html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:100px;border-left:4px solid var(--green)"><div style="font-size:1.6rem;font-weight:bold;color:var(--green)">${counts.done}</div><div style="font-size:0.75rem;color:var(--text-dim)">Termine</div></div>`;
+            html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:100px;border-left:4px solid var(--gold)"><div style="font-size:1.6rem;font-weight:bold;color:var(--gold)">${counts.wip}</div><div style="font-size:0.75rem;color:var(--text-dim)">En cours</div></div>`;
+            html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:100px;border-left:4px solid var(--text-dim)"><div style="font-size:1.6rem;font-weight:bold;color:var(--text-dim)">${counts.todo}</div><div style="font-size:0.75rem;color:var(--text-dim)">A faire</div></div>`;
+            html += `<div style="background:var(--bg-card);padding:12px 20px;border-radius:10px;text-align:center;flex:1;min-width:100px;border-left:4px solid var(--purple)"><div style="font-size:1.6rem;font-weight:bold;color:var(--purple)">${counts.idea}</div><div style="font-size:0.75rem;color:var(--text-dim)">Idees</div></div>`;
             html += '</div>';
-            // Difficulty labels
-            const diffLabels = {
-                'trivial': 'Trivial', 'facile': 'Facile', 'moyen': 'Moyen',
-                'long': 'Long mais faisable', 'complexe': 'Complexe', 'quasi-impossible': 'Quasi impossible'
-            };
-            // Render sections
+
+            function renderItem(item) {
+                const cfg = statusConfig[item.status] || statusConfig.todo;
+                const diffBadge = item.difficulty ? `<span class="roadmap-diff diff-${item.difficulty}">${diffLabels[item.difficulty] || item.difficulty}</span>` : '';
+                return `<li><span class="${cfg.cls}">${cfg.icon}</span><div><strong>${item.name}</strong>${diffBadge} — ${item.desc}</div></li>`;
+            }
+
+            // Render each category with sub-sections
             data.sections.forEach(section => {
-                const sTitle = sectionTitles[section.status] || section.status;
-                html += `<h3 class="roadmap-category">${sTitle} — ${section.title}</h3>`;
-                html += '<ul class="roadmap-list">';
-                section.items.forEach(item => {
-                    const cfg = statusConfig[item.status] || statusConfig.todo;
-                    const diffBadge = item.difficulty ? `<span class="roadmap-diff diff-${item.difficulty}">${diffLabels[item.difficulty] || item.difficulty}</span>` : '';
-                    html += `<li><span class="${cfg.cls}">${cfg.icon}</span><div><strong>${item.name}</strong>${diffBadge} — ${item.desc}</div></li>`;
-                });
-                html += '</ul>';
+                const icon = section.icon || '';
+                const done = section.items.filter(i => i.status === 'done');
+                const wip  = section.items.filter(i => i.status === 'wip');
+                const todo = section.items.filter(i => i.status === 'todo');
+                const idea = section.items.filter(i => i.status === 'idea');
+
+                html += `<h3 class="roadmap-category">${icon} ${section.title}</h3>`;
+
+                if (done.length) {
+                    html += `<div style="font-size:0.8rem;color:var(--green);font-weight:600;margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.5px">&#10003; Termine (${done.length})</div>`;
+                    html += '<ul class="roadmap-list">';
+                    done.forEach(i => html += renderItem(i));
+                    html += '</ul>';
+                }
+                if (wip.length) {
+                    html += `<div style="font-size:0.8rem;color:var(--gold);font-weight:600;margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.5px">&#9881; En cours (${wip.length})</div>`;
+                    html += '<ul class="roadmap-list">';
+                    wip.forEach(i => html += renderItem(i));
+                    html += '</ul>';
+                }
+                if (todo.length) {
+                    html += `<div style="font-size:0.8rem;color:var(--text-dim);font-weight:600;margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.5px">&#8226; A faire (${todo.length})</div>`;
+                    html += '<ul class="roadmap-list">';
+                    todo.forEach(i => html += renderItem(i));
+                    html += '</ul>';
+                }
+                if (idea.length) {
+                    html += `<div style="font-size:0.8rem;color:var(--purple);font-weight:600;margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.5px">&#128161; Idees (${idea.length})</div>`;
+                    html += '<ul class="roadmap-list">';
+                    idea.forEach(i => html += renderItem(i));
+                    html += '</ul>';
+                }
             });
             container.innerHTML = html;
         } catch(e) {
