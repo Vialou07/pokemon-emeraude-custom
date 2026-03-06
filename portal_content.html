@@ -1111,6 +1111,26 @@
             </div>
             <div id="editor-legend-container"></div>
             <div id="editor-party" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;"></div>
+
+            <!-- Shiny Hunting Target -->
+            <div id="shiny-hunt-section" style="display:none;margin-top:24px;padding:20px;background:var(--card);border-radius:12px;border:1px solid #333;">
+                <h3 style="margin:0 0 8px 0;color:var(--gold);font-size:1.1rem;">&#9733; Chasse Aux Shiny</h3>
+                <p style="color:var(--text-dim);font-size:0.85rem;margin:0 0 12px 0;">Choisissez le Pokemon que vous chassez en shiny. Son taux passera de 1/8192 a ~1/5 (20%) !</p>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <div style="position:relative;min-width:220px;max-width:100%;">
+                        <input id="shiny-target-search" type="text" placeholder="Rechercher un Pokemon..."
+                               oninput="editorFilterShinyList(this.value)"
+                               onfocus="document.getElementById('shiny-target-dropdown').style.display='block'"
+                               autocomplete="off"
+                               style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid #555;background:#1a1a2e;color:var(--text);font-size:0.95rem;box-sizing:border-box;">
+                        <div id="shiny-target-dropdown"
+                             style="display:none;position:absolute;top:100%;left:0;right:0;max-height:250px;overflow-y:auto;background:#1a1a2e;border:1px solid #555;border-top:none;border-radius:0 0 8px 8px;z-index:100;">
+                        </div>
+                    </div>
+                    <span id="shiny-target-info" style="color:var(--text-dim);font-size:0.85rem;"></span>
+                </div>
+            </div>
+
             <p id="editor-status" style="color:var(--text-dim);font-size:0.85rem;margin-top:12px;text-align:center;"></p>
         </div>
     </div>
@@ -3625,6 +3645,7 @@
             document.getElementById('editor-save-btn').style.opacity = '0.4';
             document.getElementById('editor-status').textContent = '';
             editorRenderParty();
+            editorInitShinyTarget();
         } catch(e) {
             console.error('Editor load error:', e);
             errEl.textContent = 'Erreur lors du chargement: ' + e.message;
@@ -3929,6 +3950,117 @@
             btn.disabled = false;
             btn.style.opacity = '1';
         }
+    }
+
+    // ---- Shiny Hunting Target ----
+    var _editorShinyTarget = 0;
+    var _shinySpeciesList = []; // deduplicated, sorted [{id, name}]
+
+    function editorInitShinyTarget() {
+        const section = document.getElementById('shiny-hunt-section');
+        if (!section || !_editorSave) return;
+
+        // Build deduplicated species list (keep lowest ID per name = base form)
+        const nameMap = {};
+        for (const [id, name] of Object.entries(_speciesNames)) {
+            const numId = parseInt(id);
+            if (!nameMap[name] || numId < nameMap[name]) {
+                nameMap[name] = numId;
+            }
+        }
+        _shinySpeciesList = Object.entries(nameMap)
+            .map(([name, id]) => ({ id, name }))
+            .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+
+        // Read current target from save
+        const currentTarget = SRAMEditor.readVar(_editorSave, SRAMEditor.VAR_SHINY_TARGET);
+        _editorShinyTarget = currentTarget;
+
+        // Update search field and info
+        const search = document.getElementById('shiny-target-search');
+        const info = document.getElementById('shiny-target-info');
+        if (currentTarget > 0 && _speciesNames[currentTarget]) {
+            search.value = _speciesNames[currentTarget];
+            info.textContent = 'Cible actuelle : ' + _speciesNames[currentTarget];
+        } else {
+            search.value = '';
+            info.textContent = 'Aucune cible selectionnee';
+        }
+
+        // Render initial list (empty until user types)
+        editorRenderShinyDropdown('');
+        section.style.display = 'block';
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dd = document.getElementById('shiny-target-dropdown');
+            const search = document.getElementById('shiny-target-search');
+            if (dd && !dd.contains(e.target) && e.target !== search) {
+                dd.style.display = 'none';
+            }
+        });
+    }
+
+    function editorRenderShinyDropdown(filter) {
+        const dropdown = document.getElementById('shiny-target-dropdown');
+        if (!dropdown) return;
+
+        const lowerFilter = filter.toLowerCase().trim();
+        let filtered = _shinySpeciesList;
+        if (lowerFilter.length > 0) {
+            filtered = _shinySpeciesList.filter(e => e.name.toLowerCase().includes(lowerFilter));
+        }
+
+        // Limit to 50 results for performance
+        const limited = filtered.slice(0, 50);
+        let html = '<div style="padding:4px 8px;cursor:pointer;color:var(--text-dim);border-bottom:1px solid #333;" '
+                 + 'onclick="editorSelectShinyTarget(0, \'\')" '
+                 + 'onmouseenter="this.style.background=\'#2a2a4e\'" onmouseleave="this.style.background=\'transparent\'">'
+                 + 'Aucune cible</div>';
+
+        for (const entry of limited) {
+            const isActive = entry.id === _editorShinyTarget;
+            html += '<div style="padding:4px 8px;cursor:pointer;color:' + (isActive ? 'var(--gold)' : 'var(--text)') + ';" '
+                  + 'onclick="editorSelectShinyTarget(' + entry.id + ', \'' + entry.name.replace(/'/g, "\\'") + '\')" '
+                  + 'onmouseenter="this.style.background=\'#2a2a4e\'" onmouseleave="this.style.background=\'transparent\'">'
+                  + entry.name + '</div>';
+        }
+
+        if (filtered.length > 50) {
+            html += '<div style="padding:4px 8px;color:var(--text-dim);font-size:0.8rem;">... et ' + (filtered.length - 50) + ' autres</div>';
+        }
+
+        dropdown.innerHTML = html;
+        dropdown.style.display = 'block';
+    }
+
+    function editorFilterShinyList(value) {
+        editorRenderShinyDropdown(value);
+    }
+
+    function editorSelectShinyTarget(speciesId, name) {
+        if (!_editorSave) return;
+
+        SRAMEditor.writeVar(_editorSave, SRAMEditor.VAR_SHINY_TARGET, speciesId);
+        _editorShinyTarget = speciesId;
+
+        // Update UI
+        const search = document.getElementById('shiny-target-search');
+        const info = document.getElementById('shiny-target-info');
+        const dropdown = document.getElementById('shiny-target-dropdown');
+        search.value = name;
+        dropdown.style.display = 'none';
+
+        if (speciesId > 0) {
+            info.textContent = 'Cible actuelle : ' + name;
+        } else {
+            info.textContent = 'Aucune cible selectionnee';
+        }
+
+        // Mark as dirty
+        _editorDirty = true;
+        document.getElementById('editor-save-btn').disabled = false;
+        document.getElementById('editor-save-btn').style.opacity = '1';
     }
 
     // ============================================================

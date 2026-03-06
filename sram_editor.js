@@ -525,10 +525,51 @@ const SRAMEditor = (() => {
         return save;
     }
 
+    // ---- Read/Write SaveBlock1 variables ----
+    const SB1_VARS_OFFSET = 0x139C; // vars[] array offset in SaveBlock1
+    const VARS_START = 0x4000;
+
+    function readVar(save, varId) {
+        const varIndex = varId - VARS_START;
+        const sb1Offset = SB1_VARS_OFFSET + varIndex * 2;
+        const logicalSector = Math.floor(sb1Offset / SECTOR_DATA_SIZE) + 1;
+        const offsetInSector = sb1Offset % SECTOR_DATA_SIZE;
+        const sector = save.logicalSectors[logicalSector];
+        if (!sector) return 0;
+        const physBase = sector.physIdx * SECTOR_SIZE;
+        return save.sram[physBase + offsetInSector] | (save.sram[physBase + offsetInSector + 1] << 8);
+    }
+
+    function writeVar(save, varId, value) {
+        const varIndex = varId - VARS_START;
+        const sb1Offset = SB1_VARS_OFFSET + varIndex * 2;
+        const logicalSector = Math.floor(sb1Offset / SECTOR_DATA_SIZE) + 1;
+        const offsetInSector = sb1Offset % SECTOR_DATA_SIZE;
+        const sector = save.logicalSectors[logicalSector];
+        if (!sector) throw new Error('Sector not found for var 0x' + varId.toString(16));
+        const physBase = sector.physIdx * SECTOR_SIZE;
+
+        // Write u16 little-endian
+        save.sram[physBase + offsetInSector] = value & 0xFF;
+        save.sram[physBase + offsetInSector + 1] = (value >> 8) & 0xFF;
+
+        // Recalculate sector checksum
+        const sectorBase = sector.physIdx * SECTOR_SIZE;
+        const sectorData = save.sram.slice(sectorBase, sectorBase + SECTOR_DATA_SIZE);
+        const newChk = sectorChecksum(sectorData, SECTOR_DATA_SIZE);
+        const sramView = new DataView(save.sram.buffer, save.sram.byteOffset, save.sram.byteLength);
+        w16(sramView, sectorBase + FOOTER_CHKSUM, newChk);
+
+        return save;
+    }
+
+    const VAR_SHINY_TARGET = 0x404E;
+
     return {
-        parse, writeEVs, writeNature, readBadges,
+        parse, writeEVs, writeNature, readBadges, readVar, writeVar,
         fromBase64, toBase64, evTotal, decodeGBAString,
         calcHP, calcStat, getNatureMod,
         NATURE_NAMES, NATURES,
+        VAR_SHINY_TARGET,
     };
 })();

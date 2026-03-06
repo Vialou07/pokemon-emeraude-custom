@@ -27,9 +27,9 @@
         { "name": "Redistribution EV", "desc": "Redistribuer les EVs de ses Pokemon via le portail web avec des curseurs. Total max 510, max 252 par stat. Condition : le Pokemon doit avoir 510 EVs au total.", "status": "done" },
         { "name": "Changement de nature", "desc": "Modifier la nature de ses Pokemon depuis l'onglet Editeur. 25 natures avec +10%/-10% sur les stats. Condition : 8 badges d'arene requis.", "status": "done" },
         { "name": "Afficher IV et EV", "desc": "Voir les IVs et EVs de chaque Pokemon sur l'ecran de resume en jeu. Config activee, en attente de rebuild.", "status": "wip", "difficulty": "trivial" },
-        { "name": "IV a 1 pour tous", "desc": "Tous les Pokemon sauvages, d'equipe et de dresseurs ont leurs IVs a 1. Rend les shinies encore plus speciaux (IVs a 31).", "status": "todo", "difficulty": "facile" },
-        { "name": "Shinies IVs parfaits", "desc": "Tous les Pokemon shiny ont automatiquement 31 dans toutes leurs IVs. Les shinies deviennent les meilleurs specimens possibles.", "status": "todo", "difficulty": "facile" },
-        { "name": "Shiny hunting cible", "desc": "Choisir un Pokemon a chasser en shiny via le portail web. Le taux passe de 1/8192 a ~1/80 pour cette espece uniquement. Chaque joueur a sa propre cible.", "status": "todo", "difficulty": "facile" },
+        { "name": "IV a 1 pour tous", "desc": "Tous les nouveaux Pokemon rencontres ont leurs IVs a 1. Rend les shinies encore plus speciaux car ils ont tous leurs IVs a 31 !", "status": "done" },
+        { "name": "Shinies IVs parfaits", "desc": "Tous les Pokemon shiny ont automatiquement 31 dans toutes leurs IVs. Les shinies sont les meilleurs specimens possibles.", "status": "done" },
+        { "name": "Shiny hunting cible", "desc": "Choisir un Pokemon a chasser en shiny via l'editeur du portail web. Le taux passe de 1/8192 a ~1/5 (20%) pour cette espece et toutes ses formes. Chaque joueur a sa propre cible.", "status": "done" },
         { "name": "Quetes farming EV", "desc": "Systeme de quetes pour gagner des EVs. Exemple : tuer 100 Pokemon Feu donne des EVs en Attaque. Necessite un systeme de compteurs et NPC questgiver.", "status": "todo", "difficulty": "complexe" }
       ]
     },
