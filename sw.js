@@ -1,44 +1,40 @@
 // Service Worker for Pokemon Emeraude Custom PWA
-// Caches the ROM and static assets for faster loads + offline support
-const CACHE_NAME = 'pokemon-v55';
-const ROM_CACHE = 'pokemon-rom-v54';
+// Bump APP_VERSION on every deploy to trigger auto-update
+const APP_VERSION = 56;
+const CACHE_NAME = 'pokemon-v' + APP_VERSION;
+const ROM_CACHE = 'pokemon-rom-v' + APP_VERSION;
 
-// Static assets to pre-cache on install
-const PRECACHE = [
-    './',
-    './index.html',
-    './sram_editor.js',
-    './js/sram-parser.js',
-    './manifest.json',
-];
-
-// ROM cached on first fetch (too large for precache)
-const ROM_URL_PATTERN = /rom\/pokemon\.gba/;
-
-// Never cache these (API calls, auth, live data)
+// Never cache these (API calls, auth, live data, emulator CDN)
 const NOCACHE_PATTERNS = [
     /supabase\.co/,
     /\.supabase\./,
     /cdn\.emulatorjs\.org/,
 ];
 
+const ROM_URL_PATTERN = /rom\/pokemon\.gba/;
+
+// Install: activate immediately (skipWaiting)
 self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(PRECACHE))
-            .then(() => self.skipWaiting())
-    );
+    self.skipWaiting();
 });
 
+// Activate: delete ALL old caches, claim clients, notify page to reload
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(keys =>
             Promise.all(keys.map(key => {
                 if (key !== CACHE_NAME && key !== ROM_CACHE) {
+                    console.log('[SW] Deleting old cache:', key);
                     return caches.delete(key);
                 }
             }))
-        ).then(() => self.clients.claim())
+        ).then(() => {
+            // Notify all open pages to reload with new version
+            self.clients.matchAll().then(clients => {
+                clients.forEach(client => client.postMessage({ type: 'SW_UPDATED', version: APP_VERSION }));
+            });
+            return self.clients.claim();
+        })
     );
 });
 
@@ -50,7 +46,7 @@ self.addEventListener('fetch', event => {
         if (pattern.test(url)) return;
     }
 
-    // ROM: cache-first strategy (ROM changes rarely, use ROM_CACHE)
+    // ROM: cache-first (large file, rarely changes, version in URL busts cache)
     if (ROM_URL_PATTERN.test(url)) {
         event.respondWith(
             caches.open(ROM_CACHE).then(cache =>
@@ -66,7 +62,7 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Other static assets: network-first with cache fallback
+    // Everything else: network-first, cache fallback (always fresh when online)
     event.respondWith(
         fetch(event.request)
             .then(response => {
