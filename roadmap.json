@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-06",
+  "lastUpdated": "2026-03-08",
   "sections": [
     {
       "title": "Gameplay",
@@ -31,6 +31,7 @@
         { "name": "Shinies IVs parfaits", "desc": "Tous les Pokemon shiny ont automatiquement 31 dans toutes leurs IVs. Les shinies sont les meilleurs specimens possibles.", "status": "done" },
         { "name": "Shiny hunting cible", "desc": "Choisir un Pokemon a chasser en shiny via l'editeur du portail web. Le taux passe de 1/8192 a ~1/5 (20%) pour cette espece et toutes ses formes. Chaque joueur a sa propre cible.", "status": "done" },
         { "name": "Monter le niveau via l'editeur", "desc": "Bouton sur chaque Pokemon de l'equipe dans l'editeur pour monter son niveau au level cap precedent. Exemple : 2 badges = bouton 'Passer au Nv.19'. Contrairement a l'assistant du Pr. Birch qui monte TOUS les Pokemon d'un coup, ici on choisit lesquels monter. Pratique pour level-up un nouveau Pokemon capture sans grinder.", "status": "todo", "difficulty": "moyen" },
+        { "name": "Changement de talent", "desc": "Modifier le talent de ses Pokemon depuis l'editeur web. Possibilite de choisir parmi les talents normaux et le talent cache de l'espece.", "status": "todo", "difficulty": "moyen" },
         { "name": "Quetes farming EV", "desc": "Systeme de quetes pour gagner des EVs. Exemple : tuer 100 Pokemon Feu donne des EVs en Attaque. Necessite un systeme de compteurs et NPC questgiver.", "status": "todo", "difficulty": "complexe" }
       ]
     },
@@ -40,7 +41,7 @@
       "items": [
         { "name": "Arena Multi-Champion", "desc": "Deposez votre equipe de 6 Pokemon (dont 1+ du type de l'arene) pour devenir Maitre d'arene. Les autres joueurs vous defient en vrai combat GBA ! Le vainqueur prend la place. Classement et historique sur le portail.", "status": "done" },
         { "name": "PvP — Le Trone", "desc": "Classement ladder : defiez le joueur au-dessus de vous en combat 5v6 (equipe inconnue, IA intelligente). Grimpez au sommet du classement ! Stats detaillees, face-a-face et historique complet sur le portail.", "status": "done" },
-        { "name": "Stats joueurs", "desc": "Profil extrait de la sauvegarde : badges, equipe, visites Centre Pokemon, oeufs eclos, rang PvP. Tout visible sur le portail.", "status": "done" },
+        { "name": "Stats joueurs", "desc": "Profil extrait de la sauvegarde : badges, equipe, visites Centre Pokemon, oeufs eclos, rang PvP, nombre de shinies. Tout visible sur le portail.", "status": "done" },
         { "name": "Classement", "desc": "Tableau des joueurs avec victoires, defaites, ratio et rang. Mis a jour apres chaque combat.", "status": "done" }
       ]
     },
@@ -50,18 +51,21 @@
       "items": [
         { "name": "Sauvegardes cloud", "desc": "Sauvegarde automatique sur Supabase toutes les 10 secondes. Connexion par pseudo. Un message vert 'Sauvegarde reussie !' confirme chaque backup. Restauration automatique au login.", "status": "done" },
         { "name": "Jouable en navigateur", "desc": "EmulatorJS integre, jouable sur mobile et PC sans rien installer. Juste ouvrir le lien et jouer !", "status": "done" },
+        { "name": "Application installable (PWA)", "desc": "Le jeu peut etre installe comme une application depuis le navigateur. Sur iPhone : Partager > Sur l'ecran d'accueil. Sur Android : menu > Installer. Le jeu se lance en plein ecran, charge plus vite et fonctionne mieux sur iPhone grace a un acces memoire elargi. Les mises a jour sont automatiques.", "status": "done" },
         { "name": "Portail web compagnon", "desc": "Site complet avec Pokedex (1377 Pokemon), routes et encounters, dresseurs, table des types interactive, stats joueurs, arena et PvP.", "status": "done" },
         { "name": "Sprites PixelLab", "desc": "Sprites 64x64 pixel art generes par IA (PixelLab) pour chacun des 194 fakemons. Style GBA authentique.", "status": "done" },
         { "name": "Pipeline de build Docker", "desc": "Compilation automatisee via Docker. Build incremental en 5 min, rebuild complet en 20 min. Script build.sh avec modes dev/prod/swap/clean.", "status": "done" },
         { "name": "Toolkit fakemon", "desc": "Systeme complet pour ajouter des fakemons : catalogue JSON, generation de sprites, conversion GBA, guide pour les amis.", "status": "done" },
         { "name": "Menu Debug", "desc": "Menu debug accessible en jeu (cache derriere une combinaison de touches). Permet de tester, teleporter, donner des items, etc.", "status": "done" },
         { "name": "Portail public", "desc": "Les onglets Joueurs, PvP et Arena du portail sont accessibles sans connexion. Les classements et stats sont publics.", "status": "done" },
-        { "name": "Editeur de sauvegarde web", "desc": "Onglet Editeur complet : connexion, chargement save cloud, redistribution EVs, changement nature, apercu IVs, recalcul stats en temps reel. Parser SRAM avec dechiffrement Pokemon, substructs, checksums, lecture badges.", "status": "done" },
-        { "name": "Optimisations iOS", "desc": "Crash logs automatiques, backup adaptatif (30s sur iOS, 15s sur desktop), threading desactive sur iOS, retries d'injection SRAM. En cours de test.", "status": "wip" },
+        { "name": "Editeur de sauvegarde web", "desc": "Onglet Editeur complet : connexion, chargement save cloud, redistribution EVs, changement nature, chasse aux shiny, apercu IVs, recalcul stats en temps reel. Parser SRAM avec dechiffrement Pokemon, substructs, checksums, lecture badges.", "status": "done" },
+        { "name": "Optimisations iOS", "desc": "Threading desactive, WakeLock neutralise, pause automatique en arriere-plan, reprise au retour. Le jeu installe en PWA sur iPhone beneficie d'un acces memoire elargi (plus de crash Safari).", "status": "done" },
+        { "name": "Mises a jour automatiques", "desc": "Le service worker detecte les nouvelles versions et recharge la page automatiquement. Plus besoin de vider le cache manuellement !", "status": "done" },
         { "name": "Coherence portail/jeu", "desc": "Verifier que toutes les infos du portail web (encounters, dresseurs, types) correspondent a la realite en jeu.", "status": "wip", "difficulty": "moyen" },
         { "name": "Amelioration sprites fakemons", "desc": "Regenerer les sprites les plus moches avec de meilleurs prompts PixelLab. Ameliorer la quantification de couleurs (16 couleurs GBA max).", "status": "todo", "difficulty": "moyen" },
         { "name": "Animations de sprites", "desc": "Le moteur supporte les animations 2 frames (64x128 PNG). Ajouter des animations aux fakemons les plus importants (starters, legendaires, boss).", "status": "todo", "difficulty": "long" },
-        { "name": "Icones des objets CS", "desc": "Les 7 objets CS utilisent une icone placeholder (GoGoggles). Creer des icones custom pour chaque objet (machette, lanterne, surfboard...).", "status": "todo", "difficulty": "moyen" }
+        { "name": "Icones des objets CS", "desc": "Les 7 objets CS utilisent une icone placeholder (GoGoggles). Creer des icones custom pour chaque objet (machette, lanterne, surfboard...).", "status": "todo", "difficulty": "moyen" },
+        { "name": "Niveaux d'evolution dans le Pokedex", "desc": "Afficher le niveau d'evolution des fakemons sur la page Pokedex du portail. Ex: Ogeko evolue en Triton au Nv.16.", "status": "todo", "difficulty": "trivial" }
       ]
     },
     {
