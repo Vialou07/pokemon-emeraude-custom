@@ -6,6 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <title>Pokemon Emeraude Custom</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
@@ -269,14 +272,36 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 55 - iOS WakeLock fix + pause en arriere-plan');
+        console.log('[Pokemon] Version 56 - PWA + iOS fixes');
+
+        // ============================================================
+        // SERVICE WORKER — enables PWA install + ROM caching
+        // ============================================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(function(reg) {
+                console.log('[SW] Registered:', reg.scope);
+            }).catch(function(err) {
+                console.warn('[SW] Registration failed:', err.message);
+            });
+        }
+
+        // iOS PWA install banner — show once if not already installed as PWA
+        var _isPWA = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+        var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (_isIOS && !_isPWA && !sessionStorage.getItem('_pwaBannerDismissed')) {
+            var banner = document.createElement('div');
+            banner.id = 'pwa-banner';
+            banner.innerHTML = '<span>Pour une meilleure experience sur iPhone : appuie sur <b>Partager</b> ↗ puis <b>Sur l\'ecran d\'accueil</b></span><button onclick="this.parentNode.remove();sessionStorage.setItem(\'_pwaBannerDismissed\',\'1\')">✕</button>';
+            banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#e94560;color:white;padding:12px 16px;font-size:0.85rem;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:99999;font-family:sans-serif;';
+            banner.querySelector('button').style.cssText = 'background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;padding:4px 8px;';
+            document.body.appendChild(banner);
+        }
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
         // ============================================================
         var _crashLogs = [];
         var _maxCrashLogs = 50;
-        var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
         window.onerror = function(msg, url, line, col, err) {
             var entry = { ts: new Date().toISOString(), type: 'error', msg: msg, url: (url || '').split('/').pop(), line: line, col: col };
@@ -536,7 +561,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=54';
+        EJS_gameUrl = 'rom/pokemon.gba?v=56';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
