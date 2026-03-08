@@ -269,7 +269,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 54 - IV=1 tous / IV=31 shinies / Shiny hunting cible 20%');
+        console.log('[Pokemon] Version 55 - iOS WakeLock fix + pause en arriere-plan');
 
         // ============================================================
         // CRASH LOG SYSTEM — captures JS errors for remote debugging
@@ -286,7 +286,7 @@
             console.error('[CrashLog]', entry);
         };
         // Known harmless rejections (emulator Wake Lock, background tab, storage persist)
-        var _ignoredRejections = ['Permission was denied', 'Document is hidden', 'not-allowed'];
+        var _ignoredRejections = ['Permission was denied', 'Document is hidden', 'not-allowed', 'WakeLock', 'not visible'];
         window.addEventListener('unhandledrejection', function(ev) {
             var reason = ev.reason;
             var msg = reason ? (reason.message || String(reason)) : 'Unknown rejection';
@@ -548,6 +548,18 @@
         if (_isIOS) {
             EJS_threads = false;
             console.log('[iOS] Threading disabled to reduce memory usage');
+
+            // Stub WakeLock API — EmulatorJS calls navigator.wakeLock.request()
+            // which throws on iOS when page is not visible, crashing the WASM runtime
+            try {
+                navigator.wakeLock = {
+                    request: function() {
+                        return Promise.resolve({ released: false, release: function() { return Promise.resolve(); },
+                            addEventListener: function(){}, removeEventListener: function(){}, type: 'screen' });
+                    }
+                };
+                console.log('[iOS] WakeLock API stubbed to prevent crashes');
+            } catch(e) { console.warn('[iOS] Could not stub WakeLock:', e.message); }
         }
 
         // ============================================================
@@ -780,7 +792,28 @@
             backupSRAM();
         }
         document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'hidden') emergencyBackup();
+            if (document.visibilityState === 'hidden') {
+                emergencyBackup();
+                // iOS: pause emulator when tab is hidden to prevent background crashes
+                if (_isIOS) {
+                    try {
+                        var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+                        if (gm && typeof gm.pause === 'function') {
+                            gm.pause();
+                            console.log('[iOS] Emulator paused (tab hidden)');
+                        }
+                    } catch(e) {}
+                }
+            } else if (document.visibilityState === 'visible' && _isIOS) {
+                // Resume emulator when tab becomes visible again
+                try {
+                    var gm = window.EJS_emulator && window.EJS_emulator.gameManager;
+                    if (gm && typeof gm.resume === 'function') {
+                        gm.resume();
+                        console.log('[iOS] Emulator resumed (tab visible)');
+                    }
+                } catch(e) {}
+            }
         });
         window.addEventListener('pagehide', emergencyBackup);
         window.addEventListener('beforeunload', emergencyBackup);
@@ -1597,6 +1630,6 @@
             }
         }
     </script>
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js" crossorigin="anonymous"></script>
 </body>
 </html>
