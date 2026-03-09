@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-08",
+  "lastUpdated": "2026-03-09",
   "sections": [
     {
       "title": "Gameplay",
@@ -87,7 +87,7 @@
         { "name": "Echanges entre joueurs", "desc": "Echanger des Pokemon entre joueurs connectes directement depuis le site web. Systeme de proposition/acceptation avec apercu du Pokemon.", "status": "idea", "difficulty": "complexe" },
         { "name": "PvP temps reel", "desc": "Combats PvP en direct entre deux joueurs connectes simultanement (plus complexe que le systeme actuel par ladder).", "status": "idea", "difficulty": "quasi-impossible" },
         { "name": "Evenements legendaires", "desc": "Rencontres scriptees de legendaires et boss dans des lieux secrets avec enigmes, conditions speciales et recompenses uniques.", "status": "idea", "difficulty": "moyen" },
-        { "name": "Pokemon visibles hautes herbes", "desc": "Les Pokemon sauvages apparaissent sur la carte dans les hautes herbes avant le combat. L'infrastructure overworld existe dans pokeemerald-expansion (OW_POKEMON_OBJECT_EVENTS), mais necessite du scripting par route.", "status": "idea", "difficulty": "long" },
+        { "name": "Pokemon visibles hautes herbes", "desc": "3 Pokemon sauvages apparaissent sur la carte dans chaque zone (hautes herbes, eau). Choisis aleatoirement selon les taux de rencontre de la zone, ils changent a chaque fois que vous entrez dans la zone. Les types Eau/Vol apparaissent sur l'eau, les autres dans l'herbe. Les fakemons sont representes par des Zarbi (Unown) en attendant leurs sprites overworld. Les Pokemon shiny apparaissent sous forme de Pokeball qui se balade — impossible a rater ! En interagissant avec, un '!' s'affiche et le combat shiny se lance. Compatible avec la chasse aux shiny du portail (20% de chance).", "status": "done" },
         { "name": "Pokemon suit le dresseur", "desc": "Votre premier Pokemon vous suit sur la carte, comme dans HGSS. Necessite des sprites overworld pour chaque espece et un systeme de suivi de mouvement.", "status": "idea", "difficulty": "complexe" },
         { "name": "Tournois en ligne", "desc": "Organiser des tournois PvP avec brackets, phases de poule, finale et recompenses.", "status": "idea", "difficulty": "long" },
         { "name": "Evenements saisonniers", "desc": "Contenu special pour Noel, Halloween, etc. : Pokemon rares, objets exclusifs, decorations.", "status": "idea", "difficulty": "moyen" },

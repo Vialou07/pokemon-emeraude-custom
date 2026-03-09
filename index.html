@@ -223,7 +223,7 @@
             <div class="sep"></div>
             <button class="btn-deco" onclick="showCrashLogs();toggleMenu()"><span class="icon">&#128196;</span> Crash logs</button>
             <button class="btn-deco" onclick="doLogout()"><span class="icon">&#10140;</span> Deconnexion</button>
-            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v56</div>
+            <div style="text-align:center;font-size:0.65rem;color:#555;padding:6px 0 2px;">v60</div>
         </div>
     </div>
 
@@ -272,7 +272,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
-        console.log('[Pokemon] Version 56 - PWA + iOS fixes');
+        console.log('[Pokemon] Version 60 - Shiny = Pokeball sprite + VAR_SHINY_TARGET 20% boost');
 
         // ============================================================
         // SERVICE WORKER — enables PWA install + ROM caching + auto-update
@@ -572,7 +572,7 @@
         // ============================================================
         EJS_player = '#game-container';
         EJS_core = 'gba';
-        EJS_gameUrl = 'rom/pokemon.gba?v=56';
+        EJS_gameUrl = 'rom/pokemon.gba?v=60';
         EJS_gameName = 'pokeemerald_custom';
         EJS_color = '#e94560';
         EJS_startOnLoaded = true;
